@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>APEX WORKS — Precision Registration Plates</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface": "#121213",
+            "background": "#0f0f10",
+            "surface-container": "#18181a",
+            "surface-container-low": "#151516",
+            "surface-container-high": "#222225",
+            "outline": "#2e2e33",
+            "outline-variant": "#232326",
+            "primary": "#f5f5f7",
+            "secondary": "#a1a1aa",
+            "on-surface": "#e4e4e7",
+            "on-surface-variant": "#8e8e93",
+            "accent": "#d4d4d8"
+          },
+          "fontFamily": {
+            "sans": ["Geist", "sans-serif"],
+            "serif": ["Newsreader", "Georgia", "serif"],
+            "mono": ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .plate-font {
+      font-family: 'JetBrains Mono', -apple-system, sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+    }
+    .char-4d {
+      text-shadow: 0 2px 0 #000, 0 4px 8px rgba(0, 0, 0, 0.45);
+    }
+    .char-gel {
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.25), 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased font-sans selection:bg-surface-container-high selection:text-primary">
+<!-- Quiet Luxury Header -->
+<header class="w-full px-8 md:px-16 h-24 bg-background/90 backdrop-blur-md sticky top-0 z-50 border-b border-outline-variant flex items-center justify-between transition-colors">
+<a class="font-sans text-sm tracking-[0.28em] font-medium text-primary uppercase" href="#">
+      Apex Works
+    </a>
+<nav class="hidden md:flex items-center gap-10">
+<a class="text-sm font-normal text-on-surface hover:text-primary transition-colors tracking-wide" href="#plates">Plates</a>
+<a class="text-sm font-normal text-on-surface-variant hover:text-primary transition-colors tracking-wide" href="#materials">Materials</a>
+<a class="text-sm font-normal text-on-surface-variant hover:text-primary transition-colors tracking-wide" href="#legality">Legality</a>
+<a class="text-sm font-normal text-on-surface-variant hover:text-primary transition-colors tracking-wide" href="#journal">Journal</a>
+</nav>
+<div class="flex items-center gap-4">
+<a class="px-5 py-2.5 bg-primary text-background font-sans text-xs tracking-wider uppercase font-medium rounded-sm hover:bg-white transition-all duration-150" href="#configure">
+        Configurator
+      </a>
+</div>
+</header>
+<!-- Hero Section with Breathing Room & Calm Elegance -->
+<section class="py-24 md:py-32 px-8 md:px-16 border-b border-outline-variant max-w-7xl mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-20 items-center">
+<!-- Text & Input Form -->
+<div class="lg:col-span-6 space-y-10">
+<div class="space-y-4">
+<span class="text-xs uppercase tracking-[0.2em] text-secondary font-medium block">
+            Bespoke British Atelier
+          </span>
+<h1 class="text-4xl sm:text-5xl lg:text-6xl font-light text-primary font-serif tracking-tight leading-[1.12]">
+            Engineered plates for exceptional automobiles.
+          </h1>
+<p class="text-base sm:text-lg text-on-surface-variant font-light max-w-lg leading-relaxed pt-2">
+            Precision laser-cut acrylic, architectural stand-off reliefs, and exact legal compliance under British Standard BS AU 145e.
+          </p>
+</div>
+<!-- Clean Form Module -->
+<div class="space-y-4 pt-2" id="configure">
+<label class="text-xs tracking-wider uppercase text-on-surface-variant block font-medium" for="plate-input">
+            Enter registration mark
+          </label>
+<div class="flex flex-col sm:flex-row gap-3 max-w-md">
+<input class="w-full bg-surface-container border border-outline focus:border-primary px-4 py-3.5 font-mono text-base tracking-widest text-primary uppercase outline-none transition-colors rounded-sm" id="plate-input" maxlength="8" oninput="document.getElementById('plate-display-text').textContent = this.value.toUpperCase() || 'APEX 01';" placeholder="YOUR REG" type="text" value="APEX 01"/>
+<button class="whitespace-nowrap px-7 py-3.5 bg-primary text-background text-xs uppercase tracking-wider font-medium hover:bg-white transition-colors rounded-sm">
+              Configure Plate
+            </button>
+</div>
+<p class="text-xs text-secondary/70 tracking-normal pt-1">
+            Fully compliant with DVLA MOT regulations · RNPS registered
+          </p>
+</div>
+</div>
+<!-- Single Ultra-Clean Plate Preview -->
+<div class="lg:col-span-6">
+<div class="p-10 md:p-14 bg-surface-container-low border border-outline-variant flex flex-col items-center justify-center">
+<!-- Refined Plate Preview -->
+<div class="w-full max-w-lg bg-white rounded-[3px] p-4 md:py-6 md:px-7 shadow-xl border border-neutral-200/80 flex items-center justify-between relative overflow-hidden transition-all duration-300">
+<!-- Subtle UK Ident -->
+<div class="w-10 h-16 bg-[#00247D] flex flex-col items-center justify-between py-2 text-white font-mono rounded-[1px]">
+<span class="text-[9px] font-bold tracking-tight">UK</span>
+<span class="text-[8px] opacity-75">★</span>
+</div>
+<!-- Plate Registration -->
+<div class="plate-font text-3xl sm:text-5xl text-neutral-900 tracking-wider font-bold mx-auto char-4d select-none" id="plate-display-text">
+              APEX 01
+            </div>
+<!-- Mandatory Subtle Mark -->
+<div class="absolute bottom-1 right-2.5 text-[6px] tracking-widest text-neutral-400 font-mono uppercase">
+              APEX WORKS // RNPS 88392 // BS AU 145E
+            </div>
+</div>
+<div class="mt-8 flex items-center justify-between w-full max-w-lg text-xs text-on-surface-variant font-light px-1">
+<span>Class-1 Retroreflective PMMA</span>
+<span>Front &amp; Rear matched sets</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Curated 4 Essential Craft Disciplines -->
+<section class="py-24 px-8 md:px-16 max-w-7xl mx-auto border-b border-outline-variant" id="plates">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+<div class="space-y-3">
+<span class="text-xs uppercase tracking-[0.2em] text-secondary font-medium block">Craft &amp; Specifications</span>
+<h2 class="text-3xl sm:text-4xl font-light text-primary font-serif">
+          Curated Disciplines
+        </h2>
+</div>
+<p class="text-sm text-on-surface-variant max-w-md font-light leading-relaxed">
+        Four distinct structural executions, each machined to order with unwavering attention to optical density, edge tolerance, and longevity.
+      </p>
+</div>
+<!-- 4 Serene Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- 01: Standard Acrylic -->
+<div class="p-8 bg-surface-container border border-outline-variant rounded-sm flex flex-col justify-between hover:border-outline transition-colors group">
+<div>
+<div class="flex justify-between items-baseline mb-6">
+<span class="text-xs font-mono text-secondary">01</span>
+<span class="text-xs text-on-surface-variant">From £38</span>
+</div>
+<h3 class="text-lg font-medium text-primary mb-2">Standard Acrylic</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed mb-8 font-light">
+            Ultra-pure optical substrate printed with UV-curable high-density pigment. A flawless gloss finish matching pristine showroom delivery standards.
+          </p>
+</div>
+<div>
+<div class="py-5 bg-background border border-outline-variant text-center rounded-[2px] mb-4">
+<span class="plate-font text-base text-primary tracking-widest">AP24 OEM</span>
+</div>
+<div class="text-[11px] text-secondary font-light">Flat Profile · Factory Finish</div>
+</div>
+</div>
+<!-- 02: 3D Resin Gel -->
+<div class="p-8 bg-surface-container border border-outline-variant rounded-sm flex flex-col justify-between hover:border-outline transition-colors group">
+<div>
+<div class="flex justify-between items-baseline mb-6">
+<span class="text-xs font-mono text-secondary">02</span>
+<span class="text-xs text-on-surface-variant">From £48</span>
+</div>
+<h3 class="text-lg font-medium text-primary mb-2">3D Resin Gel</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed mb-8 font-light">
+            Polyurethane optical resin dome curing over solid carbon-dense pigment. Curved, tactile bevel engineered to resist high-pressure washes and weathering.
+          </p>
+</div>
+<div>
+<div class="py-5 bg-background border border-outline-variant text-center rounded-[2px] mb-4">
+<span class="plate-font text-base text-primary tracking-widest char-gel">AP24 GEL</span>
+</div>
+<div class="text-[11px] text-secondary font-light">1.5mm Dome · Self-Healing Resin</div>
+</div>
+</div>
+<!-- 03: 4D Precision Cut -->
+<div class="p-8 bg-surface-container border border-outline rounded-sm flex flex-col justify-between relative group">
+<div>
+<div class="flex justify-between items-baseline mb-6">
+<span class="text-xs font-mono text-secondary">03</span>
+<span class="text-xs text-on-surface-variant">From £58</span>
+</div>
+<h3 class="text-lg font-medium text-primary mb-2">4D Precision Cut</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed mb-8 font-light">
+            Individual laser-cut high-gloss acrylic characters mounted with millimeter fidelity. Crisp, defined edges creating subtle natural shadow lines.
+          </p>
+</div>
+<div>
+<div class="py-5 bg-background border border-outline-variant text-center rounded-[2px] mb-4">
+<span class="plate-font text-base text-primary tracking-widest char-4d">AP24 4D</span>
+</div>
+<div class="text-[11px] text-secondary font-light">3.0mm &amp; 5.0mm Options · Razor Relief</div>
+</div>
+</div>
+<!-- 04: Tailored Fitments -->
+<div class="p-8 bg-surface-container border border-outline-variant rounded-sm flex flex-col justify-between hover:border-outline transition-colors group">
+<div>
+<div class="flex justify-between items-baseline mb-6">
+<span class="text-xs font-mono text-secondary">04</span>
+<span class="text-xs text-on-surface-variant">From £64</span>
+</div>
+<h3 class="text-lg font-medium text-primary mb-2">Tailored Fitments</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed mb-8 font-light">
+            Bespoke dimensioned formats for 5 and 6-digit registrations, and angled chamfer contours suited for contoured supercar aprons and diffusers.
+          </p>
+</div>
+<div>
+<div class="py-5 bg-background border border-outline-variant text-center rounded-[2px] mb-4">
+<span class="plate-font text-base text-primary tracking-widest char-4d">V8 FLY</span>
+</div>
+<div class="text-[11px] text-secondary font-light">Shortened Formats · Angular Chamfers</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Clean Editorial Legality & Standards -->
+<section class="py-24 px-8 md:px-16 max-w-7xl mx-auto border-b border-outline-variant" id="legality">
+<div class="max-w-2xl mb-16 space-y-3">
+<span class="text-xs uppercase tracking-[0.2em] text-secondary font-medium block">Compliance</span>
+<h2 class="text-3xl sm:text-4xl font-light text-primary font-serif">
+        Built to British Standards.
+      </h2>
+<p class="text-sm sm:text-base text-on-surface-variant font-light leading-relaxed">
+        Every plate leaving our atelier meets mandatory DVLA requirements and is manufactured to endure real-world exposure without deterioration.
+      </p>
+</div>
+<!-- 3 Quiet Pillars -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-10" id="materials">
+<div class="p-8 bg-surface-container-low border border-outline-variant rounded-sm space-y-4">
+<div class="text-xs font-mono text-secondary tracking-widest uppercase">Mandate</div>
+<h3 class="text-lg font-medium text-primary">BS AU 145e Standard</h3>
+<p class="text-xs sm:text-sm text-on-surface-variant font-light leading-relaxed">
+          Complies with the latest legislative mandate governing font geometry, optical character contrast, and infrared ANPR camera legibility.
+        </p>
+</div>
+<div class="p-8 bg-surface-container-low border border-outline-variant rounded-sm space-y-4">
+<div class="text-xs font-mono text-secondary tracking-widest uppercase">Testing</div>
+<h3 class="text-lg font-medium text-primary">Impact &amp; Thermal Endurance</h3>
+<p class="text-xs sm:text-sm text-on-surface-variant font-light leading-relaxed">
+          Engineered to resist highway stone deflection, extreme temperature fluctuation, and pressure washing without delamination or yellowing.
+        </p>
+</div>
+<div class="p-8 bg-surface-container-low border border-outline-variant rounded-sm space-y-4">
+<div class="text-xs font-mono text-secondary tracking-widest uppercase">Provenance</div>
+<h3 class="text-lg font-medium text-primary">RNPS Registered Supplier</h3>
+<p class="text-xs sm:text-sm text-on-surface-variant font-light leading-relaxed">
+          Registered with the DVLA (RNPS No. 88392). Each plate carries a discrete, legal laser marking providing immediate roadside authenticity.
+        </p>
+</div>
+</div>
+</section>
+<!-- Quiet 2-Step Verification Note -->
+<section class="py-24 px-8 md:px-16 max-w-7xl mx-auto border-b border-outline-variant">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+<div class="lg:col-span-5 space-y-4">
+<span class="text-xs uppercase tracking-[0.2em] text-secondary font-medium block">Verification</span>
+<h2 class="text-3xl font-light text-primary font-serif">
+          Two simple steps for legal supply.
+        </h2>
+<p class="text-xs sm:text-sm text-on-surface-variant font-light leading-relaxed">
+          As a registered manufacturer, British law requires us to confirm identity and vehicle entitlement. Our digital flow takes less than sixty seconds.
+        </p>
+</div>
+<div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
+<div class="p-6 bg-surface-container border border-outline-variant rounded-sm space-y-3">
+<span class="text-xs font-mono text-secondary uppercase block">Step 01</span>
+<h4 class="text-sm font-medium text-primary">Proof of Identity</h4>
+<p class="text-xs text-on-surface-variant font-light leading-relaxed">
+            A clear photo or scan of your UK driving licence, passport, or national identity card.
+          </p>
+</div>
+<div class="p-6 bg-surface-container border border-outline-variant rounded-sm space-y-3">
+<span class="text-xs font-mono text-secondary uppercase block">Step 02</span>
+<h4 class="text-sm font-medium text-primary">Proof of Entitlement</h4>
+<p class="text-xs text-on-surface-variant font-light leading-relaxed">
+            Your V5C registration certificate (logbook), V750 entitlement form, or V778 retention document.
+          </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Understated Client Endorsements -->
+<section class="py-24 px-8 md:px-16 max-w-7xl mx-auto border-b border-outline-variant" id="journal">
+<div class="max-w-xl mb-12 space-y-2">
+<span class="text-xs uppercase tracking-[0.2em] text-secondary font-medium block">Testimonials</span>
+<h2 class="text-2xl sm:text-3xl font-light text-primary font-serif">
+        Commissioned by enthusiasts.
+      </h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="p-8 bg-surface-container-low border border-outline-variant rounded-sm flex flex-col justify-between">
+<p class="text-xs sm:text-sm text-on-surface font-light leading-relaxed mb-6">
+          "The 4D precision laser work on my GT3 RS is immaculate. Clean razor edges without the unsightly adhesive bleed typical of common aftermarket plates."
+        </p>
+<div class="text-xs text-on-surface-variant font-mono">
+<span class="text-primary font-medium">Julian V.</span> — Porsche GT3 RS
+        </div>
+</div>
+<div class="p-8 bg-surface-container-low border border-outline-variant rounded-sm flex flex-col justify-between">
+<p class="text-xs sm:text-sm text-on-surface font-light leading-relaxed mb-6">
+          "The shortened plate format completely preserves the proportions of the McLaren front bumper. Submitting verification documents via mobile was seamless."
+        </p>
+<div class="text-xs text-on-surface-variant font-mono">
+<span class="text-primary font-medium">Marcus H.</span> — McLaren 720S
+        </div>
+</div>
+<div class="p-8 bg-surface-container-low border border-outline-variant rounded-sm flex flex-col justify-between">
+<p class="text-xs sm:text-sm text-on-surface font-light leading-relaxed mb-6">
+          "Flawless optical finish and subtle, discrete compliance text. Exactly the level of execution you expect when tailoring an Italian supercar."
+        </p>
+<div class="text-xs text-on-surface-variant font-mono">
+<span class="text-primary font-medium">David B.</span> — Aventador SVJ
+        </div>
+</div>
+</div>
+</section>
+<!-- Refined Minimalist Footer -->
+<footer class="w-full px-8 md:px-16 py-16 bg-background text-on-surface-variant">
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 pb-12 border-b border-outline-variant">
+<div class="md:col-span-5 space-y-4">
+<a class="font-sans text-sm tracking-[0.28em] font-medium text-primary uppercase block" href="#">
+          Apex Works
+        </a>
+<p class="text-xs text-on-surface-variant font-light max-w-sm leading-relaxed">
+          Bespoke British registration plates engineered to BS AU 145e legislative specifications. Precision-crafted in the United Kingdom.
+        </p>
+<p class="text-[11px] font-mono text-secondary">
+          DVLA RNPS NO. 88392
+        </p>
+</div>
+<div class="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8 text-xs font-light">
+<div class="space-y-3">
+<div class="text-primary font-medium tracking-wide uppercase text-[11px]">Plates</div>
+<ul class="space-y-2 text-on-surface-variant">
+<li><a class="hover:text-primary transition-colors" href="#plates">Standard Acrylic</a></li>
+<li><a class="hover:text-primary transition-colors" href="#plates">3D Resin Gel</a></li>
+<li><a class="hover:text-primary transition-colors" href="#plates">4D Precision 3mm</a></li>
+<li><a class="hover:text-primary transition-colors" href="#plates">4D Deep Block 5mm</a></li>
+<li><a class="hover:text-primary transition-colors" href="#plates">Tailored Formats</a></li>
+</ul>
+</div>
+<div class="space-y-3">
+<div class="text-primary font-medium tracking-wide uppercase text-[11px]">Standards</div>
+<ul class="space-y-2 text-on-surface-variant">
+<li><a class="hover:text-primary transition-colors" href="#legality">BS AU 145e Law</a></li>
+<li><a class="hover:text-primary transition-colors" href="#legality">Identity Checklist</a></li>
+<li><a class="hover:text-primary transition-colors" href="#legality">V5C &amp; V750 Protocol</a></li>
+<li><a class="hover:text-primary transition-colors" href="#legality">ANPR Legibility</a></li>
+</ul>
+</div>
+<div class="space-y-3">
+<div class="text-primary font-medium tracking-wide uppercase text-[11px]">Atelier</div>
+<ul class="space-y-2 text-on-surface-variant">
+<li><a class="hover:text-primary transition-colors" href="#configure">Plate Configurator</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Dispatch &amp; Delivery</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Fleet &amp; Trade</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Contact Concierge</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="max-w-7xl mx-auto pt-8 flex flex-col sm:flex-row justify-between items-center text-[11px] text-on-surface-variant/70 gap-4">
+<div>© 2025 APEX WORKS ATELIER LTD. ALL RIGHTS RESERVED.</div>
+<div class="flex gap-6">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Supply</a>
+<a class="hover:text-primary transition-colors" href="#">Cookies</a>
+</div>
+</div>
+</footer>
+</body></html>

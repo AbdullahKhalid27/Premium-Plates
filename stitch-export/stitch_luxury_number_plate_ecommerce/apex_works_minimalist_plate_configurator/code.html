@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>APEX WORKS — Bespoke Registration Configurator</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Charles Wright Font simulation -->
+<link href="https://fonts.cdnfonts.com/css/charles-wright" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            surface: "#111214",
+            background: "#0c0d0e",
+            "surface-subtle": "#16171a",
+            "surface-card": "#1a1b1f",
+            "surface-hover": "#222328",
+            "border-subtle": "#25272c",
+            "border-active": "#e5e2dc",
+            "content-primary": "#f2f2f1",
+            "content-muted": "#8d9099",
+            "content-dim": "#575961",
+            accent: "#e5e2dc"
+          },
+          fontFamily: {
+            sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+            mono: ["JetBrains Mono", "monospace"],
+            plate: ["Charles Wright", "Impact", "Arial Black", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    }
+
+    /* Tactile UK Plates */
+    .plate-front {
+      background: linear-gradient(180deg, #ffffff 0%, #f7f7f8 50%, #ececed 100%);
+      box-shadow:
+        0 1px 1px rgba(255, 255, 255, 0.9) inset,
+        0 -1px 2px rgba(0, 0, 0, 0.15) inset,
+        0 20px 40px -15px rgba(0, 0, 0, 0.65);
+    }
+
+    .plate-rear {
+      background: linear-gradient(180deg, #ffd900 0%, #fecd00 50%, #ebb800 100%);
+      box-shadow:
+        0 1px 1px rgba(255, 255, 255, 0.6) inset,
+        0 -1px 2px rgba(0, 0, 0, 0.25) inset,
+        0 20px 40px -15px rgba(0, 0, 0, 0.65);
+    }
+
+    /* Relief Typography */
+    .style-standard {
+      color: #121316;
+      text-shadow: none;
+    }
+    .style-3d-gel {
+      color: #0b0c0e;
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.35), 0 2px 3px rgba(0, 0, 0, 0.7);
+    }
+    .style-4d-3mm {
+      color: #07080a;
+      text-shadow: 0 1px 0 #2b2e35, 0 2px 0 #18191c, 0 3px 0 #0b0c0e, 0 4px 6px rgba(0, 0, 0, 0.75);
+    }
+    .style-4d-5mm {
+      color: #040506;
+      text-shadow: 0 1px 0 #32353d, 0 2px 0 #212328, 0 3px 0 #15161a, 0 4px 0 #0d0d10, 0 5px 0 #040405, 0 6px 9px rgba(0, 0, 0, 0.85);
+    }
+  </style>
+</head>
+<body class="bg-background text-content-primary antialiased font-sans min-h-screen flex flex-col selection:bg-white selection:text-black">
+<!-- TOP BAR: Minimal Luxury Header -->
+<header class="h-16 px-6 md:px-12 flex items-center justify-between border-b border-border-subtle bg-surface/80 backdrop-blur-md sticky top-0 z-40">
+<div class="flex items-center space-x-6">
+<a class="text-sm tracking-[0.25em] font-medium uppercase text-content-primary flex items-center gap-2" href="#">
+<span class="text-content-muted">APEX</span>
+<span>WORKS</span>
+</a>
+<span class="h-3 w-px bg-border-subtle hidden sm:block"></span>
+<span class="text-xs text-content-muted tracking-widest uppercase hidden sm:block">Commission Configurator</span>
+</div>
+<div class="flex items-center space-x-6">
+<div class="flex items-center space-x-2 text-xs text-content-muted">
+<span class="material-symbols-outlined text-[16px] text-content-muted">shield</span>
+<span class="tracking-wide hidden md:inline">BS AU 145e Certified</span>
+</div>
+<a class="text-xs text-content-muted hover:text-content-primary transition-colors tracking-wide hidden sm:block" href="#compliance-info">
+        Verification Criteria
+      </a>
+</div>
+</header>
+<!-- MAIN CONFIGURATOR VIEWPORT -->
+<main class="flex-1 w-full max-w-[1700px] mx-auto grid grid-cols-1 lg:grid-cols-12 min-h-[calc(100vh-8rem)]">
+<!-- LEFT STAGE: Quiet, Pristine Plate Preview Canvas -->
+<section class="lg:col-span-7 bg-[#0f1012] flex flex-col justify-between p-6 md:p-12 lg:border-r border-border-subtle relative">
+<!-- Stage View Controls -->
+<div class="flex items-center justify-between z-10">
+<div class="inline-flex p-1 bg-surface-card border border-border-subtle rounded-md text-xs font-medium">
+<button class="px-3.5 py-1.5 rounded text-content-primary bg-surface-subtle border border-border-subtle shadow-sm transition-all" id="viewPairBtn" onclick="setViewMode('pair')">
+            Plate Pair
+          </button>
+<button class="px-3.5 py-1.5 rounded text-content-muted hover:text-content-primary transition-all" id="viewFrontBtn" onclick="setViewMode('front')">
+            Front
+          </button>
+<button class="px-3.5 py-1.5 rounded text-content-muted hover:text-content-primary transition-all" id="viewRearBtn" onclick="setViewMode('rear')">
+            Rear
+          </button>
+</div>
+<div class="flex items-center gap-2 text-xs text-content-muted">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500/80"></span>
+<span class="tracking-wide">DVLA Standard Geometry</span>
+</div>
+</div>
+<!-- Plates Canvas Centerpiece -->
+<div class="flex-1 flex flex-col justify-center items-center py-12 md:py-16 space-y-10">
+<!-- Front Plate -->
+<div class="w-full flex flex-col items-center max-w-[560px] transition-opacity duration-300" id="frontPlateGroup">
+<div class="w-full flex justify-between items-center mb-2 px-1 text-[11px] font-mono text-content-dim tracking-wider uppercase">
+<span>Front // White Reflective</span>
+<span id="frontDimensionTag">520 × 111 mm</span>
+</div>
+<div class="plate-front w-full h-[122px] rounded-[4px] relative flex items-center justify-center px-6 transition-all duration-300 border border-black/10" id="frontPlateSlab">
+<!-- Optional Euro/UK badge -->
+<div class="hidden absolute left-2.5 top-2.5 bottom-2.5 w-10 bg-[#0d3b87] rounded-[2px] flex flex-col items-center justify-between py-1.5 text-white" id="frontBadge">
+<span class="text-[9px] font-semibold tracking-tighter">UK</span>
+<span class="text-[11px]">🇬🇧</span>
+</div>
+<!-- Chars -->
+<span class="font-plate font-black text-[74px] tracking-[6px] style-4d-3mm uppercase select-none leading-none" id="frontPlateDisplay">
+              AP74 RAW
+            </span>
+<!-- Legal Stamp -->
+<div class="absolute bottom-1 right-3 text-[7.5px] font-mono text-black/50 tracking-wider font-medium pointer-events-none">
+              APEX WORKS AU 145e
+            </div>
+</div>
+</div>
+<!-- Rear Plate -->
+<div class="w-full flex flex-col items-center max-w-[560px] transition-opacity duration-300" id="rearPlateGroup">
+<div class="w-full flex justify-between items-center mb-2 px-1 text-[11px] font-mono text-content-dim tracking-wider uppercase">
+<span>Rear // Yellow Reflective</span>
+<span id="rearDimensionTag">520 × 111 mm</span>
+</div>
+<div class="plate-rear w-full h-[122px] rounded-[4px] relative flex items-center justify-center px-6 transition-all duration-300 border border-black/10" id="rearPlateSlab">
+<!-- Optional Euro/UK badge -->
+<div class="hidden absolute left-2.5 top-2.5 bottom-2.5 w-10 bg-[#0d3b87] rounded-[2px] flex flex-col items-center justify-between py-1.5 text-white" id="rearBadge">
+<span class="text-[9px] font-semibold tracking-tighter">UK</span>
+<span class="text-[11px]">🇬🇧</span>
+</div>
+<!-- Chars -->
+<span class="font-plate font-black text-[74px] tracking-[6px] style-4d-3mm uppercase select-none leading-none" id="rearPlateDisplay">
+              AP74 RAW
+            </span>
+<!-- Legal Stamp -->
+<div class="absolute bottom-1 right-3 text-[7.5px] font-mono text-black/50 tracking-wider font-medium pointer-events-none">
+              APEX WORKS AU 145e
+            </div>
+</div>
+</div>
+</div>
+<!-- Subtle Specification Micro-bar -->
+<div class="flex items-center justify-between pt-6 border-t border-border-subtle text-xs text-content-muted">
+<div class="flex items-center gap-6">
+<div><span class="text-content-dim">Profile:</span> <span class="text-content-primary" id="summaryCut">Standard</span></div>
+<div><span class="text-content-dim">Style:</span> <span class="text-content-primary" id="summaryStyle">4D 3mm Laser</span></div>
+<div><span class="text-content-dim">Edge:</span> <span class="text-content-primary" id="summaryEdge">Frameless</span></div>
+</div>
+<span class="font-mono text-[11px] text-content-dim">HIGH IMPACT PMMA</span>
+</div>
+</section>
+<!-- RIGHT CONFIGURATION PANEL: Clear, Spacious Luxury Stepper -->
+<section class="lg:col-span-5 bg-surface flex flex-col justify-between overflow-y-auto max-h-[calc(100vh-8rem)]">
+<div class="p-6 md:p-10 space-y-10">
+<!-- Section 1: Registration Entry -->
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<h2 class="text-xs uppercase tracking-[0.2em] font-semibold text-content-primary">1. Registration Mark</h2>
+<span class="text-[11px] text-content-muted font-mono">UK Standard Spacing</span>
+</div>
+<div class="relative">
+<input class="w-full bg-surface-card border border-border-subtle rounded-md px-4 py-4 text-center font-plate text-3xl font-extrabold tracking-[6px] text-content-primary focus:border-border-active focus:ring-0 uppercase transition-colors" id="registrationInput" maxlength="8" oninput="handleRegistrationChange(this.value)" type="text" value="AP74 RAW"/>
+</div>
+<p class="text-xs text-content-muted leading-relaxed">
+            Characters are automatically spaced according to the British Standard AU 145e legal template.
+          </p>
+</div>
+<!-- Section 2: Character Relief & Material -->
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<h2 class="text-xs uppercase tracking-[0.2em] font-semibold text-content-primary">2. Relief &amp; Material</h2>
+<span class="text-[11px] text-content-muted">UV &amp; Jet Acrylic</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+<!-- Standard Printed -->
+<button class="style-btn text-left p-4 rounded-md border border-border-subtle bg-surface-card hover:border-content-dim transition-all flex flex-col justify-between gap-3 group" onclick="selectStyle('standard', 'Standard Acrylic', 35.00, this)" type="button">
+<div>
+<div class="text-xs font-medium text-content-primary">Standard Acrylic</div>
+<div class="text-[11px] text-content-muted mt-0.5">Smooth flat UV print</div>
+</div>
+<div class="text-xs font-mono font-medium text-content-muted">£35.00</div>
+</button>
+<!-- 3D Resin Gel -->
+<button class="style-btn text-left p-4 rounded-md border border-border-subtle bg-surface-card hover:border-content-dim transition-all flex flex-col justify-between gap-3 group" onclick="selectStyle('3d-gel', '3D High-Gloss Gel', 45.00, this)" type="button">
+<div>
+<div class="text-xs font-medium text-content-primary">3D Resin Gel</div>
+<div class="text-[11px] text-content-muted mt-0.5">Domed polyurethane gloss</div>
+</div>
+<div class="text-xs font-mono font-medium text-content-muted">£45.00</div>
+</button>
+<!-- 4D 3mm Laser (Active) -->
+<button class="style-btn text-left p-4 rounded-md border border-border-active bg-surface-subtle transition-all flex flex-col justify-between gap-3 group" onclick="selectStyle('4d-3mm', '4D 3mm Laser', 55.00, this)" type="button">
+<div>
+<div class="text-xs font-medium text-content-primary">4D 3mm Laser</div>
+<div class="text-[11px] text-content-muted mt-0.5">Precision jet acrylic relief</div>
+</div>
+<div class="text-xs font-mono font-medium text-content-primary">£55.00</div>
+</button>
+<!-- 4D 5mm Relief -->
+<button class="style-btn text-left p-4 rounded-md border border-border-subtle bg-surface-card hover:border-content-dim transition-all flex flex-col justify-between gap-3 group" onclick="selectStyle('4d-5mm', '4D 5mm Block Relief', 65.00, this)" type="button">
+<div>
+<div class="text-xs font-medium text-content-primary">4D 5mm Relief</div>
+<div class="text-[11px] text-content-muted mt-0.5">Architectural deep profile</div>
+</div>
+<div class="text-xs font-mono font-medium text-content-muted">£65.00</div>
+</button>
+</div>
+</div>
+<!-- Section 3: Dimensions & Form Factor -->
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<h2 class="text-xs uppercase tracking-[0.2em] font-semibold text-content-primary">3. Dimensions</h2>
+<span class="text-[11px] text-content-muted">Guillotine Profile</span>
+</div>
+<div class="grid grid-cols-3 gap-2.5">
+<button class="format-btn p-3 rounded-md text-left border border-border-active bg-surface-subtle transition-all" onclick="selectFormat('std', 'Standard UK (520×111mm)', this)" type="button">
+<div class="text-xs font-medium text-content-primary">Standard UK</div>
+<div class="text-[10px] text-content-muted font-mono mt-0.5">520 × 111 mm</div>
+</button>
+<button class="format-btn p-3 rounded-md text-left border border-border-subtle bg-surface-card hover:border-content-dim transition-all" onclick="selectFormat('short', 'Shortened 6-Char (460×111mm)', this)" type="button">
+<div class="text-xs font-medium text-content-primary">Shortened</div>
+<div class="text-[10px] text-content-muted font-mono mt-0.5">460 × 111 mm</div>
+</button>
+<button class="format-btn p-3 rounded-md text-left border border-border-subtle bg-surface-card hover:border-content-dim transition-all" onclick="selectFormat('hex', 'Hexagonal Sport Bevel', this)" type="button">
+<div class="text-xs font-medium text-content-primary">Hex Contour</div>
+<div class="text-[10px] text-content-muted font-mono mt-0.5">Supercar Cut</div>
+</button>
+</div>
+</div>
+<!-- Section 4: Detailing & Country Identifier -->
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<h2 class="text-xs uppercase tracking-[0.2em] font-semibold text-content-primary">4. Detailing &amp; Border</h2>
+<span class="text-[11px] text-content-muted">Perimeter</span>
+</div>
+<div class="grid grid-cols-3 gap-2.5">
+<button class="edge-btn p-3 rounded-md text-left border border-border-active bg-surface-subtle transition-all" onclick="selectEdge('none', 'Frameless Clean Cut', this)" type="button">
+<div class="text-xs font-medium text-content-primary">Frameless</div>
+<div class="text-[10px] text-content-muted mt-0.5">Clean cut edge</div>
+</button>
+<button class="edge-btn p-3 rounded-md text-left border border-border-subtle bg-surface-card hover:border-content-dim transition-all" onclick="selectEdge('subtle', 'Stealth Hairline Border', this)" type="button">
+<div class="text-xs font-medium text-content-primary">Stealth Border</div>
+<div class="text-[10px] text-content-muted mt-0.5">Fine dark pinstripe</div>
+</button>
+<button class="identifier-btn p-3 rounded-md text-left border border-border-subtle bg-surface-card hover:border-content-dim transition-all" onclick="toggleIdentifier(this)" type="button">
+<div class="text-xs font-medium text-content-primary">UK Flag Badge</div>
+<div class="text-[10px] text-content-muted mt-0.5" id="badgeStatusText">Optional</div>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BOTTOM SUMMARY & ACTION BAR: Calm, Uncluttered Precision Bar -->
+<footer class="h-20 px-6 md:px-12 border-t border-border-subtle bg-surface/95 backdrop-blur-md sticky bottom-0 z-30 flex items-center justify-between">
+<div class="flex items-center space-x-6 sm:space-x-10">
+<div>
+<div class="text-[10px] uppercase tracking-wider text-content-muted">Total Price</div>
+<div class="flex items-baseline space-x-2">
+<span class="text-xl font-medium tracking-tight text-content-primary" id="priceDisplay">£55.00</span>
+<span class="text-xs text-content-muted">inc. VAT</span>
+</div>
+</div>
+<div class="h-6 w-px bg-border-subtle hidden sm:block"></div>
+<div class="flex items-center space-x-2 text-xs text-content-muted">
+<span class="material-symbols-outlined text-[16px] text-emerald-500/80">check_circle</span>
+<span class="text-content-primary" id="roadLegalTag">100% Road Legal (BS AU 145e)</span>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<button class="px-8 py-3 bg-content-primary text-background hover:bg-white text-xs uppercase tracking-[0.18em] font-semibold rounded transition-all duration-150 shadow-sm" onclick="handleCommission()" type="button">
+        Commission Plate
+      </button>
+</div>
+</footer>
+<!-- SCRIPT ENGINE -->
+<script>
+    const configurator = {
+      reg: "AP74 RAW",
+      mode: "pair", // pair, front, rear
+      styleKey: "4d-3mm",
+      styleName: "4D 3mm Laser",
+      basePrice: 55.00,
+      formatKey: "std",
+      hasBadge: false,
+      hasBorder: false
+    };
+
+    function handleRegistrationChange(value) {
+      let upper = value.toUpperCase();
+      configurator.reg = upper;
+      document.getElementById('frontPlateDisplay').textContent = upper || 'REG';
+      document.getElementById('rearPlateDisplay').textContent = upper || 'REG';
+    }
+
+    function setViewMode(mode) {
+      configurator.mode = mode;
+      const frontGroup = document.getElementById('frontPlateGroup');
+      const rearGroup = document.getElementById('rearPlateGroup');
+      const btnPair = document.getElementById('viewPairBtn');
+      const btnFront = document.getElementById('viewFrontBtn');
+      const btnRear = document.getElementById('viewRearBtn');
+
+      // Reset buttons
+      [btnPair, btnFront, btnRear].forEach(b => {
+        b.className = "px-3.5 py-1.5 rounded text-content-muted hover:text-content-primary transition-all";
+      });
+
+      if (mode === 'pair') {
+        btnPair.className = "px-3.5 py-1.5 rounded text-content-primary bg-surface-subtle border border-border-subtle shadow-sm transition-all";
+        frontGroup.classList.remove('hidden');
+        rearGroup.classList.remove('hidden');
+      } else if (mode === 'front') {
+        btnFront.className = "px-3.5 py-1.5 rounded text-content-primary bg-surface-subtle border border-border-subtle shadow-sm transition-all";
+        frontGroup.classList.remove('hidden');
+        rearGroup.classList.add('hidden');
+      } else {
+        btnRear.className = "px-3.5 py-1.5 rounded text-content-primary bg-surface-subtle border border-border-subtle shadow-sm transition-all";
+        frontGroup.classList.add('hidden');
+        rearGroup.classList.remove('hidden');
+      }
+
+      updatePricing();
+    }
+
+    function selectStyle(key, label, price, btn) {
+      configurator.styleKey = key;
+      configurator.styleName = label;
+      configurator.basePrice = price;
+
+      // Update button styles
+      document.querySelectorAll('.style-btn').forEach(b => {
+        b.className = "style-btn text-left p-4 rounded-md border border-border-subtle bg-surface-card hover:border-content-dim transition-all flex flex-col justify-between gap-3 group";
+      });
+      btn.className = "style-btn text-left p-4 rounded-md border border-border-active bg-surface-subtle transition-all flex flex-col justify-between gap-3 group";
+
+      // Apply character classes
+      const fChars = document.getElementById('frontPlateDisplay');
+      const rChars = document.getElementById('rearPlateDisplay');
+      const styleClasses = ['style-standard', 'style-3d-gel', 'style-4d-3mm', 'style-4d-5mm'];
+      
+      styleClasses.forEach(cls => {
+        fChars.classList.remove(cls);
+        rChars.classList.remove(cls);
+      });
+
+      const currentClass = 'style-' + key;
+      fChars.classList.add(currentClass);
+      rChars.classList.add(currentClass);
+
+      document.getElementById('summaryStyle').textContent = label;
+      updatePricing();
+    }
+
+    function selectFormat(fmt, label, btn) {
+      configurator.formatKey = fmt;
+
+      document.querySelectorAll('.format-btn').forEach(b => {
+        b.className = "format-btn p-3 rounded-md text-left border border-border-subtle bg-surface-card hover:border-content-dim transition-all";
+      });
+      btn.className = "format-btn p-3 rounded-md text-left border border-border-active bg-surface-subtle transition-all";
+
+      const fSlab = document.getElementById('frontPlateSlab');
+      const rSlab = document.getElementById('rearPlateSlab');
+      const fTag = document.getElementById('frontDimensionTag');
+      const rTag = document.getElementById('rearDimensionTag');
+      const legalTag = document.getElementById('roadLegalTag');
+
+      if (fmt === 'short') {
+        fSlab.style.maxWidth = '490px';
+        rSlab.style.maxWidth = '490px';
+        fTag.textContent = '460 × 111 mm';
+        rTag.textContent = '460 × 111 mm';
+        legalTag.textContent = '100% Road Legal (BS AU 145e)';
+        document.getElementById('summaryCut').textContent = 'Shortened';
+      } else if (fmt === 'hex') {
+        fSlab.style.maxWidth = '560px';
+        rSlab.style.maxWidth = '560px';
+        fTag.textContent = 'Hex Bevel Cut';
+        rTag.textContent = 'Hex Bevel Cut';
+        legalTag.textContent = 'Show / Off-Road Track Spec';
+        document.getElementById('summaryCut').textContent = 'Hex Bevel';
+      } else {
+        fSlab.style.maxWidth = '560px';
+        rSlab.style.maxWidth = '560px';
+        fTag.textContent = '520 × 111 mm';
+        rTag.textContent = '520 × 111 mm';
+        legalTag.textContent = '100% Road Legal (BS AU 145e)';
+        document.getElementById('summaryCut').textContent = 'Standard';
+      }
+    }
+
+    function selectEdge(edge, label, btn) {
+      configurator.hasBorder = edge === 'subtle';
+
+      document.querySelectorAll('.edge-btn').forEach(b => {
+        b.className = "edge-btn p-3 rounded-md text-left border border-border-subtle bg-surface-card hover:border-content-dim transition-all";
+      });
+      btn.className = "edge-btn p-3 rounded-md text-left border border-border-active bg-surface-subtle transition-all";
+
+      const fSlab = document.getElementById('frontPlateSlab');
+      const rSlab = document.getElementById('rearPlateSlab');
+
+      if (edge === 'subtle') {
+        fSlab.classList.add('ring-1', 'ring-black/20');
+        rSlab.classList.add('ring-1', 'ring-black/20');
+        document.getElementById('summaryEdge').textContent = 'Stealth Line';
+      } else {
+        fSlab.classList.remove('ring-1', 'ring-black/20');
+        rSlab.classList.remove('ring-1', 'ring-black/20');
+        document.getElementById('summaryEdge').textContent = 'Frameless';
+      }
+    }
+
+    function toggleIdentifier(btn) {
+      configurator.hasBadge = !configurator.hasBadge;
+      const fBadge = document.getElementById('frontBadge');
+      const rBadge = document.getElementById('rearBadge');
+      const statusText = document.getElementById('badgeStatusText');
+
+      if (configurator.hasBadge) {
+        btn.className = "identifier-btn p-3 rounded-md text-left border border-border-active bg-surface-subtle transition-all";
+        fBadge.classList.remove('hidden');
+        rBadge.classList.remove('hidden');
+        statusText.textContent = "Included";
+      } else {
+        btn.className = "identifier-btn p-3 rounded-md text-left border border-border-subtle bg-surface-card hover:border-content-dim transition-all";
+        fBadge.classList.add('hidden');
+        rBadge.classList.add('hidden');
+        statusText.textContent = "Optional";
+      }
+    }
+
+    function updatePricing() {
+      let multiplier = configurator.mode === 'pair' ? 1.0 : 0.65;
+      let total = configurator.basePrice * multiplier;
+      document.getElementById('priceDisplay').textContent = '£' + total.toFixed(2);
+    }
+
+    function handleCommission() {
+      alert(`Plate set [${configurator.reg}] prepared for checkout.\nSpecification: ${configurator.styleName} (${configurator.mode.toUpperCase()})\nStandard: BS AU 145e Road Compliant.`);
+    }
+
+    // Initialize
+    updatePricing();
+  </script>
+</body></html>
