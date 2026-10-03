@@ -1,5 +1,7 @@
 node_modules/
 .next/
 .env*
-
 out/
+.agents/
+*.png
+premium-plates-site/public/media/*-remastered.mp4

@@ -1,32 +1,58 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif, Roboto_Condensed } from "next/font/google";
+import { Cormorant_Garamond, Plus_Jakarta_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "./redesign.css";
 
-const editorial = Instrument_Serif({ variable: "--font-editorial", subsets: ["latin"], weight: "400", style: ["normal", "italic"], display: "swap" });
-const plateFont = Roboto_Condensed({ variable: "--font-plate", subsets: ["latin"], weight: "700", display: "swap" });
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Luxury editorial display font
+const editorial = Cormorant_Garamond({
+  variable: "--font-editorial",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Modern British automotive sans-serif
+const modernSans = Plus_Jakarta_Sans({
+  variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+// Authentic UK BS AU 145e Charles Wright registration font
+const charlesWright = localFont({
+  src: "./fonts/CharlesWright-Bold.otf",
+  variable: "--font-plate",
+  weight: "700",
+  display: "swap",
+  fallback: ["Impact", "Arial Black", "sans-serif"],
 });
 
 export const metadata: Metadata = {
-  title: "Premium Plates — The detail that makes it yours",
-  description: "A considered finish for the cars you care about. Explore premium number plate styles and preview your registration in the Premium Plates studio.",
+  title: "Premium Plates — Bespoke British Number Plates",
+  description: "Precision-engineered UK number plates in 3D Gloss Gel and 4D Laser-Cut Acrylic. Road-legal, BS AU 145e certified, and handcrafted in Great Britain.",
+  openGraph: {
+    title: "Premium Plates — The Detail That Makes It Yours",
+    description: "Explore 3D Gel, 4D Acrylic, and bespoke UK registration finishes with real-time road-legality verification.",
+    url: "https://abdullahkhalid27.github.io/Premium-Plates/",
+    siteName: "Premium Plates",
+    locale: "en_GB",
+    type: "website",
+  },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${editorial.variable} ${plateFont.variable} h-full antialiased`}
+      className={`${modernSans.variable} ${editorial.variable} ${charlesWright.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col font-sans">{children}</body>
     </html>
   );
 }
