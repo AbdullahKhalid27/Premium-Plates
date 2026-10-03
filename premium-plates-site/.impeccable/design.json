@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-03T00:00:00Z",
+  "title": "Design System: Premium Plates",
+  "extensions": {
+    "shadows": [{"name":"plate","value":"0 14px 23px #0003","purpose":"Physical depth beneath plate specimens."}],
+    "motion": [
+      {"name":"product-hover","value":"500ms cubic-bezier(.16,1,.3,1)","purpose":"Bounded mouse tilt and lift on collection specimens."},
+      {"name":"control-feedback","value":"250ms ease","purpose":"Button arrows and colour feedback."}
+    ],
+    "breakpoints": [{"name":"compact-desktop","value":"1100px"},{"name":"stacked","value":"800px"},{"name":"phone","value":"520px"}]
+  },
+  "components": [
+    {"name":"Primary action","kind":"button","refersTo":"button-primary","description":"Advance the design or add a configured plate to the demo bag.","html":"<button class=\"ds-primary\">Add to bag ↗</button>","css":".ds-primary{background:#622f35;color:#f0ede6;border:0;padding:12px 18px;min-height:48px;font:12px Geist,sans-serif}"},
+    {"name":"Light action","kind":"button","refersTo":"button-light","description":"Return to the studio from a cinematic surface.","html":"<button class=\"ds-light\">Design your plates ↗</button>","css":".ds-light{background:#f0ede6;color:#111b1e;border:0;padding:12px 18px;min-height:48px;font:12px Geist,sans-serif}"},
+    {"name":"Registration field","kind":"input","description":"Live registration entry.","html":"<label class=\"ds-label\">Your registration<input class=\"ds-reg\" value=\"PP24 LUX\"/></label>","css":".ds-label{font:11px Geist,sans-serif;color:#111b1e}.ds-reg{display:block;width:100%;background:transparent;border:0;border-bottom:1px solid #969a8f;padding:10px 0;font:600 26px monospace;letter-spacing:.08em;color:#111b1e}"},
+    {"name":"Finish choice","kind":"chip","description":"Selected finish state.","html":"<button class=\"ds-finish\">4D Acrylic</button>","css":".ds-finish{background:#183036;color:white;border:1px solid #183036;padding:7px 11px;min-height:35px;font:10px Geist,sans-serif}"},
+    {"name":"Text navigation","kind":"nav","description":"Simple navigation on dark media.","html":"<nav class=\"ds-nav\"><a href=\"#\">The collection</a><a href=\"#\">Plate studio</a></nav>","css":".ds-nav{display:flex;gap:25px;padding:20px;background:#142126;font:12px Geist,sans-serif}.ds-nav a{color:#f0ede6;text-decoration:none}"}
+  ],
+  "narrative": {
+    "northStar": "The car gives the plate its context.",
+    "overview": "The opening uses supplied night-drive footage, followed by a material collection and an interactive fitting studio.",
+    "keyCharacteristics": ["Cinematic footage with a useful registration entry point.","Editorial type paired with compact, explicit controls.","A live plate placed in the actual vehicle scene.","Motion attached to selecting, comparing, and inspecting."],
+    "dos": ["Keep the plate visible and the next action obvious.","Preserve keyboard access and reduced-motion behavior."],
+    "donts": ["Do not add purple, fabricated reviews, or unverified commercial claims."]
+  }
+}
