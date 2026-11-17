@@ -78,18 +78,18 @@ export default function LookbookGallery({
   };
 
   return (
-    <section className="lookbook-section section-pad bg-[#142126] text-[#edece4] border-b border-[#ffffff1a] overflow-hidden">
+    <section className="lookbook-section section-pad bg-[var(--wine-deep)] text-[#edece4] border-b border-[#ffffff1a] overflow-hidden">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header with Navigation Controls */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div className="space-y-2">
-            <span className="text-xs uppercase tracking-widest text-[#caa785] font-semibold flex items-center gap-1.5">
+            <span className="text-xs uppercase tracking-widest text-[var(--copper)] font-semibold flex items-center gap-1.5">
               <Sparkles size={14} />
               The Lookbook Gallery
             </span>
             <h2 className="text-4xl md:text-5xl font-serif">
               Finished to the car.<br />
-              <em className="italic text-[#d8bca0]">Inspiration from the road.</em>
+              <em className="italic text-[var(--studio-muted)]">Inspiration from the road.</em>
             </h2>
           </div>
 
@@ -126,13 +126,13 @@ export default function LookbookGallery({
           {lookbookEntries.map((entry) => (
             <div
               key={entry.id}
-              className="min-w-[300px] md:min-w-[340px] max-w-[360px] flex-shrink-0 snap-start bg-[#0d171b] border border-[#ffffff1f] rounded-xl p-6 flex flex-col justify-between space-y-6 hover:border-[#caa785]/60 transition-all duration-300"
+              className="min-w-[300px] md:min-w-[340px] max-w-[360px] flex-shrink-0 snap-start bg-[var(--wine-deep)] border border-[#ffffff1f] rounded-xl p-6 flex flex-col justify-between space-y-6 hover:border-[var(--copper)]/60 transition-all duration-300"
               style={{ backgroundColor: entry.accentBg }}
             >
               <div>
                 <div className="flex justify-between items-start text-xs text-[#a4b3b1] pb-3 border-b border-[#ffffff14]">
                   <span className="font-semibold text-[#f5efe6]">{entry.car}</span>
-                  <span className="bg-[#ffffff14] px-2 py-0.5 rounded text-[10px] text-[#d8bca0] uppercase font-mono">
+                  <span className="bg-[#ffffff14] px-2 py-0.5 rounded text-[10px] text-[var(--studio-muted)] uppercase font-mono">
                     {entry.finishName}
                   </span>
                 </div>

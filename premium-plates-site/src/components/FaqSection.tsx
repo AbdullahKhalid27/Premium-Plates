@@ -99,19 +99,19 @@ export default function FaqSection() {
       : faqs.filter((f) => f.category === activeCategory);
 
   return (
-    <section className="faq-section section-pad bg-[#dedad0] text-[#111b1e] border-b border-[#d0cdc5]" id="questions">
+    <section className="faq-section section-pad bg-[var(--paper-soft)] text-[var(--ink)] border-b border-[var(--line)]" id="questions">
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Left Column: Heading, Official DVLA Seal & Concierge Assistance */}
           <div className="lg:col-span-5 space-y-7">
             <div className="space-y-3">
-              <span className="text-xs uppercase tracking-widest text-[#713d3e] font-semibold flex items-center gap-1.5">
+              <span className="text-xs uppercase tracking-widest text-[var(--wine)] font-semibold flex items-center gap-1.5">
                 <HelpCircle size={14} />
                 DVLA Compliance & Client Guidance
               </span>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-[1.05]">
                 A few things<br />
-                <em className="italic text-[#713d3e]">worth knowing.</em>
+                <em className="italic text-[var(--wine)]">worth knowing.</em>
               </h2>
               <p className="text-base text-[#4a4e48] leading-relaxed max-w-md">
                 Uncompromising British craftsmanship. We remove all guesswork around UK road legality, materials, dimensions, and ordering.
@@ -121,15 +121,15 @@ export default function FaqSection() {
             {/* DVLA & British Standard Trust Card */}
             <div className="bg-[#fffdf9] p-6 md:p-7 rounded-2xl border border-[#c4cfce] shadow-md space-y-5">
               <div className="flex items-center gap-4 pb-4 border-b border-[#eceae3]">
-                <div className="w-12 h-12 rounded-xl bg-[#142126] text-[#caa785] flex items-center justify-center shadow-md">
+                <div className="w-12 h-12 rounded-xl bg-[var(--wine-deep)] text-[var(--copper)] flex items-center justify-center shadow-md">
                   <ShieldCheck size={26} />
                 </div>
                 <div>
-                  <h4 className="font-serif font-bold text-lg text-[#111b1e] flex items-center gap-2">
+                  <h4 className="font-serif font-bold text-lg text-[var(--ink)] flex items-center gap-2">
                     {businessFacts.britishStandard} Certified
-                    <Award size={16} className="text-[#caa785]" />
+                    <Award size={16} className="text-[var(--copper)]" />
                   </h4>
-                  <p className="text-xs text-[#713d3e] font-mono font-semibold">
+                  <p className="text-xs text-[var(--wine)] font-mono font-semibold">
                     DVLA Registered Supplier: {businessFacts.dvlaRnpsNumber}
                   </p>
                 </div>
@@ -152,7 +152,7 @@ export default function FaqSection() {
 
               {/* Quick Road-Legal Checklist */}
               <div className="pt-3 border-t border-[#eceae3] space-y-2">
-                <span className="text-[11px] uppercase tracking-wider font-semibold text-[#111b1e] block">
+                <span className="text-[11px] uppercase tracking-wider font-semibold text-[var(--ink)] block">
                   Mandatory Legal Plate Specifications
                 </span>
                 <div className="grid grid-cols-2 gap-2 text-[11px] text-[#525750]">
@@ -178,14 +178,14 @@ export default function FaqSection() {
                   target="_blank"
                   rel="noreferrer"
                   style={{ color: "#ffffff" }}
-                  className="flex-1 inline-flex items-center justify-center gap-2 text-xs font-semibold bg-[#142126] hover:bg-[#203138] text-white px-4 py-3 rounded-lg transition-colors shadow-sm border border-[#ffffff1f]"
+                  className="flex-1 inline-flex items-center justify-center gap-2 text-xs font-semibold bg-[var(--wine-deep)] hover:bg-[var(--wine-hover)] text-white px-4 py-3 rounded-lg transition-colors shadow-sm border border-[#ffffff1f]"
                 >
                   <MessageCircle size={16} className="text-[#25D366]" />
                   <span className="text-white" style={{ color: "#ffffff" }}>WhatsApp Concierge</span>
                 </a>
                 <a
                   href={`tel:${businessFacts.phone}`}
-                  className="inline-flex items-center justify-center gap-2 text-xs font-semibold border border-[#b8b3a7] text-[#111b1e] hover:bg-[#eae6dc] px-4 py-3 rounded-lg transition-colors"
+                  className="inline-flex items-center justify-center gap-2 text-xs font-semibold border border-[#b8b3a7] text-[var(--ink)] hover:bg-[#eae6dc] px-4 py-3 rounded-lg transition-colors"
                 >
                   <Phone size={15} />
                   Call {businessFacts.phoneDisplay}
@@ -195,9 +195,9 @@ export default function FaqSection() {
 
             {/* Supplementary Assistance Strip */}
             <div className="p-4 rounded-xl bg-[#cfcbc0] border border-[#beb9ad] flex items-center gap-3 text-xs text-[#343e3d]">
-              <FileCheck size={20} className="text-[#622f35] flex-shrink-0" />
+              <FileCheck size={20} className="text-[var(--wine)] flex-shrink-0" />
               <div>
-                <strong className="block text-[#111b1e]">Need Bespoke Spacing or Fleet Advice?</strong>
+                <strong className="block text-[var(--ink)]">Need Bespoke Spacing or Fleet Advice?</strong>
                 Our master plate technician will review your vehicle registration mark directly.
               </div>
             </div>
@@ -221,10 +221,10 @@ export default function FaqSection() {
                   <button
                     key={cat}
                     type="button"
-                    onClick={() => setActiveCategory(cat as any)}
+                    onClick={() => setActiveCategory(cat)}
                     className={`text-xs px-3.5 py-1.5 rounded-full font-medium transition-all ${
                       active
-                        ? "bg-[#622f35] text-[#fff] shadow-md scale-105"
+                        ? "bg-[var(--wine)] text-[#fff] shadow-md scale-105"
                         : "bg-[#cfcbc0] text-[#4a4e48] hover:bg-[#c2beb2]"
                     }`}
                   >
@@ -240,13 +240,13 @@ export default function FaqSection() {
                 <AccordionItem
                   key={faq.id}
                   value={faq.id}
-                  className="bg-[#fffdf9] border border-[#c8c4ba] rounded-xl px-6 py-1.5 shadow-sm transition-all hover:border-[#622f35]/50"
+                  className="bg-[#fffdf9] border border-[#c8c4ba] rounded-xl px-6 py-1.5 shadow-sm transition-all hover:border-[var(--wine)]/50"
                 >
-                  <AccordionTrigger className="text-base md:text-lg font-serif font-medium text-[#111b1e] hover:text-[#622f35] py-4 text-left">
+                  <AccordionTrigger className="text-base md:text-lg font-serif font-medium text-[var(--ink)] hover:text-[var(--wine)] py-4 text-left">
                     <div className="flex items-center gap-2.5">
                       <span>{faq.question}</span>
                       {faq.badge && (
-                        <span className="text-[10px] font-mono uppercase bg-[#142126]/10 text-[#622f35] px-2 py-0.5 rounded font-bold hidden sm:inline-block">
+                        <span className="text-[10px] font-mono uppercase bg-[var(--wine-deep)]/10 text-[var(--wine)] px-2 py-0.5 rounded font-bold hidden sm:inline-block">
                           {faq.badge}
                         </span>
                       )}
