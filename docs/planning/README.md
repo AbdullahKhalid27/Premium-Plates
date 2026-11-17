@@ -1,4 +1,9 @@
 # Premium Plates
+
+## Current workflow and token efficiency
+Use Research → Code → Push per phase. Run accumulated testing/review after F3 and F6, and pass that checkpoint before starting the next frontend phase. F1 is already tested. B1 supplies backend/admin for F6. Keep automatic required GitHub CI and investigate failures. Intermediate branches/PRs explicitly remain pending checkpoint testing. Main merges/public releases follow the relevant checkpoint and user authorization.
+Use targeted research, reuse findings, read relevant files/diffs, load only needed skills, avoid repetitive subagent reviews and lengthy updates. Ask permission before each Ponytail use. Define acceptance criteria in tickets now and execute their full tests at the checkpoint. Check and fix actual observed defects immediately.
+
 Open [Kiln](Playground/kiln.html), [After Dark](Playground/index.html) or [Pitwall](Playground/pitwall.html) locally. Each works offline. Choose the scene, enter a registration, change side, compare finishes, and move the inspection control. The playground contains simulated materials.
 |Phase|Give the implementer|Task and exit condition|
 |---|---|---|
@@ -20,4 +25,4 @@ The current direction combines the MVP beige with Kiln plum and apricot. Earlier
 |B1|TRD, Backend Schema, Database|Working backend and staff review portal|
 |F6|All technical documents|Integrated commerce, security, SEO and release checks|
 |A1|Features and Automations, technical documents|Future reminder, lead and assistant workflows|
-Repeat Research → Code → Test → Ship for each row. Ship to a GitHub feature branch and PR. GitHub Pages can host the frontend preview; live commerce needs server-capable hosting. Use the stage-specific skills in Phase Prompts.md on every cycle.
+Repeat Research → Code → Push for each row. Ship to a GitHub feature branch and PR. GitHub Pages can host the frontend preview; live commerce needs server-capable hosting. Use the stage-specific skills in Phase Prompts.md on every cycle.

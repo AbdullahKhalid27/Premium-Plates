@@ -11,4 +11,4 @@ F1 builds the shared shell. F2 introduces registration and interactive plate. F3
 F4 adds a rule panel next to relevant controls. Example explanations include rear colour, motorcycle layout, and insufficient space for the selected dimensions. Every rule message offers a source and, where relevant, an alternative. Unsupported formats request help. Explicit display-use selection remains visible in Show pages, bag and staff order.
 F5 customer screens are prototype fixtures until B1 provides real auth, uploads, payments and staff controls. F6 verifies the connected journey. Do not request real customer evidence through a static preview.
 Future help entry points can pass product ID, non-sensitive configuration and rule IDs to the assistant. No raw documents, document references or access tokens in chat or analytics. Staff operations start after backend implementation and are usable before live commerce.
-Research → Code → Test → Ship repeats per phase. Use Phase Prompts.md for the required skills and acceptance checks.
+Research → Code → Push repeats per phase. Use Phase Prompts.md for the required skills and acceptance checks.

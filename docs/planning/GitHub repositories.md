@@ -2,7 +2,7 @@
 
 ## Current skill usage by phase
 
-Use [Phase Prompts](Phase%20Prompts.md) for exact local SKILL.md paths and full Research → Code → Test → Ship prompts. Its phase IDs replace the initial broad numbering in the inventory below. Downloaded files can be read directly; register commands separately only when needed. Preserve licence notices including Unslop's Damir Sokolovsky CC-BY-4.0 credit.
+Use [Phase Prompts](Phase%20Prompts.md) for exact local SKILL.md paths and full Research → Code → Push prompts. Its phase IDs replace the initial broad numbering in the inventory below. Downloaded files can be read directly; register commands separately only when needed. Preserve licence notices including Unslop's Damir Sokolovsky CC-BY-4.0 credit.
 
 |Phase|Research|Code|Test|Ship|
 |---|---|---|---|---|
