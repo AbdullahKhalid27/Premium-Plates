@@ -1,0 +1,118 @@
+/* F1 design primitives. Plate colours remain product-specific. */
+:root {
+  --paper: #f0ede6;
+  --ink: #252329;
+  --wine: #4a1f39;
+  --copper: #ff9876;
+  --line: #c9c2b9;
+  --muted-text: #58515a;
+  --display: Georgia, "Times New Roman", serif;
+  --primary: var(--wine);
+  --primary-foreground: #f0ede6;
+  --ring: var(--wine);
+  --space-page: clamp(20px, 4.2vw, 80px);
+  --color-canvas: var(--paper);
+  --color-studio: var(--wine);
+  --color-highlight: var(--copper);
+}
+
+html { scroll-padding-top: 24px; }
+body { background: var(--color-canvas); }
+:focus-visible { outline: 3px solid var(--wine); outline-offset: 4px; }
+.cinema :focus-visible,
+.studio-footer :focus-visible,
+.pp-sheet :focus-visible { outline-color: var(--copper); }
+.skip-link { border: 2px solid var(--wine); color: var(--ink); }
+.skip-link:focus { z-index: 100; }
+::selection { background: var(--wine); color: var(--paper); }
+
+.masthead {
+  position: relative;
+  inset: auto;
+  min-height: 88px;
+  height: auto;
+  padding: 16px var(--space-page);
+  color: var(--ink);
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  gap: 24px;
+}
+.brand-lockup > span {
+  font-size: 16px;
+  letter-spacing: -.02em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.brand-lockup .brand-label {
+  display: block;
+  margin-top: 3px;
+  font: 12px/1.4 var(--sans);
+  letter-spacing: 0;
+  opacity: .8;
+}
+.main-nav { gap: clamp(16px, 2vw, 30px); }
+.main-nav > a::after { background: var(--wine); }
+.collection-menu {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  min-width: 260px;
+}
+.collection-menu button { min-height: 44px; }
+.collection-menu button:focus-visible { outline-offset: -2px; }
+.collection-menu button span:last-child { color: var(--muted-text); }
+.bag-trigger:hover, .menu-trigger:hover { color: var(--wine); }
+
+/* Reserve the material studio's plum setting for its product content. */
+.vehicle-stage.detail-mode { background-color: var(--color-studio); }
+.hero-title h1 { font-family: var(--display); }
+.hero-title h1 em { color: var(--color-highlight); }
+
+.studio-footer {
+  padding: 44px var(--space-page) 140px;
+  background: var(--wine);
+  color: var(--paper);
+}
+.footer-top, .footer-bottom { gap: 24px; }
+.footer-top { padding-bottom: 28px; }
+.footer-bottom {
+  align-items: start;
+  display: flex;
+  flex-wrap: wrap;
+  border-top: 1px solid #a47c945c;
+  padding-top: 24px;
+}
+.footer-bottom nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+}
+.studio-footer a { min-height: 44px; display: inline-flex; align-items: center; }
+.studio-footer p { max-width: 38ch; color: var(--paper); }
+.release-link { font-variant-numeric: tabular-nums; text-decoration: underline; }
+.pp-sheet.navigation-sheet[data-slot="sheet-content"] { background: var(--wine); color: var(--paper); }
+.navigation-sheet > p { color: var(--paper); }
+.navigation-sheet nav a { min-height: 48px; }
+
+.release-page { max-width: 900px; margin: auto; padding: 64px var(--space-page); }
+.release-page h1 { font-size: clamp(36px, 6vw, 64px); margin: 40px 0 20px; }
+.release-page p { margin: 16px 0; max-width: 65ch; }
+.release-page a { text-decoration: underline; text-underline-offset: 4px; }
+
+@media (max-width: 1150px) {
+  .main-nav { display: none; }
+  .menu-trigger { display: flex; }
+}
+@media (max-width: 600px) {
+  .masthead { padding: 12px var(--space-page); min-height: 78px; gap: 12px; }
+  .brand-lockup > span { font-size: 15px; }
+  .masthead-actions { gap: 4px; }
+  .footer-top { align-items: start; flex-wrap: wrap; }
+  .footer-top p { flex-basis: 100%; }
+  .footer-bottom { flex-direction: column; }
+}
+
+.studio-section { background: var(--wine); }
+.navigation-sheet [data-slot="sheet-title"],
+.navigation-sheet [data-slot="sheet-description"] { color: var(--paper); }
+
+.pp-sheet.navigation-sheet[data-slot="sheet-content"] { overflow-y: auto; }

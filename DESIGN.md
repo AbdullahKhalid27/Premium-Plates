@@ -1,0 +1,24 @@
+# Design language and prototype review
+Phase 1 · Start with [the playground](Playground/index.html). Use the direction links in the masthead to compare. Choose one scene after trying the same registration, front and rear faces, and the three finishes in each. Retain the approved MVP’s product-specific letterform, live studio and finish comparison.
+|Direction|Canvas · type · accent|Composition and type|
+|---|---|---|
+|After Dark|#102426 · #D5EDDF · #F3A54C|Deep petrol and amber. Broad sans headline on the left, suspended rear plate on the right. The beam is the main control.|
+|Kiln|#4A1F39 · #FFD5C5 · #FF9876|Aubergine and apricot. An arched material display leads on desktop. Italic Georgia gives the headline the character of a maker’s catalogue.|
+|Pitwall|#152A65 · #CCE0FF · #D2FA65|Cobalt, drafting blue and citron. Monospaced headings, measurement lines and an orthogonal plate view support technical comparison.|
+Earlier prototype recommendation: Kiln. The current direction is the beige/plum hybrid above. On a phone the arched display frames a front or rear plate clearly, and selecting acrylic makes the stacked edge visible. It gives Premium Plates a recognisable colour even when the rear plate is absent. Reserve monospace for instruments and the MVP font for the plate.
+## Handoff decisions
+Keep the live first frame, light wand, reduced-motion-friendly controls, honest material labels and keyboard-operable finish samples. The three styles are frontend studies; match front and rear specimens against Amir’s physical Flat, Gel and Acrylic samples at daylight, oblique light and headlight angles before approving any commercial render. Store approval per finish, supplier and revision.
+Keep video optional below the studio with poster and explicit play. Test LCP under 2.5 seconds on representative Android hardware before release. No measured performance claim yet. Add WebGL only if physical sample comparison exposes a material difference CSS cannot communicate.
+A registration changes the plate. Keeping controls stable makes finish comparisons repeatable. Avoid public registration URLs. Prototype local car-photo placement next if fit is a frequent buyer question. For later sharing, provide an explicit export preview with a sample registration by default. Build-log milestones should follow real staff updates. Keep the Verification Desk calm, with the next required action visible.
+## Handoff acceptance
+Compare mobile, keyboard navigation, front/rear contrast and readability under each light. Choose the direction and map its CSS tokens to Tailwind. Integrate the studio into the existing Next.js product page, preserving linked product pages and registration-independent metadata. Competitor and MVP URLs are recorded in the current refinement above.
+## Agreed refinement after competitor review
+F1–F4 implement the selected hybrid. Main canvas beige #F0EDE6, studio plum #4A1F39, accent apricot #FF9876. Dark text and light text are supporting functional colours. Check contrast per surface. Keep italic editorial serif headlines and clear sans-serif UI; begin with Kiln's Georgia and the MVP's existing sans family. The plate font stays dedicated to registration previews.
+Homepage progression: hero with registration/live plate → finish comparison → product collection → material detail or permissioned on-car visuals → configure/pay/upload/review explanation → interactive FAQs → resume-design CTA → footer. Until reviews exist, demonstrate products and verified processes.
+Keep the MVP on-car transitions and finish comparison. Kiln contributes controlled lighting, angle and front/rear previews. Compare two finishes under synchronized lighting. FAQ cards expand with keyboard/touch and retain readable answer text. Provide a size guide that returns to the builder. Video is an optional poster-backed, user-started enhancement below the opening, pending client review.
+Competitor https://www.premiumplates.com/ supplies feature coverage; write original content grounded in Amir's products. MVP https://abdullahkhalid27.github.io/Premium-Plates/ supplies accepted colour and interaction references.
+Research/Code/Test/Ship and exact skills are in Phase Prompts.md. Use Awesome DESIGN.md at Research, Impeccable during Code/Test, Taste selectively for F2, Unslop for screen review, and Front-End Checklist at Test.
+
+
+## F1 foundation implementation
+Body and UI retain Plus Jakarta Sans. Editorial display uses Georgia with Times New Roman fallback. UI sizes are 12, 14, 15, 16 and 24px; display 36–96px responsive. Supporting text colours #252329 and #58515A keep legibility on beige. Hairline #C9C2B9 supports structure. Plum footer uses beige type and an apricot focus ring. The translucent footer separator is #A47C945C. Existing product-specific colours are retained until their planned review.

@@ -1,0 +1,27 @@
+name: Check pull request
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: premium-plates-site
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: premium-plates-site/package-lock.json
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frontend-preview
+          path: premium-plates-site/out
+          retention-days: 14

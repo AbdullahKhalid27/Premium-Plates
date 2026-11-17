@@ -1,0 +1,14 @@
+# Website flow
+Phase 1 → 3. Use DESIGN.md for the visual system. Public navigation links Home → Collection → Product → Plate Studio. A buying guide links directly to relevant product pages. The lookbook opens the studio with finish preselected. Add the eBay shop link later when its details are confirmed.
+1. Studio shows live reg, finish, shape, side and itemised total. Correct spacing with customer confirmation. Unsupported configurations offer help. Bag preserves the selected spec.
+2. Checkout explains proof required and personalised order terms. Collect contact and delivery details. On return from Stripe show processing until the server confirms payment. Failed payment offers retry.
+3. Verification Desk shows two labelled slots, identity and entitlement. Explain accepted documents and why they are requested. Preview, replace, or return by expiring email link. Show upload, scanning, ready for review and replacement-required states. Let a user recover an expired link through verified email.
+4. Staff queue prioritises paid orders by waiting time. Review safe files and ordered reg together. Record the original-document check, decision and time. Replacement identifies the category and next action. Staff can record a follow-up call.
+5. Approve → production → inspection → dispatch → tracking. A dispatch entry records the carrier and reference. Request a review after fulfilment. An actual status and timestamp drives every customer timeline entry.
+Acceptance: test keyboard-only/mobile navigation, interrupted payment, invalid upload, replacement loop and return from email. Next: TRD.md.
+## Updated page and interaction map
+F1 builds the shared shell. F2 introduces registration and interactive plate. F3 adds collection and individual product pages that preselect the same studio. Keep a stable draft configuration while navigating and show why options change.
+F4 adds a rule panel next to relevant controls. Example explanations include rear colour, motorcycle layout, and insufficient space for the selected dimensions. Every rule message offers a source and, where relevant, an alternative. Unsupported formats request help. Explicit display-use selection remains visible in Show pages, bag and staff order.
+F5 customer screens are prototype fixtures until B1 provides real auth, uploads, payments and staff controls. F6 verifies the connected journey. Do not request real customer evidence through a static preview.
+Future help entry points can pass product ID, non-sensitive configuration and rule IDs to the assistant. No raw documents, document references or access tokens in chat or analytics. Staff operations start after backend implementation and are usable before live commerce.
+Research → Code → Push repeats per phase. Use Phase Prompts.md for the required skills and acceptance checks.
