@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Layers, Shield, Sparkles, Check } from "lucide-react";
+import { Layers, Sparkles, Check } from "lucide-react";
 
 interface LayerDetail {
   id: string;
@@ -53,17 +53,17 @@ export default function MaterialCloseup() {
   const current = layers[selectedLayer];
 
   return (
-    <section className="material-section section-pad bg-[#0f191d] text-[#edece4] border-b border-[#ffffff1f]">
+    <section className="material-section section-pad bg-[var(--wine-deep)] text-[#edece4] border-b border-[#ffffff1f]">
       <div className="max-w-6xl mx-auto space-y-10">
         {/* Heading */}
         <div className="space-y-3">
-          <span className="text-xs uppercase tracking-widest text-[#caa785] font-semibold flex items-center gap-1.5">
+          <span className="text-xs uppercase tracking-widest text-[var(--copper)] font-semibold flex items-center gap-1.5">
             <Layers size={14} />
             Layer-By-Layer Anatomy
           </span>
           <h2 className="text-4xl md:text-5xl font-serif">
             Engineered depth.<br />
-            <em className="italic text-[#d8bca0]">From reflective substrate to laser edge.</em>
+            <em className="italic text-[var(--studio-muted)]">From reflective substrate to laser edge.</em>
           </h2>
           <p className="text-sm md:text-base text-[#a4b3b1] max-w-xl leading-relaxed">
             Standard plates are simply printed paper trapped behind plastic. Premium Plates are multi-tier laminate assemblies precision bonded for a lifetime of road use.
@@ -83,21 +83,21 @@ export default function MaterialCloseup() {
                   onClick={() => setSelectedLayer(idx)}
                   className={`w-full text-left p-4 md:p-5 rounded-lg border transition-all duration-300 flex justify-between items-center ${
                     isSelected
-                      ? "bg-[#18272d] border-[#caa785] shadow-lg translate-x-1"
-                      : "bg-[#131f24] border-[#ffffff14] hover:border-[#ffffff26] hover:bg-[#162329]"
+                      ? "bg-[var(--wine-hover)] border-[var(--copper)] shadow-lg translate-x-1"
+                      : "bg-[var(--wine)] border-[#ffffff14] hover:border-[#ffffff26] hover:bg-[var(--wine-hover)]"
                   }`}
                 >
                   <div className="space-y-1">
-                    <span className={`text-xs font-mono uppercase tracking-wider block ${isSelected ? "text-[#caa785]" : "text-[#7a8c8a]"}`}>
+                    <span className={`text-xs font-mono uppercase tracking-wider block ${isSelected ? "text-[var(--copper)]" : "text-[#7a8c8a]"}`}>
                       {l.material}
                     </span>
                     <h4 className="text-base font-medium text-[#f5efe6]">{l.name}</h4>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-xs bg-[#ffffff0f] px-2.5 py-1 rounded text-[#caa785] font-mono">
+                    <span className="text-xs bg-[#ffffff0f] px-2.5 py-1 rounded text-[var(--copper)] font-mono">
                       {l.depth}
                     </span>
-                    {isSelected && <Check size={16} className="text-[#caa785]" />}
+                    {isSelected && <Check size={16} className="text-[var(--copper)]" />}
                   </div>
                 </button>
               );
@@ -106,11 +106,11 @@ export default function MaterialCloseup() {
 
           {/* Layer Detail Focus Card */}
           <div className="lg:col-span-6">
-            <div className="bg-[#142126] border border-[#caa785]/40 rounded-xl p-8 space-y-6 shadow-2xl relative overflow-hidden">
+            <div className="bg-[var(--wine-deep)] border border-[var(--copper)]/40 rounded-xl p-8 space-y-6 shadow-2xl relative overflow-hidden">
               <div className="flex justify-between items-center pb-4 border-b border-[#ffffff1f]">
                 <div className="flex items-center gap-2">
-                  <Sparkles size={16} className="text-[#caa785]" />
-                  <span className="text-xs uppercase tracking-wider text-[#caa785] font-semibold">
+                  <Sparkles size={16} className="text-[var(--copper)]" />
+                  <span className="text-xs uppercase tracking-wider text-[var(--copper)] font-semibold">
                     Inspection Spec
                   </span>
                 </div>
@@ -121,7 +121,7 @@ export default function MaterialCloseup() {
 
               <div className="space-y-3">
                 <h3 className="text-2xl font-serif text-[#fdfbf7]">{current.name}</h3>
-                <p className="text-sm text-[#caa785] font-medium">{current.role}</p>
+                <p className="text-sm text-[var(--copper)] font-medium">{current.role}</p>
                 <p className="text-sm text-[#c4cfce] leading-relaxed pt-2">
                   {current.spec}
                 </p>

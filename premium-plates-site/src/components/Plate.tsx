@@ -50,7 +50,7 @@ export default function Plate({
           text
         )}
       </span>
-      <small>PREMIUM PLATES · BS AU 145e</small>
+      <small>PLATE STUDIO · PREVIEW</small>
     </div>
   );
 }

@@ -1,34 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { version } from "../../package.json";
+import Image from "next/image";
+import packageInfo from "../../package.json";
 
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   ArrowRight,
-  ArrowDown,
   Check,
   ChevronDown,
   Menu,
   ShoppingBag,
-  Pause,
-  Play,
   Plus,
   Minus,
   RotateCcw,
   Car,
   Layers,
   MoveHorizontal,
-  Volume2,
-  VolumeX,
   ShieldCheck,
   AlertTriangle,
   Sparkles,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import Plate from "@/components/Plate";
-import InteractivePlate from "@/components/InteractivePlate";
+import PlateInspection, { type Inspection } from "@/components/PlateInspection";
 import FitSection from "@/components/FitSection";
 import FaqSection from "@/components/FaqSection";
 import ClosingSection from "@/components/ClosingSection";
@@ -37,7 +33,6 @@ import LookbookGallery from "@/components/LookbookGallery";
 import MaterialCloseup from "@/components/MaterialCloseup";
 import { businessFacts } from "@/config/businessFacts";
 import {
-  stylePricing,
   calculateTotal,
   type PlateKind,
   type PlateSide,
@@ -60,6 +55,8 @@ const collection: Array<{
   { id: "show", name: "Show", description: "Track, exhibition, and photoshoot bespoke styling.", price: 27.99, finish: "Show Studio", dimension: "Custom Display" },
   { id: "moto", name: "Motorbike", description: "Dual-row square layout for imports and two-wheelers.", price: 22.99, finish: "Two-Tier Square", dimension: "178 × 229 mm" },
 ];
+
+const defaultInspection: Inspection = { face: "rear", angle: -12, light: 35, headlights: false };
 
 function CinematicFit({
   reg,
@@ -136,8 +133,7 @@ export default function StudioPage() {
   const [border, setBorder] = useState(false);
   const [material, setMaterial] = useState("acrylic");
   const [view, setView] = useState<"car" | "detail">("car");
-  const [playing, setPlaying] = useState(true);
-  const [soundOn, setSoundOn] = useState(false);
+  const [inspection, setInspection] = useState<Inspection>(defaultInspection);
   const [fitReplay, setFitReplay] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [bagOpen, setBagOpen] = useState(false);
@@ -157,7 +153,6 @@ export default function StudioPage() {
   const [comparePlateSide, setComparePlateSide] = useState<"front" | "rear">("front");
   const [isDraggingCompare, setIsDraggingCompare] = useState(false);
   const compareAreaRef = useRef<HTMLDivElement>(null);
-  const video = useRef<HTMLVideoElement>(null);
   const menuTrigger = useRef<HTMLButtonElement>(null);
 
   const updateCompareFromPointer = (clientX: number) => {
@@ -205,6 +200,7 @@ export default function StudioPage() {
   const addToBag = () => {
     if (!reg.trim()) {
       setError("Enter your registration to preview your selection.");
+      document.getElementById("studio-reg")?.focus();
       return;
     }
     setBag({
@@ -217,43 +213,6 @@ export default function StudioPage() {
       quantity: 1,
     });
     setBagOpen(true);
-  };
-
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => {
-      if (media.matches) {
-        video.current?.pause();
-        setPlaying(false);
-      }
-    };
-    sync();
-    media.addEventListener("change", sync);
-    return () => media.removeEventListener("change", sync);
-  }, []);
-
-  const toggleVideo = () => {
-    if (video.current?.paused) {
-      void video.current
-        .play()
-        .then(() => setPlaying(true))
-        .catch(() => setPlaying(false));
-    } else {
-      video.current?.pause();
-      setPlaying(false);
-    }
-  };
-
-  const toggleSound = () => {
-    if (!video.current) return;
-    const next = !soundOn;
-    video.current.muted = !next;
-    // Set video volume to 1.0 (R3) with remastered -14 LUFS audio track
-    video.current.volume = 1.0;
-    setSoundOn(next);
-    if (next && video.current.paused) {
-      void video.current.play().catch(() => setPlaying(false));
-    }
   };
 
   return (
@@ -295,7 +254,7 @@ export default function StudioPage() {
                     }}
                   >
                     <span>{item.name}</span>
-                    <span className="text-xs text-[#713d3e] font-mono">From {money(item.price)}</span>
+                    <span className="text-xs text-[var(--wine)] font-mono">From {money(item.price)}</span>
                   </button>
                 ))}
               </div>
@@ -330,182 +289,49 @@ export default function StudioPage() {
       </header>
 
       <main id="main-content" tabIndex={-1}>
-        {/* Hero Section */}
-        <section className="cinema" id="home">
-          <video
-            ref={video}
-            className={`cinema-video ${playing ? "is-playing" : ""}`}
-            autoPlay
-            loop
-            muted={!soundOn}
-            playsInline
-            poster="/Premium-Plates/media/night-drive-poster.jpg"
-            onPlay={() => setPlaying(true)}
-            onPause={() => setPlaying(false)}
-          >
-            <source src="/Premium-Plates/media/night-drive-cinematic.mp4" type="video/mp4" />
-          </video>
-          <div className="cinema-shade" />
-
-          <div className="hero-content">
-            <div className="hero-title">
-              <h1>
-                <span>The final</span>
-                <span>touch.</span>
-                <em>Entirely you.</em>
-              </h1>
-              <p>
-                Bespoke British number plates. 3D Gel & 4D Laser-cut acrylic.<br />
-                Crafted for a car that could only be yours.
-              </p>
-            </div>
-
-            <div className="hero-register">
+        <section className="studio-opening" id="home">
+          <div className="opening-copy">
+            <h1>Give your car<br /> <em>its finishing touch.</em></h1>
+            <p>Compare flat, 3D gel and 4D acrylic lettering on your registration.</p>
+            <div className="opening-entry">
               <label htmlFor="hero-reg">Enter your registration</label>
-              <div className="hero-input-row">
-                <input
-                  id="hero-reg"
-                  value={reg}
-                  onChange={(e) => updateReg(e.target.value)}
-                  placeholder="YOUR REG"
-                  maxLength={8}
-                  autoComplete="off"
-                  spellCheck={false}
-                />
-                <button onClick={goStudio} aria-label="Preview your registration in studio">
-                  <ArrowUpRight size={28} />
-                </button>
-              </div>
-
-              {/* Live DVLA Legality Banner Under Hero Input */}
-              <div className="mt-3 flex items-center gap-1.5 text-xs">
-                {legality.isLegal ? (
-                  <span className="text-[#25D366] flex items-center gap-1 font-medium">
-                    <ShieldCheck size={14} /> DVLA Road Legal ({legality.formatStyle.toUpperCase()})
-                  </span>
-                ) : (
-                  <span className="text-[#d7b696] flex items-center gap-1 font-medium">
-                    <AlertTriangle size={14} /> Show / Track Plate Concept
-                  </span>
-                )}
+              <input
+                id="hero-reg"
+                value={reg}
+                onChange={(event) => updateReg(event.currentTarget.value)}
+                placeholder="e.g. PP24 LUX"
+                maxLength={8}
+                autoComplete="off"
+                spellCheck={false}
+                autoCapitalize="characters"
+              />
+            </div>
+            <div className="opening-finishes" role="group" aria-label="Preview finish">
+              <span>Lettering finish</span>
+              <div>
+                {collection.slice(0, 3).map(({ id, name }) => (
+                  <button
+                    key={id}
+                    type="button"
+                    aria-pressed={kind === id}
+                    onClick={() => selectKind(id)}
+                  >
+                    {id === "regular" ? "Flat" : name}
+                  </button>
+                ))}
               </div>
             </div>
-          </div>
-
-          <div className="cinema-bottom">
-            <a href="#collection">
-              Explore the collection <ArrowDown size={16} />
+            <a className="primary-button" href="#studio">
+              Open the builder <ArrowUpRight size={18} />
             </a>
-            <span className="film-caption">
-              AFTER HOURS — THE BESPOKE STUDY
-              <span>{businessFacts.britishStandard} Compliant · {businessFacts.dvlaRnpsNumber}</span>
-            </span>
-            <div className="film-controls">
-              <button
-                className="film-control sound-control"
-                onClick={toggleSound}
-                aria-label={soundOn ? "Mute film soundtrack" : "Play film soundtrack"}
-                aria-pressed={soundOn}
-              >
-                {soundOn ? <Volume2 size={15} /> : <VolumeX size={15} />}
-                <span>{soundOn ? "Sound on" : "Sound off"}</span>
-              </button>
-              <button
-                className="film-control"
-                onClick={toggleVideo}
-                aria-label={playing ? "Pause background film" : "Play background film"}
-              >
-                {playing ? <Pause size={13} /> : <Play size={13} />}
-                <span>{playing ? "Pause film" : "Play film"}</span>
-              </button>
-            </div>
           </div>
-          <div className={`film-progress ${playing ? "is-playing" : ""}`} aria-hidden="true" />
+          <PlateInspection reg={reg} kind={kind} badge={badge} border={border} settings={inspection} onChange={setInspection} />
         </section>
 
-        {/* Collection Grid with "From £X" Badges */}
-        <section className="collection-section section-pad" id="collection">
-          <div className="collection-heading">
-            <div>
-              <span className="text-xs uppercase tracking-widest text-[#713d3e] font-semibold">The Catalogue</span>
-              <h2 className="text-4xl md:text-5xl font-serif mt-1">
-                One registration.<br />
-                <em>More presence.</em>
-              </h2>
-            </div>
-            <div>
-              <p>
-                From clean legal standard oblongs to 4D 3mm raised acrylic blocks.<br />
-                Choose the architectural finish that belongs on your vehicle.
-              </p>
-              <a className="text-action" href="#studio">
-                Launch bespoke studio <ArrowUpRight size={18} />
-              </a>
-            </div>
-          </div>
-
-          <div className="featured-collection">
-            {collection.slice(0, 3).map((item, index) => (
-              <button
-                key={item.id}
-                className={`collection-piece piece-${item.id}`}
-                onClick={() => {
-                  selectKind(item.id);
-                  goStudio();
-                }}
-              >
-                <div className="piece-top">
-                  <span className="font-mono text-xs">{item.finish}</span>
-                  <span className="bg-[#111b1e]/10 px-2 py-0.5 rounded text-xs font-semibold">
-                    From {money(item.price)}
-                  </span>
-                </div>
-                <div className="piece-art">
-                  <Plate reg="PP24 LUX" kind={item.id} side={index === 1 ? "rear" : "front"} />
-                </div>
-                <div className="piece-info">
-                  <h3>{item.name}</h3>
-                  <p>{item.description}</p>
-                  <span className="font-medium text-xs text-[#713d3e] flex items-center gap-1">
-                    Customise finish in studio <ArrowRight size={14} />
-                  </span>
-                </div>
-              </button>
-            ))}
-          </div>
-
-          <div className="more-formats">
-            <span>Specialist Vehicle Profiles:</span>
-            {collection.slice(3).map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  selectKind(item.id);
-                  goStudio();
-                }}
-              >
-                <span>{item.name}</span>
-                <span className="text-xs text-[#713d3e] font-mono">From {money(item.price)}</span>
-                <ArrowUpRight size={15} />
-              </button>
-            ))}
-          </div>
-        </section>
-
-        {/* Studio Section with Interactive 3D Plate & Live Price Calculator */}
         <section className="studio-section" id="studio">
           <div className="studio-intro">
-            <div>
-              <span className="text-xs uppercase tracking-widest text-[#caa785] font-semibold">Real-Time Studio</span>
-              <h2 className="text-4xl md:text-5xl font-serif mt-1">
-                Your car.<br />
-                <em>Your signature.</em>
-              </h2>
-            </div>
-            <p>
-              Real-time UK road legality validation.<br />
-              Switch between vehicle fitment and 3D specular light studio.
-            </p>
+            <h2>Build your <em>plate set.</em></h2>
+            <p>Check the finish on the plate or see it fitted to the car. Then choose the options for your set.</p>
           </div>
 
           <div className="studio-layout">
@@ -532,13 +358,15 @@ export default function StudioPage() {
                 </div>
               </div>
 
-              <div className={`vehicle-stage ${view === "detail" ? "detail-mode" : ""}`}>
-                {view === "car" ? (
-                  <>
-                    <img
+              {view === "car" ? (
+                <>
+                  <div className="vehicle-stage">
+                    <Image
                       className="vehicle-image"
                       src="/Premium-Plates/media/night-drive-poster.jpg"
                       alt="Rear of a dark sports car at night"
+                      fill
+                      sizes="(max-width: 800px) 90vw, 50vw"
                     />
                     <div className="vehicle-live-plate">
                       <CinematicFit
@@ -550,38 +378,21 @@ export default function StudioPage() {
                         replay={fitReplay}
                       />
                     </div>
-                  </>
-                ) : (
-                  <div className="detail-plate p-8 w-full max-w-[480px]">
-                    <InteractivePlate
-                      reg={reg}
-                      kind={kind}
-                      side={previewSide}
-                      badge={badge}
-                      border={border}
-                    />
+                    <span className="preview-caption">On-car illustration</span>
                   </div>
-                )}
-                <span className="preview-caption">
-                  {view === "detail" ? "DRAG TO TILT & CATCH LIGHT" : "VEHICLE LIVE OVERLAY"}
-                </span>
-              </div>
-
-              <div className="preview-command">
-                <span>
-                  {view === "car"
-                    ? "Interactive live fitment onto vehicle bodywork."
-                    : "Tilt plate to inspect 3D resin and 4D acrylic depth."}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setFitReplay((v) => v + 1)}
-                  disabled={view !== "car"}
-                  aria-label="Replay plate fitting animation"
-                >
-                  <RotateCcw size={13} /> Replay fitment
-                </button>
-              </div>
+                  <div className="preview-command">
+                    <button
+                      type="button"
+                      onClick={() => setFitReplay((value) => value + 1)}
+                      aria-label="Replay plate fitting animation"
+                    >
+                      <RotateCcw size={13} /> Replay fitment
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <PlateInspection reg={reg} kind={kind} badge={badge} border={border} settings={inspection} onChange={setInspection} />
+              )}
 
               <div className="preview-spec">
                 <span>
@@ -608,6 +419,8 @@ export default function StudioPage() {
                     setBadge(false);
                     setBorder(false);
                     setMaterial("acrylic");
+                    setInspection(defaultInspection);
+                    setView("car");
                     setError("");
                   }}
                   aria-label="Reset design to default"
@@ -626,31 +439,34 @@ export default function StudioPage() {
                 value={reg}
                 onChange={(e) => updateReg(e.target.value)}
                 placeholder="YOUR REG"
-                aria-invalid={!legality.isLegal}
+                aria-invalid={Boolean(error)}
+                aria-describedby={error ? "registration-error" : "registration-format"}
                 autoComplete="off"
                 spellCheck={false}
               />
+              {error && <p className="field-error" id="registration-error" role="alert">{error}</p>}
 
-              {/* DVLA Legality Banner */}
+              {/* Registration-format feedback */}
               <div
+                id="registration-format"
                 className={`p-3 rounded-lg text-xs mb-5 flex items-start gap-2.5 ${
                   legality.isLegal
                     ? "bg-[#25D366]/10 text-[#125828] border border-[#25D366]/30"
-                    : "bg-[#713d3e]/10 text-[#713d3e] border border-[#713d3e]/30"
+                    : "bg-[var(--wine)]/10 text-[var(--wine)] border border-[var(--wine)]/30"
                 }`}
               >
                 {legality.isLegal ? (
                   <ShieldCheck size={16} className="text-[#25D366] flex-shrink-0 mt-0.5" />
                 ) : (
-                  <AlertTriangle size={16} className="text-[#713d3e] flex-shrink-0 mt-0.5" />
+                  <AlertTriangle size={16} className="text-[var(--wine)] flex-shrink-0 mt-0.5" />
                 )}
                 <div>
                   <span className="font-semibold block">
                     {legality.isLegal
-                      ? `Road Legal: ${legality.formatStyle.toUpperCase()} Series Mark`
-                      : "Show / Exhibition Specification"}
+                      ? `Registration format: ${legality.formatStyle.toUpperCase()}`
+                      : "Registration format not recognised"}
                   </span>
-                  <span className="text-[11px] leading-relaxed opacity-90">{legality.reason}</span>
+                  <span className="text-[11px] leading-relaxed opacity-90">This check covers the registration format only.</span>
                 </div>
               </div>
 
@@ -658,7 +474,7 @@ export default function StudioPage() {
               <fieldset className="finish-field">
                 <legend className="flex justify-between items-center w-full">
                   <span>Choose Plate Finish</span>
-                  <span className="text-xs text-[#713d3e] font-normal">From {money(selected.price)}</span>
+                  <span className="text-xs text-[var(--wine)] font-normal">From {money(selected.price)}</span>
                 </legend>
                 <div className="finish-buttons">
                   {collection.map((item) => (
@@ -733,7 +549,7 @@ export default function StudioPage() {
                   <span className="text-xs uppercase tracking-wider text-[#4a4e48] block">
                     Calculated Total
                   </span>
-                  <strong key={pricingResult.total} className="text-3xl font-serif font-bold text-[#111b1e]">
+                  <strong key={pricingResult.total} className="text-3xl font-serif font-bold text-[var(--ink)]">
                     {pricingResult.formattedTotal}
                   </strong>
                 </div>
@@ -749,19 +565,19 @@ export default function StudioPage() {
         </section>
 
         {/* 3D vs 4D Interactive Split Compare (Transformed & Proportionate) */}
-        <section className="difference-section section-pad bg-[#dbd4c7] text-[#111b1e] border-y border-[#d0cdc5]" id="difference">
+        <section className="difference-section section-pad bg-[var(--paper-soft)] text-[var(--ink)] border-y border-[var(--line)]" id="difference">
           <div className="max-w-7xl mx-auto">
             <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
               {/* Left Column: Context, Selector & Specs */}
               <div className="lg:col-span-5 space-y-6">
                 <div className="space-y-3">
-                  <span className="text-xs uppercase tracking-widest text-[#713d3e] font-semibold flex items-center gap-1.5">
+                  <span className="text-xs uppercase tracking-widest text-[var(--wine)] font-semibold flex items-center gap-1.5">
                     <Layers size={14} />
                     Finish Comparison · Physical Relief
                   </span>
                   <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-[1.05]">
                     Some details<br />
-                    change <em className="italic text-[#713d3e]">everything.</em>
+                    change <em className="italic text-[var(--wine)]">everything.</em>
                   </h2>
                 </div>
                 <p className="text-base text-[#4a4e48] leading-relaxed">
@@ -770,7 +586,7 @@ export default function StudioPage() {
 
                 {/* Compare Pair Selector */}
                 <div className="space-y-2 pt-1">
-                  <span className="text-xs font-semibold text-[#111b1e] uppercase tracking-wider block">
+                  <span className="text-xs font-semibold text-[var(--ink)] uppercase tracking-wider block">
                     Choose Comparison Finishes
                   </span>
                   <div className="flex flex-col gap-2">
@@ -785,7 +601,7 @@ export default function StudioPage() {
                         onClick={() => setComparePair(pair.id as typeof comparePair)}
                         className={`text-left px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all flex items-center justify-between border ${
                           comparePair === pair.id
-                            ? "bg-[#622f35] text-white border-[#622f35] shadow-sm font-semibold"
+                            ? "bg-[var(--wine)] text-white border-[var(--wine)] shadow-sm font-semibold"
                             : "bg-[#fffdf9]/70 text-[#4a4e48] border-[#cfcbc0] hover:bg-[#fffdf9]"
                         }`}
                       >
@@ -798,7 +614,7 @@ export default function StudioPage() {
 
                 {/* Slider Guide Card */}
                 <div className="p-4 rounded-xl bg-[#fffdf9]/80 border border-[#b8b3a7] flex items-center gap-3">
-                  <MoveHorizontal size={20} className="text-[#622f35] flex-shrink-0" />
+                  <MoveHorizontal size={20} className="text-[var(--wine)] flex-shrink-0" />
                   <p className="text-xs text-[#525750]">
                     Drag the slider divider left or right across the plate to inspect edge reflection, light play, and tactile relief depth.
                   </p>
@@ -809,14 +625,14 @@ export default function StudioPage() {
               <div className="lg:col-span-7 w-full space-y-4">
                 {/* Stage Header Controls */}
                 <div className="flex items-center justify-between px-1">
-                  <span className="text-xs font-mono uppercase text-[#713d3e] font-semibold flex items-center gap-1.5">
+                  <span className="text-xs font-mono uppercase text-[var(--wine)] font-semibold flex items-center gap-1.5">
                     <Sparkles size={13} />
                     High-Relief Studio Lighting
                   </span>
                   <button
                     type="button"
                     onClick={() => setComparePlateSide(comparePlateSide === "front" ? "rear" : "front")}
-                    className="text-xs bg-[#cfcbc0] hover:bg-[#c2beb2] text-[#111b1e] px-3 py-1 rounded-full font-mono transition-colors"
+                    className="text-xs bg-[#cfcbc0] hover:bg-[#c2beb2] text-[var(--ink)] px-3 py-1 rounded-full font-mono transition-colors"
                   >
                     View: {comparePlateSide === "front" ? "Front (White)" : "Rear (Yellow)"}
                   </button>
@@ -825,7 +641,7 @@ export default function StudioPage() {
                 {/* The Comparison Box Stage */}
                 <div
                   ref={compareAreaRef}
-                  className="compare-area rounded-2xl shadow-2xl overflow-hidden border border-[#142126]/30 relative h-[380px] md:h-[420px] bg-[#142126] select-none cursor-ew-resize touch-none"
+                  className="compare-area rounded-2xl shadow-2xl overflow-hidden border border-[var(--wine-deep)]/30 relative h-[380px] md:h-[420px] bg-[var(--wine-deep)] select-none cursor-ew-resize touch-none"
                   onPointerDown={(e) => {
                     setIsDraggingCompare(true);
                     try {
@@ -852,7 +668,7 @@ export default function StudioPage() {
                     className="compare-base bg-gradient-to-br from-[#1a2930] to-[#0e171b] transition-opacity duration-300"
                   >
                     <div className="absolute top-4 left-5 flex items-center gap-2 z-10">
-                      <span className="font-mono text-xs font-bold text-[#142126] bg-[#f4f0e8] px-3 py-1 rounded-full shadow-md">
+                      <span className="font-mono text-xs font-bold text-[var(--wine-deep)] bg-[#f4f0e8] px-3 py-1 rounded-full shadow-md">
                         {comparePair === "gel-4d" ? "3D GEL DOME" : "STANDARD FLAT"}
                       </span>
                       <span className="text-[11px] font-mono text-[#a0adab] hidden sm:inline-block">
@@ -882,7 +698,7 @@ export default function StudioPage() {
                       <span className="text-[11px] font-mono text-[#e0ded5] hidden sm:inline-block">
                         {comparePair === "reg-gel" ? "1.5mm Relief" : "3.0mm Laser Relief"}
                       </span>
-                      <span className="font-mono text-xs font-bold text-white bg-[#622f35] px-3 py-1 rounded-full shadow-md">
+                      <span className="font-mono text-xs font-bold text-white bg-[var(--wine)] px-3 py-1 rounded-full shadow-md">
                         {comparePair === "reg-gel" ? "3D GEL DOME" : "4D 3MM LASER ACRYLIC"}
                       </span>
                     </div>
@@ -905,11 +721,11 @@ export default function StudioPage() {
                     }}
                   >
                     <div
-                      className={`w-11 h-11 rounded-full bg-[#f8f4eb] text-[#343e3d] flex items-center justify-center shadow-2xl border-2 border-[#622f35] transition-transform ${
+                      className={`w-11 h-11 rounded-full bg-[#f8f4eb] text-[#343e3d] flex items-center justify-center shadow-2xl border-2 border-[var(--wine)] transition-transform ${
                         isDraggingCompare ? "scale-110 shadow-red-950/50" : "hover:scale-105"
                       }`}
                     >
-                      <MoveHorizontal size={20} className="text-[#622f35]" />
+                      <MoveHorizontal size={20} className="text-[var(--wine)]" />
                     </div>
                   </div>
 
@@ -929,15 +745,15 @@ export default function StudioPage() {
                 {/* 3 Material Spec Callouts beneath the stage */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs text-[#4a4e48]">
                   <div className="p-3.5 rounded-xl bg-[#fffdf9]/70 border border-[#cfcbc0]">
-                    <span className="font-semibold block text-[#111b1e]">90° Surgical Laser Edge</span>
+                    <span className="font-semibold block text-[var(--ink)]">90° Surgical Laser Edge</span>
                     <span className="text-[11px] text-[#636861]">Sharp architectural shadow lines under streetlights.</span>
                   </div>
                   <div className="p-3.5 rounded-xl bg-[#fffdf9]/70 border border-[#cfcbc0]">
-                    <span className="font-semibold block text-[#111b1e]">BS AU 145e Road Legal</span>
+                    <span className="font-semibold block text-[var(--ink)]">BS AU 145e Road Legal</span>
                     <span className="text-[11px] text-[#636861]">Fully ANPR camera and annual MOT certified.</span>
                   </div>
                   <div className="p-3.5 rounded-xl bg-[#fffdf9]/70 border border-[#cfcbc0]">
-                    <span className="font-semibold block text-[#111b1e]">Solid Jet-Black PMMA</span>
+                    <span className="font-semibold block text-[var(--ink)]">Solid Jet-Black PMMA</span>
                     <span className="text-[11px] text-[#636861]">High-density cast acrylic that never fades or peels.</span>
                   </div>
                 </div>
@@ -946,6 +762,76 @@ export default function StudioPage() {
           </div>
         </section>
 
+        {/* Collection Grid with "From £X" Badges */}
+        <section className="collection-section section-pad" id="collection">
+          <div className="collection-heading">
+            <div>
+              <span className="text-xs uppercase tracking-widest text-[var(--wine)] font-semibold">The Catalogue</span>
+              <h2 className="text-4xl md:text-5xl font-serif mt-1">
+                One registration.<br />
+                <em>More presence.</em>
+              </h2>
+            </div>
+            <div>
+              <p>
+                From clean legal standard oblongs to 4D 3mm raised acrylic blocks.<br />
+                Choose the architectural finish that belongs on your vehicle.
+              </p>
+              <a className="text-action" href="#studio">
+                Launch bespoke studio <ArrowUpRight size={18} />
+              </a>
+            </div>
+          </div>
+
+          <div className="featured-collection">
+            {collection.slice(0, 3).map((item, index) => (
+              <button
+                key={item.id}
+                className={`collection-piece piece-${item.id}`}
+                onClick={() => {
+                  selectKind(item.id);
+                  goStudio();
+                }}
+              >
+                <div className="piece-top">
+                  <span className="font-mono text-xs">{item.finish}</span>
+                  <span className="bg-[var(--ink)]/10 px-2 py-0.5 rounded text-xs font-semibold">
+                    From {money(item.price)}
+                  </span>
+                </div>
+                <div className="piece-art">
+                  <Plate reg="PP24 LUX" kind={item.id} side={index === 1 ? "rear" : "front"} />
+                </div>
+                <div className="piece-info">
+                  <h3>{item.name}</h3>
+                  <p>{item.description}</p>
+                  <span className="font-medium text-xs text-[var(--wine)] flex items-center gap-1">
+                    Customise finish in studio <ArrowRight size={14} />
+                  </span>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          <div className="more-formats">
+            <span>Specialist Vehicle Profiles:</span>
+            {collection.slice(3).map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  selectKind(item.id);
+                  goStudio();
+                }}
+              >
+                <span>{item.name}</span>
+                <span className="text-xs text-[var(--wine)] font-mono">From {money(item.price)}</span>
+                <ArrowUpRight size={15} />
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Studio Section with Interactive 3D Plate & Live Price Calculator */}
         {/* Redesigned Fit Section (R2) */}
         <FitSection reg={reg} />
 
@@ -965,11 +851,26 @@ export default function StudioPage() {
           />
         </div>
 
+        <section className="studio-film section-pad" aria-labelledby="studio-film-title">
+          <div>
+            <h2 id="studio-film-title">The night-drive film</h2>
+            <p>A short styling film featuring a display plate.</p>
+          </div>
+          <video
+            aria-label="Night-drive film"
+            controls
+            playsInline
+            preload="none"
+            poster="/Premium-Plates/media/night-drive-poster.jpg"
+          >
+            <source src="/Premium-Plates/media/night-drive-cinematic.mp4" type="video/mp4" />
+          </video>
+        </section>
+
         {/* Redesigned FAQ & Trust Section (R2) */}
         <FaqSection />
 
-        {/* Closing Section with Looping Hero Video Background (R2) */}
-        <ClosingSection onDesignClick={goStudio} />
+        <ClosingSection />
       </main>
 
       {/* Sticky Order Bar (R5.3) */}
@@ -1003,7 +904,7 @@ export default function StudioPage() {
             <a href="#lookbook">Lookbook</a>
             <a href="#questions">FAQs</a>
           </nav>
-          <Link className="release-link" href="/releases">Version {version}</Link>
+          <Link className="release-link" href="/releases">Version {packageInfo.version}</Link>
         </div>
       </footer>
 
@@ -1017,7 +918,7 @@ export default function StudioPage() {
           }}
         >
           <SheetTitle className="text-3xl font-serif">Plate Studio</SheetTitle>
-          <SheetDescription className="text-xs text-[#713d3e] font-mono">
+          <SheetDescription className="text-xs text-[var(--wine)] font-mono">
             Explore the collection and your plate design.
           </SheetDescription>
           <nav id="mobile-navigation" aria-label="Mobile navigation" className="mt-8 space-y-4">
@@ -1033,7 +934,7 @@ export default function StudioPage() {
                 key={id}
                 href={`#${id}`}
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center justify-between text-2xl font-serif py-3 border-b border-[#ffffff1f] hover:text-[#caa785]"
+                className="flex items-center justify-between text-2xl font-serif py-3 border-b border-[#ffffff1f] hover:text-[var(--copper)]"
               >
                 {label}
                 <ArrowUpRight size={20} />
@@ -1056,7 +957,7 @@ export default function StudioPage() {
 
           {bag ? (
             <>
-              <div className="bag-plate my-6 p-6 rounded-lg bg-[#dedad0]">
+              <div className="bag-plate my-6 p-6 rounded-lg bg-[var(--paper-soft)]">
                 <Plate
                   reg={bag.reg}
                   kind={bag.kind}
@@ -1067,12 +968,12 @@ export default function StudioPage() {
               </div>
 
               <div className="bag-description space-y-1">
-                <h3 className="text-xl font-serif font-bold text-[#111b1e]">
+                <h3 className="text-xl font-serif font-bold text-[var(--ink)]">
                   {collection.find((i) => i.id === bag.kind)?.name} Finish
                 </h3>
                 <p className="text-xs text-[#4a4e48]">
                   {bag.side === "both" ? "Front & Rear Pair" : `${bag.side} plate`} · Registration:{" "}
-                  <span className="font-mono font-bold text-[#111b1e]">{bag.reg}</span>
+                  <span className="font-mono font-bold text-[var(--ink)]">{bag.reg}</span>
                 </p>
                 <p className="text-xs text-[#2e6b5a] font-medium pt-1">
                   ✓ {businessFacts.britishStandard} Road Legal Certification Included
@@ -1084,7 +985,7 @@ export default function StudioPage() {
                 <div className="flex items-center border border-[#c8c4ba] rounded">
                   <button
                     aria-label="Decrease quantity"
-                    className="p-2 hover:bg-[#dedad0]"
+                    className="p-2 hover:bg-[var(--paper-soft)]"
                     onClick={() =>
                       setBag(bag.quantity > 1 ? { ...bag, quantity: bag.quantity - 1 } : null)
                     }
@@ -1094,23 +995,23 @@ export default function StudioPage() {
                   <span className="px-3 font-mono font-bold text-sm">{bag.quantity}</span>
                   <button
                     aria-label="Increase quantity"
-                    className="p-2 hover:bg-[#dedad0]"
+                    className="p-2 hover:bg-[var(--paper-soft)]"
                     onClick={() => setBag({ ...bag, quantity: bag.quantity + 1 })}
                   >
                     <Plus size={14} />
                   </button>
                 </div>
                 <button
-                  className="remove-item ml-auto text-xs text-[#713d3e] underline"
+                  className="remove-item ml-auto text-xs text-[var(--wine)] underline"
                   onClick={() => setBag(null)}
                 >
                   Remove
                 </button>
               </div>
 
-              <div className="bag-total pt-4 border-t border-[#d0cdc5] flex justify-between items-center">
+              <div className="bag-total pt-4 border-t border-[var(--line)] flex justify-between items-center">
                 <span className="text-sm font-medium">Total (inc. VAT & Tracked 24)</span>
-                <b className="text-2xl font-serif font-bold text-[#111b1e]">
+                <b className="text-2xl font-serif font-bold text-[var(--ink)]">
                   {money(bag.price * bag.quantity)}
                 </b>
               </div>

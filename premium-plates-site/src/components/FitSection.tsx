@@ -5,14 +5,9 @@ import {
   ArrowUpRight,
   Check,
   ShieldCheck,
-  Sparkles,
   Layers,
   Sliders,
-  ChevronRight,
-  Maximize2,
-  Car,
   Wrench,
-  CheckCircle2,
 } from "lucide-react";
 import Plate from "./Plate";
 import type { PlateKind } from "../config/pricing";
@@ -124,19 +119,19 @@ export default function FitSection({ reg = "PP24 LUX" }: { reg?: string }) {
       : selectedDepth;
 
   return (
-    <section className="fit-section section-pad bg-[#e6e2d8] text-[#111b1e] border-y border-[#d0cdc5]" id="fit">
+    <section className="fit-section section-pad bg-[#e6e2d8] text-[var(--ink)] border-y border-[var(--line)]" id="fit">
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Left Column: Interactive Fitment Storyboard */}
           <div className="lg:col-span-6 space-y-8">
             <div className="fit-title space-y-3">
-              <span className="text-xs uppercase tracking-widest text-[#713d3e] font-semibold flex items-center gap-1.5">
+              <span className="text-xs uppercase tracking-widest text-[var(--wine)] font-semibold flex items-center gap-1.5">
                 <Sliders size={14} />
                 Tailored Proportions & Fitment
               </span>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-[1.05]">
                 It should fit the car.<br />
-                <em className="italic text-[#713d3e]">And the person.</em>
+                <em className="italic text-[var(--wine)]">And the person.</em>
               </h2>
               <p className="text-base text-[#4a4e48] leading-relaxed max-w-lg">
                 Every vehicle has distinctive coachwork lines. Configure shape, tactile relief depth, and legal accents to harmonize with your bumper recess.
@@ -145,21 +140,21 @@ export default function FitSection({ reg = "PP24 LUX" }: { reg?: string }) {
 
             {/* Step Selection Tabs */}
             <div className="flex border-b border-[#cfcbc0] gap-2 pb-2">
-              {[
+              {([
                 { id: "profile", step: "01", label: "Profile Shape" },
                 { id: "depth", step: "02", label: "Finish Depth" },
                 { id: "accents", step: "03", label: "Legal Accents" },
-              ].map((tab) => {
+              ] as const).map((tab) => {
                 const isActive = activeTab === tab.id;
                 return (
                   <button
                     key={tab.id}
                     type="button"
-                    onClick={() => setActiveTab(tab.id as any)}
+                    onClick={() => setActiveTab(tab.id)}
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all ${
                       isActive
-                        ? "bg-[#622f35] text-white shadow-sm font-semibold"
-                        : "text-[#4a4e48] hover:bg-[#dedad0]"
+                        ? "bg-[var(--wine)] text-white shadow-sm font-semibold"
+                        : "text-[#4a4e48] hover:bg-[var(--paper-soft)]"
                     }`}
                   >
                     <span className="font-mono text-xs opacity-75">{tab.step}</span>
@@ -181,29 +176,29 @@ export default function FitSection({ reg = "PP24 LUX" }: { reg?: string }) {
                       onClick={() => setSelectedProfile(opt.id)}
                       className={`w-full text-left p-4 md:p-5 rounded-xl border transition-all duration-200 flex justify-between items-center ${
                         isSelected
-                          ? "bg-[#fffdf9] border-[#622f35] shadow-md ring-1 ring-[#622f35]"
-                          : "bg-[#dedad0] border-[#cfcbc0] hover:bg-[#eae6dc]"
+                          ? "bg-[#fffdf9] border-[var(--wine)] shadow-md ring-1 ring-[var(--wine)]"
+                          : "bg-[var(--paper-soft)] border-[#cfcbc0] hover:bg-[#eae6dc]"
                       }`}
                     >
                       <div className="space-y-1 pr-3">
                         <div className="flex items-center gap-2">
-                          <h4 className="font-serif font-bold text-base md:text-lg text-[#111b1e]">
+                          <h4 className="font-serif font-bold text-base md:text-lg text-[var(--ink)]">
                             {opt.name}
                           </h4>
-                          <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#142126]/10 text-[#142126]">
+                          <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[var(--wine-deep)]/10 text-[var(--wine-deep)]">
                             {opt.tag}
                           </span>
                         </div>
                         <p className="text-xs text-[#525750] leading-relaxed max-w-md">
                           {opt.description}
                         </p>
-                        <span className="text-[11px] font-mono text-[#713d3e] block pt-0.5">
+                        <span className="text-[11px] font-mono text-[var(--wine)] block pt-0.5">
                           Dimensions: {opt.dimensions}
                         </span>
                       </div>
                       <div
                         className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          isSelected ? "bg-[#622f35] text-white" : "border border-[#a8ada6]"
+                          isSelected ? "bg-[var(--wine)] text-white" : "border border-[#a8ada6]"
                         }`}
                       >
                         {isSelected && <Check size={14} />}
@@ -226,29 +221,29 @@ export default function FitSection({ reg = "PP24 LUX" }: { reg?: string }) {
                       onClick={() => setSelectedDepth(depth.id)}
                       className={`w-full text-left p-4 md:p-5 rounded-xl border transition-all duration-200 flex justify-between items-center ${
                         isSelected
-                          ? "bg-[#fffdf9] border-[#622f35] shadow-md ring-1 ring-[#622f35]"
-                          : "bg-[#dedad0] border-[#cfcbc0] hover:bg-[#eae6dc]"
+                          ? "bg-[#fffdf9] border-[var(--wine)] shadow-md ring-1 ring-[var(--wine)]"
+                          : "bg-[var(--paper-soft)] border-[#cfcbc0] hover:bg-[#eae6dc]"
                       }`}
                     >
                       <div className="space-y-1 pr-3">
                         <div className="flex items-center gap-2">
-                          <h4 className="font-serif font-bold text-base md:text-lg text-[#111b1e]">
+                          <h4 className="font-serif font-bold text-base md:text-lg text-[var(--ink)]">
                             {depth.name}
                           </h4>
-                          <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#622f35]/10 text-[#622f35] font-semibold">
+                          <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[var(--wine)]/10 text-[var(--wine)] font-semibold">
                             {depth.relief}
                           </span>
                         </div>
                         <p className="text-xs text-[#525750] leading-relaxed max-w-md">
                           {depth.description}
                         </p>
-                        <span className="text-[11px] font-mono text-[#713d3e] block pt-0.5">
+                        <span className="text-[11px] font-mono text-[var(--wine)] block pt-0.5">
                           Standard: {depth.badge}
                         </span>
                       </div>
                       <div
                         className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          isSelected ? "bg-[#622f35] text-white" : "border border-[#a8ada6]"
+                          isSelected ? "bg-[var(--wine)] text-white" : "border border-[#a8ada6]"
                         }`}
                       >
                         {isSelected && <Check size={14} />}
@@ -263,7 +258,7 @@ export default function FitSection({ reg = "PP24 LUX" }: { reg?: string }) {
             {activeTab === "accents" && (
               <div className="space-y-4">
                 <div className="p-5 rounded-xl bg-[#fffdf9] border border-[#cfcbc0] space-y-4">
-                  <h4 className="font-serif font-bold text-base text-[#111b1e]">
+                  <h4 className="font-serif font-bold text-base text-[var(--ink)]">
                     Official Road-Legal Accents
                   </h4>
                   <p className="text-xs text-[#525750] leading-relaxed">
@@ -276,7 +271,7 @@ export default function FitSection({ reg = "PP24 LUX" }: { reg?: string }) {
                       className="w-full flex items-center justify-between p-3 rounded-lg border border-[#cfcbc0] hover:bg-[#f6f3eb] transition-colors"
                     >
                       <div className="text-left">
-                        <span className="font-semibold text-xs block text-[#111b1e]">
+                        <span className="font-semibold text-xs block text-[var(--ink)]">
                           UK National Identifier Flag (+£6)
                         </span>
                         <span className="text-[11px] text-[#636861]">
@@ -285,7 +280,7 @@ export default function FitSection({ reg = "PP24 LUX" }: { reg?: string }) {
                       </div>
                       <div
                         className={`w-5 h-5 rounded flex items-center justify-center ${
-                          hasFlag ? "bg-[#622f35] text-white" : "border border-[#a8ada6]"
+                          hasFlag ? "bg-[var(--wine)] text-white" : "border border-[#a8ada6]"
                         }`}
                       >
                         {hasFlag && <Check size={13} />}
@@ -298,7 +293,7 @@ export default function FitSection({ reg = "PP24 LUX" }: { reg?: string }) {
                       className="w-full flex items-center justify-between p-3 rounded-lg border border-[#cfcbc0] hover:bg-[#f6f3eb] transition-colors"
                     >
                       <div className="text-left">
-                        <span className="font-semibold text-xs block text-[#111b1e]">
+                        <span className="font-semibold text-xs block text-[var(--ink)]">
                           Subtle Pin-Line Accent Border (+£4)
                         </span>
                         <span className="text-[11px] text-[#636861]">
@@ -307,7 +302,7 @@ export default function FitSection({ reg = "PP24 LUX" }: { reg?: string }) {
                       </div>
                       <div
                         className={`w-5 h-5 rounded flex items-center justify-center ${
-                          hasBorder ? "bg-[#622f35] text-white" : "border border-[#a8ada6]"
+                          hasBorder ? "bg-[var(--wine)] text-white" : "border border-[#a8ada6]"
                         }`}
                       >
                         {hasBorder && <Check size={13} />}
@@ -316,10 +311,10 @@ export default function FitSection({ reg = "PP24 LUX" }: { reg?: string }) {
                   </div>
                 </div>
 
-                <div className="p-4 rounded-xl bg-[#dedad0] border border-[#cfcbc0] flex items-center gap-3">
-                  <Wrench size={18} className="text-[#622f35] flex-shrink-0" />
+                <div className="p-4 rounded-xl bg-[var(--paper-soft)] border border-[#cfcbc0] flex items-center gap-3">
+                  <Wrench size={18} className="text-[var(--wine)] flex-shrink-0" />
                   <div className="text-xs text-[#4a4e48]">
-                    <strong className="block text-[#111b1e]">Zero-Drill 3M VHB Kit Included</strong>
+                    <strong className="block text-[var(--ink)]">Zero-Drill 3M VHB Kit Included</strong>
                     Commercial high-tack adhesive pads engineered to withstand pressure washers and salt.
                   </div>
                 </div>
@@ -329,11 +324,11 @@ export default function FitSection({ reg = "PP24 LUX" }: { reg?: string }) {
             <div className="pt-2 flex flex-wrap items-center gap-6">
               <a
                 href="#studio"
-                className="text-action inline-flex items-center gap-2 font-medium text-sm text-[#111b1e] hover:text-[#622f35] border-b border-[#111b1e] transition-colors"
+                className="text-action inline-flex items-center gap-2 font-medium text-sm text-[var(--ink)] hover:text-[var(--wine)] border-b border-[var(--ink)] transition-colors"
               >
                 Configure this specification in Studio <ArrowUpRight size={16} />
               </a>
-              <span className="text-xs text-[#713d3e] font-mono">
+              <span className="text-xs text-[var(--wine)] font-mono">
                 BS AU 145e Compliant · Handcrafted in GB
               </span>
             </div>
@@ -341,11 +336,11 @@ export default function FitSection({ reg = "PP24 LUX" }: { reg?: string }) {
 
           {/* Right Column: Visual Specimen & Vehicle Bumper Stage */}
           <div className="lg:col-span-6 w-full">
-            <div className="bg-[#142126] text-[#f4f0e8] p-7 md:p-10 rounded-2xl shadow-2xl relative overflow-hidden border border-[#ffffff1f] flex flex-col justify-between min-h-[580px]">
+            <div className="bg-[var(--wine-deep)] text-[#f4f0e8] p-7 md:p-10 rounded-2xl shadow-2xl relative overflow-hidden border border-[#ffffff1f] flex flex-col justify-between min-h-[580px]">
               {/* Stage Top Bar */}
               <div className="flex flex-wrap justify-between items-center pb-5 border-b border-[#ffffff1f] gap-3">
                 <div className="flex items-center gap-2.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#622f35] animate-pulse" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[var(--wine)] animate-pulse" />
                   <span className="text-xs tracking-wider uppercase text-[#c4cfce] font-semibold">
                     Live Fitment Specimen Stage
                   </span>
@@ -358,7 +353,7 @@ export default function FitSection({ reg = "PP24 LUX" }: { reg?: string }) {
                   >
                     View: {side === "rear" ? "Rear (Yellow)" : "Front (White)"}
                   </button>
-                  <span className="text-xs bg-[#622f35]/80 px-3 py-1 rounded-full text-[#fff] font-mono">
+                  <span className="text-xs bg-[var(--wine)]/80 px-3 py-1 rounded-full text-[#fff] font-mono">
                     {currentProfile.dimensions}
                   </span>
                 </div>
@@ -389,13 +384,13 @@ export default function FitSection({ reg = "PP24 LUX" }: { reg?: string }) {
                   {/* Mounting Pads Marker */}
                   <div className="mt-6 flex items-center justify-between w-full max-w-[440px] text-[10px] font-mono text-[#6c7d7b]">
                     <span className="flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full bg-[#caa785]/60 inline-block" />
+                      <span className="w-2 h-2 rounded-full bg-[var(--copper)]/60 inline-block" />
                       3M VHB MOUNT L
                     </span>
-                    <span className="text-[#caa785]">DVLA INF104 VERIFIED</span>
+                    <span className="text-[var(--copper)]">DVLA INF104 VERIFIED</span>
                     <span className="flex items-center gap-1">
                       3M VHB MOUNT R
-                      <span className="w-2 h-2 rounded-full bg-[#caa785]/60 inline-block" />
+                      <span className="w-2 h-2 rounded-full bg-[var(--copper)]/60 inline-block" />
                     </span>
                   </div>
                 </div>
@@ -403,7 +398,7 @@ export default function FitSection({ reg = "PP24 LUX" }: { reg?: string }) {
                 {/* Technical Dimension Pill */}
                 <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-xs font-mono text-[#a0adab] tracking-wider uppercase bg-[#091216] px-5 py-2.5 rounded-full border border-[#ffffff14]">
                   <span>SHAPE: {currentProfile.name}</span>
-                  <span className="text-[#622f35]">|</span>
+                  <span className="text-[var(--wine)]">|</span>
                   <span>DEPTH: {currentDepth.name} ({currentDepth.relief})</span>
                 </div>
               </div>
@@ -411,19 +406,19 @@ export default function FitSection({ reg = "PP24 LUX" }: { reg?: string }) {
               {/* Lower Quality & Compliance Checklist */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6 border-t border-[#ffffff1f] text-xs text-[#d0dedd]">
                 <div className="flex items-start gap-2.5">
-                  <ShieldCheck size={18} className="text-[#caa785] flex-shrink-0 mt-0.5" />
+                  <ShieldCheck size={18} className="text-[var(--copper)] flex-shrink-0 mt-0.5" />
                   <div>
                     <span className="font-semibold block text-[#fdfbf7]">BS AU 145e Compliant</span>
-                    <span className="text-[11px] text-[#9eacab]">
+                    <span className="text-[11px] text-[var(--studio-muted)]">
                       ANPR camera & MOT certified British spacing
                     </span>
                   </div>
                 </div>
                 <div className="flex items-start gap-2.5">
-                  <Layers size={18} className="text-[#caa785] flex-shrink-0 mt-0.5" />
+                  <Layers size={18} className="text-[var(--copper)] flex-shrink-0 mt-0.5" />
                   <div>
                     <span className="font-semibold block text-[#fdfbf7]">PMMA Cast Acrylic</span>
-                    <span className="text-[11px] text-[#9eacab]">
+                    <span className="text-[11px] text-[var(--studio-muted)]">
                       UV-stabilised, zero yellowing or peel
                     </span>
                   </div>

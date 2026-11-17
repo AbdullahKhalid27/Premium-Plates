@@ -10,7 +10,9 @@ interface InteractivePlateProps {
   side: PlateSide;
   badge?: boolean;
   border?: boolean;
-  className?: string;
+  angle: number;
+  lightPosition: number;
+  headlights: boolean;
 }
 
 export default function InteractivePlate({
@@ -19,7 +21,9 @@ export default function InteractivePlate({
   side,
   badge = false,
   border = false,
-  className = "",
+  angle,
+  lightPosition,
+  headlights,
 }: InteractivePlateProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
@@ -27,6 +31,7 @@ export default function InteractivePlate({
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType !== "mouse" && e.pointerType !== "pen") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
 
@@ -54,13 +59,12 @@ export default function InteractivePlate({
       ref={containerRef}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
-      className={`relative cursor-grab active:cursor-grabbing select-none perspective-[800px] ${className}`}
-      style={{ touchAction: "pan-y" }}
+      className="relative select-none perspective-[800px]"
     >
       <div
-        className="w-full transition-transform duration-150 ease-out will-change-transform"
+        className="w-full transition-transform duration-150 ease-out"
         style={{
-          transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+          transform: `rotateX(${tilt.x + 5}deg) rotateY(${tilt.y + angle}deg)`,
           transformStyle: "preserve-3d",
         }}
       >
@@ -73,7 +77,16 @@ export default function InteractivePlate({
           className="shadow-2xl"
         />
 
-        {/* Dynamic Specular Light Sweep Overlay for 3D/4D Finishes */}
+        <div
+          className="inspection-light"
+          aria-hidden="true"
+          style={{
+            opacity: headlights ? 0.85 : is3D ? 0.55 : 0.28,
+            background: `radial-gradient(ellipse at ${lightPosition}% ${headlights ? 70 : 0}%, #fff8e3 0%, transparent ${headlights ? 48 : 68}%)`,
+          }}
+        />
+
+        {/* Pointer reflection supplements the persistent, keyboard-controlled light. */}
         {is3D && (
           <div
             className="absolute inset-0 rounded-md pointer-events-none transition-opacity duration-300 mix-blend-overlay"
