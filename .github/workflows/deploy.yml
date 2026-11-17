@@ -3,6 +3,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      commit_ref:
+        description: "Known-good full commit SHA to restore (blank uses selected branch)"
+        required: false
+        type: string
 permissions:
   contents: read
   pages: write
@@ -18,6 +23,8 @@ jobs:
         working-directory: premium-plates-site
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.commit_ref || github.sha }}
       - uses: actions/setup-node@v4
         with:
           node-version: 20

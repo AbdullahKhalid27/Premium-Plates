@@ -1,5 +1,8 @@
 "use client";
 
+import Link from "next/link";
+import { version } from "../../package.json";
+
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
@@ -116,14 +119,8 @@ function CinematicFit({
 
 function Brand() {
   return (
-    <a className="brand-lockup flex items-center gap-3" href="#home" aria-label="Premium Plates home">
-      <svg viewBox="0 0 42 34" aria-hidden="true" className="w-9 h-8 stroke-current fill-none stroke-[2.5]">
-        <path d="M3 30V4h13c12 0 12 15 0 15H9M23 30V4h8c11 0 11 15 0 15h-2" />
-      </svg>
-      <span className="text-xs font-bold tracking-widest leading-tight">
-        PREMIUM<br />
-        PLATES<span className="text-[#caa785]">.</span>
-      </span>
+    <a className="brand-lockup" href="#home" aria-label="Plate Studio home">
+      <span>Plate Studio<span className="brand-label">Number plates, made yours.</span></span>
     </a>
   );
 }
@@ -161,6 +158,7 @@ export default function StudioPage() {
   const [isDraggingCompare, setIsDraggingCompare] = useState(false);
   const compareAreaRef = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
+  const menuTrigger = useRef<HTMLButtonElement>(null);
 
   const updateCompareFromPointer = (clientX: number) => {
     if (!compareAreaRef.current) return;
@@ -260,8 +258,8 @@ export default function StudioPage() {
 
   return (
     <>
-      <a className="skip-link" href="#studio">
-        Skip to plate studio
+      <a className="skip-link" href="#main-content">
+        Skip to content
       </a>
 
       {/* Masthead Header */}
@@ -272,12 +270,21 @@ export default function StudioPage() {
             className="nav-dropdown"
             onMouseEnter={() => setDropdown(true)}
             onMouseLeave={() => setDropdown(false)}
+            onBlur={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) setDropdown(false);
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Escape") {
+                setDropdown(false);
+                event.currentTarget.querySelector("button")?.focus();
+              }
+            }}
           >
-            <button aria-expanded={dropdown} onClick={() => setDropdown(!dropdown)}>
+            <button aria-expanded={dropdown} aria-controls="collection-options" onClick={() => setDropdown(!dropdown)}>
               The collection <ChevronDown size={14} />
             </button>
             {dropdown && (
-              <div className="collection-menu">
+              <div className="collection-menu" id="collection-options">
                 {collection.map((item) => (
                   <button
                     key={item.id}
@@ -310,16 +317,19 @@ export default function StudioPage() {
             <span>{bag?.quantity ?? 0}</span>
           </button>
           <button
+            ref={menuTrigger}
             className="menu-trigger"
             onClick={() => setMenuOpen(true)}
             aria-label="Open navigation"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
           >
             <Menu size={24} />
           </button>
         </div>
       </header>
 
-      <main>
+      <main id="main-content" tabIndex={-1}>
         {/* Hero Section */}
         <section className="cinema" id="home">
           <video
@@ -772,7 +782,7 @@ export default function StudioPage() {
                       <button
                         key={pair.id}
                         type="button"
-                        onClick={() => setComparePair(pair.id as any)}
+                        onClick={() => setComparePair(pair.id as typeof comparePair)}
                         className={`text-left px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all flex items-center justify-between border ${
                           comparePair === pair.id
                             ? "bg-[#622f35] text-white border-[#622f35] shadow-sm font-semibold"
@@ -985,7 +995,7 @@ export default function StudioPage() {
           </a>
         </div>
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} {businessFacts.tradingName} · Registered UK Plate Supplier {businessFacts.dvlaRnpsNumber}</span>
+          <span>© {new Date().getFullYear()} Plate Studio</span>
           <nav aria-label="Footer navigation">
             <a href="#collection">Collection</a>
             <a href="#studio">Studio</a>
@@ -993,18 +1003,24 @@ export default function StudioPage() {
             <a href="#lookbook">Lookbook</a>
             <a href="#questions">FAQs</a>
           </nav>
-          <span>{businessFacts.britishStandard} Road Legal Guaranteed</span>
+          <Link className="release-link" href="/releases">Version {version}</Link>
         </div>
       </footer>
 
       {/* Mobile Navigation Sheet */}
       <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-        <SheetContent className="pp-sheet navigation-sheet">
-          <SheetTitle className="text-3xl font-serif">Premium Plates</SheetTitle>
+        <SheetContent
+          className="pp-sheet navigation-sheet"
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            menuTrigger.current?.focus();
+          }}
+        >
+          <SheetTitle className="text-3xl font-serif">Plate Studio</SheetTitle>
           <SheetDescription className="text-xs text-[#713d3e] font-mono">
-            {businessFacts.dvlaRnpsNumber} · {businessFacts.britishStandard}
+            Explore the collection and your plate design.
           </SheetDescription>
-          <nav className="mt-8 space-y-4">
+          <nav id="mobile-navigation" aria-label="Mobile navigation" className="mt-8 space-y-4">
             {[
               ["The Collection", "collection"],
               ["Plate Studio", "studio"],

@@ -1,16 +1,8 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Plus_Jakarta_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import "./redesign.css";
-
-// Luxury editorial display font
-const editorial = Cormorant_Garamond({
-  variable: "--font-editorial",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
-  display: "swap",
-});
+import "./foundation.css";
 
 // Modern British automotive sans-serif
 const modernSans = Plus_Jakarta_Sans({
@@ -30,13 +22,11 @@ const charlesWright = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Premium Plates — Bespoke British Number Plates",
-  description: "Precision-engineered UK number plates in 3D Gloss Gel and 4D Laser-Cut Acrylic. Road-legal, BS AU 145e certified, and handcrafted in Great Britain.",
+  title: "Plate Studio — Design your number plates",
+  description: "Explore number plate finishes and compare your registration in the plate studio.",
   openGraph: {
-    title: "Premium Plates — The Detail That Makes It Yours",
-    description: "Explore 3D Gel, 4D Acrylic, and bespoke UK registration finishes with real-time road-legality verification.",
-    url: "https://abdullahkhalid27.github.io/Premium-Plates/",
-    siteName: "Premium Plates",
+    title: "Plate Studio",
+    description: "Explore number plate finishes and personalise your preview.",
     locale: "en_GB",
     type: "website",
   },
@@ -49,8 +39,8 @@ export default function RootLayout({
 }) {
   return (
     <html
-      lang="en"
-      className={`${modernSans.variable} ${editorial.variable} ${charlesWright.variable} h-full antialiased`}
+      lang="en-GB"
+      className={`${modernSans.variable} ${charlesWright.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">{children}</body>
     </html>
