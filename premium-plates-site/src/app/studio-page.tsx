@@ -2,7 +2,7 @@
 
 import BagDrawer from "@/components/BagDrawer";
 import { parseBasket, type BasketLine } from "@/lib/basket";
-import Link from "next/link";
+import Link from "@/components/StoreLink";
 import NightBuilder, { NightHero } from "@/components/NightBuilder";
 import packageInfo from "../../package.json";
 

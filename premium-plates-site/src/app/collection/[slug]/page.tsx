@@ -1,6 +1,6 @@
 import RulesPanel from "@/components/RulesPanel";
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/StoreLink";
 import { notFound } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
 import CataloguePage from "@/components/CataloguePage";

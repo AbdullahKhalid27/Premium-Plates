@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/StoreLink";
 import packageInfo from "../../../package.json";
 
 export default function ReleasesPage() {

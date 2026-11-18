@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import Link from "@/components/StoreLink";
 import Plate from "./Plate";
 import { finishes, productDetails, type Draft, type Lettering } from "@/config/catalogue";
 import "./motion.css";

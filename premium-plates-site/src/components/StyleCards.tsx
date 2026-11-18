@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/StoreLink";
 import { useState, type PointerEvent } from "react";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { applyProduct, collection, defaultDraft, previewDimensions, productDetails } from "@/config/catalogue";

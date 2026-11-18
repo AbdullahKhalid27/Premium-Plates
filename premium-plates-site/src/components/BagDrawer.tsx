@@ -1,5 +1,5 @@
 "use client";
-import Link from "next/link";
+import Link from "@/components/StoreLink";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "./ui/sheet";
 import Plate from "./Plate";
 import { collection, finishes, priceDraft } from "@/config/catalogue";

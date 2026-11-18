@@ -21,7 +21,7 @@ async function run() {
         const parts = route ? page.locator("main") : page.locator("main > section, main > div > section");
         let sequence = 0; for(const part of await parts.all()) {
           if(!await part.isVisible()) continue;
-          const name = (await part.getAttribute("id")) || route.replaceAll("/","-") || "home";
+          const name = route.replaceAll("/","-") || (await part.getAttribute("id")) || "home";
           await part.scrollIntoViewIfNeeded();
           await part.screenshot({path:path.join(output,width+"-"+(++sequence)+"-"+name+".jpg"), type:"jpeg",quality:78,timeout:25000});
         }

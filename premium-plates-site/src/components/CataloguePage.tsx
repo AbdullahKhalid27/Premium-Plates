@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/StoreLink";
 import GuidanceSources from "./GuidanceSources";
 import { ArrowUpRight } from "lucide-react";
 import { storefrontName } from "@/config/catalogue";
