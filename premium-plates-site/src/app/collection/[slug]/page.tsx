@@ -1,3 +1,4 @@
+import RulesPanel from "@/components/RulesPanel";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -46,6 +47,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
         <CataloguePlate kind={product.id} />
       </article>
+      <RulesPanel draft={applyProduct(defaultDraft, product.id)} />
     </CataloguePage>
   );
 }

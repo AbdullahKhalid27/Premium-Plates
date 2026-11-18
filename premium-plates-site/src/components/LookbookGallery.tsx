@@ -58,7 +58,7 @@ export default function LookbookGallery({ onSelectSpec }: {
     requestAnimationFrame(fly);
   }
 
-  return <section className="vehicle-studies section-pad" aria-labelledby="vehicle-studies-title">
+  return <section id="lookbook" className="vehicle-studies section-pad" aria-labelledby="vehicle-studies-title">
     <div className="vehicle-studies-heading"><h2 id="vehicle-studies-title">The lookbook</h2>
       <div><button type="button" onClick={() => move(-1)} aria-label="Previous lookbook card"><ChevronLeft/></button>
       <button type="button" onClick={() => move(1)} aria-label="Next lookbook card"><ChevronRight/></button></div>

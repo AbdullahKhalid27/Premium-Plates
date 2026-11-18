@@ -1,0 +1,6 @@
+.plate-rules-panel { margin-block: 1.25rem; padding: .85rem 1rem; border-block: 1px solid currentColor; font: inherit; text-align: left; }
+.plate-rules-panel summary { cursor: pointer; font-weight: 650; padding-block: .4rem; }
+.plate-rules-panel ul { display: grid; gap: 1rem; list-style: none; padding: 0; max-width: 72ch; }
+.plate-rules-panel li p { margin: .3rem 0; line-height: 1.55; color: inherit; }
+.plate-rules-panel a { color: inherit; text-decoration: underline; text-underline-offset: .2em; }
+.plate-rules-panel small { display: block; margin-block: 1rem .3rem; }

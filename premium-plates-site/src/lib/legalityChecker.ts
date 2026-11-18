@@ -1,18 +1,4 @@
-/**
- * DVLA Number Plate Legality & Syntax Verification Engine.
- * 
- * Complies with:
- * - BS AU 145e (British Standard specification for retroreflecting number plates)
- * - DVLA INF104 (Vehicle registration numbers and number plates)
- * - The Road Vehicles (Display of Registration Marks) Regulations 2001
- * 
- * Formats supported:
- * 1. Current (2001 to present): 2 letters + 2 numbers + space + 3 letters (e.g. "AB51 CDE")
- * 2. Prefix (1983 to 2001): 1 letter + 1-3 numbers + space + 3 letters (e.g. "A123 BCD")
- * 3. Suffix (1963 to 1983): 3 letters + 1-3 numbers + space + 1 letter (e.g. "ABC 123D")
- * 4. Dateless / Cherished (pre-1963): 1-3 letters + 1-4 numbers OR 1-4 numbers + 1-3 letters
- */
-
+/** Recognises common registration formats. isLegal is the legacy name for a format match. */
 export interface LegalityResult {
   isLegal: boolean;
   formattedReg: string;
@@ -27,7 +13,7 @@ export function checkLegality(rawReg: string): LegalityResult {
       isLegal: false,
       formattedReg: "",
       formatStyle: "empty",
-      reason: "Please enter your vehicle registration to check road legality.",
+      reason: "Please enter your vehicle registration to check its format.",
     };
   }
 
@@ -37,7 +23,7 @@ export function checkLegality(rawReg: string): LegalityResult {
       isLegal: false,
       formattedReg: "",
       formatStyle: "empty",
-      reason: "Please enter your vehicle registration to check road legality.",
+      reason: "Please enter your vehicle registration to check its format.",
     };
   }
 
@@ -106,9 +92,9 @@ export function checkLegality(rawReg: string): LegalityResult {
       formattedReg: canonicalSpacing,
       formatStyle: isCorrectSpacing ? "current" : "misspaced",
       reason: isCorrectSpacing
-        ? "Road Legal: Standard current-issue UK registration (BS AU 145e compliant)."
-        : `Show plate only: missing or incorrect space. Legal spacing must be "${canonicalSpacing}".`,
-      badgeLegalNote: "Compatible with legal UK, Union Flag, and national identifier flags.",
+        ? "Current registration format recognised."
+        : `Check spacing. Place the space as shown in "${canonicalSpacing}".`,
+      badgeLegalNote: "Identifier requirements are checked separately.",
     };
   }
 
@@ -145,7 +131,7 @@ export function checkLegality(rawReg: string): LegalityResult {
       formatStyle: isCorrectSpacing ? "prefix" : "misspaced",
       reason: isCorrectSpacing
         ? "Road Legal: Authentic prefix-style UK registration (1983–2001)."
-        : `Show plate only: missing or incorrect space. Legal spacing must be "${canonicalSpacing}".`,
+        : `Check spacing. Place the space as shown in "${canonicalSpacing}".`,
     };
   }
 
@@ -181,7 +167,7 @@ export function checkLegality(rawReg: string): LegalityResult {
       formatStyle: isCorrectSpacing ? "suffix" : "misspaced",
       reason: isCorrectSpacing
         ? "Road Legal: Historic suffix-style UK registration (1963–1983)."
-        : `Show plate only: missing or incorrect space. Legal spacing must be "${canonicalSpacing}".`,
+        : `Check spacing. Place the space as shown in "${canonicalSpacing}".`,
     };
   }
 
@@ -205,8 +191,8 @@ export function checkLegality(rawReg: string): LegalityResult {
       formattedReg: canonicalSpacing,
       formatStyle: isCorrectSpacing ? "dateless" : "misspaced",
       reason: isCorrectSpacing
-        ? "Road Legal: Classic dateless / cherished UK mark."
-        : `Show plate only: missing or incorrect space. Legal spacing must be "${canonicalSpacing}".`,
+        ? "Dateless registration format recognised."
+        : `Check spacing. Place the space as shown in "${canonicalSpacing}".`,
     };
   }
 
@@ -229,8 +215,8 @@ export function checkLegality(rawReg: string): LegalityResult {
       formattedReg: canonicalSpacing,
       formatStyle: isCorrectSpacing ? "dateless" : "misspaced",
       reason: isCorrectSpacing
-        ? "Road Legal: Inverted classic dateless / Northern Ireland mark."
-        : `Show plate only: missing or incorrect space. Legal spacing must be "${canonicalSpacing}".`,
+        ? "Inverted dateless registration format recognised."
+        : `Check spacing. Place the space as shown in "${canonicalSpacing}".`,
     };
   }
 
@@ -239,7 +225,7 @@ export function checkLegality(rawReg: string): LegalityResult {
     isLegal: false,
     formattedReg: trimmed,
     formatStyle: "invalid",
-    reason: "Show Plate Only: Custom or non-standard format not matching DVLA registration schemas.",
+    reason: "Unrecognised format. Compare the registration with your entitlement document.",
   };
 }
 

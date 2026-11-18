@@ -11,13 +11,14 @@ export default function NightDriveFilm() {
     if (!video) return;
     const motion = matchMedia("(prefers-reduced-motion: reduce)");
     let visible = false;
-    let started = false;
+    let resumeOnEntry = true;
     function sync() {
       if (!video) return;
       if (!visible || motion.matches || document.hidden) {
+        if (!video.paused) resumeOnEntry = true;
         video.pause();
-      } else if (!started) {
-        started = true;
+      } else if (resumeOnEntry && !video.ended) {
+        resumeOnEntry = false;
         void video.play().catch(() => {});
       }
     }

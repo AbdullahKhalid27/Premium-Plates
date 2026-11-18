@@ -7,25 +7,23 @@ import packageInfo from "../../package.json";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
-  ArrowRight,
-  Check,
   Menu,
   ShoppingBag,
   Plus,
   Minus,
-  MoveHorizontal,
-  Sparkles,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import Plate from "@/components/Plate";
 import { StyleCards } from "@/components/StyleCards";
 import {
-  applyProduct, collection, defaultDraft, draftKey, finishes,
+  applyLettering, applyProduct, collection, defaultDraft, draftKey, finishes,
   isDraft, restoredDraft, priceDraft, storefrontName, type Draft,
 } from "@/config/catalogue";
 
+import FinishComparison from "@/components/FinishComparison";
 import FitSection from "@/components/FitSection";
 import FaqSection from "@/components/FaqSection";
+import GuidanceSources from "@/components/GuidanceSources";
 import NightDriveFilm from "@/components/NightDriveFilm";
 import StickyOrderBar from "@/components/StickyOrderBar";
 import LookbookGallery from "@/components/LookbookGallery";
@@ -61,11 +59,6 @@ export default function StudioPage() {
   const [bagOpen, setBagOpen] = useState(false);
   const [bag, setBag] = useState<(Draft & { quantity: number }) | null>(null);
   const [error, setError] = useState("");
-  const [compare, setCompare] = useState(55);
-  const [comparePair, setComparePair] = useState<"reg-4d" | "gel-4d" | "reg-gel">("reg-4d");
-  const [comparePlateSide, setComparePlateSide] = useState<"front" | "rear">("front");
-  const [isDraggingCompare, setIsDraggingCompare] = useState(false);
-  const compareAreaRef = useRef<HTMLDivElement>(null);
   const menuTrigger = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -104,20 +97,9 @@ export default function StudioPage() {
     }
   }, [draft, bag, draftReady]);
 
-  const updateCompareFromPointer = (clientX: number) => {
-    if (!compareAreaRef.current) return;
-    const rect = compareAreaRef.current.getBoundingClientRect();
-    const rawX = clientX - rect.left;
-    const pct = Math.max(5, Math.min(95, (rawX / rect.width) * 100));
-    setCompare(pct);
-  };
-
   // Dynamic pricing calculation from centralized catalog
   const pricingResult = priceDraft(draft);
   const bagPricing = bag ? priceDraft(bag, bag.quantity) : null;
-
-  // Dynamic UK road-legality check on active registration
-
 
   const selected = collection.find((item) => item.id === kind) || collection[2];
   const updateReg = (value: string) => {
@@ -139,7 +121,9 @@ export default function StudioPage() {
   const addToBag = () => {
     if (!reg.trim()) {
       setError("Enter your registration to preview your selection.");
-      document.getElementById("studio-reg")?.focus();
+      document.getElementById("studio")?.scrollIntoView({block:"start"});
+      document.getElementById("registration-tray")?.click();
+      requestAnimationFrame(() => document.getElementById("studio-reg")?.focus());
       return;
     }
     setBag({ ...draft, quantity: 1 });
@@ -188,182 +172,7 @@ export default function StudioPage() {
         <NightHero draft={draft} onReg={updateReg} />
         <NightBuilder draft={draft} setDraft={setDraft} onReg={updateReg} onAdd={addToBag} error={error} />
 
-        {/* 3D vs 4D Interactive Split Compare (Transformed & Proportionate) */}
-        <section className="difference-section section-pad bg-[var(--paper-soft)] text-[var(--ink)] border-y border-[var(--line)]" id="difference">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-              {/* Left Column: Context, Selector & Specs */}
-              <div className="lg:col-span-5 space-y-6">
-                <div className="space-y-3">
-                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-[1.05]">
-                    Compare the finishes
-                  </h2>
-                </div>
-                <p className="text-base text-[#4a4e48] leading-relaxed">
-                  Standard plates remain flat against the coachwork. 4D laser-cut acrylic projects forward, catching reflections and streetlights with sharp architectural depth.
-                </p>
-
-                {/* Compare Pair Selector */}
-                <div className="space-y-2 pt-1">
-                  <span className="text-xs font-semibold text-[var(--ink)] uppercase tracking-wider block">
-                    Choose Comparison Finishes
-                  </span>
-                  <div className="flex flex-col gap-2">
-                    {[
-                      { id: "reg-4d", label: "Standard Flat vs 4D Laser Acrylic (3mm)" },
-                      { id: "gel-4d", label: "3D Curved Gel vs 4D Laser Acrylic (3mm)" },
-                      { id: "reg-gel", label: "Standard Flat vs 3D Curved Gel Dome" },
-                    ].map((pair) => (
-                      <button
-                        key={pair.id}
-                        type="button"
-                        onClick={() => setComparePair(pair.id as typeof comparePair)}
-                        className={`text-left px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all flex items-center justify-between border ${
-                          comparePair === pair.id
-                            ? "bg-[var(--wine)] text-white border-[var(--wine)] shadow-sm font-semibold"
-                            : "bg-[#fffdf9]/70 text-[#4a4e48] border-[#cfcbc0] hover:bg-[#fffdf9]"
-                        }`}
-                      >
-                        <span>{pair.label}</span>
-                        {comparePair === pair.id && <Check size={14} />}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Slider Guide Card */}
-                <div className="p-4 rounded-xl bg-[#fffdf9]/80 border border-[#b8b3a7] flex items-center gap-3">
-                  <MoveHorizontal size={20} className="text-[var(--wine)] flex-shrink-0" />
-                  <p className="text-xs text-[#525750]">
-                    Drag the slider divider left or right across the plate to inspect edge reflection, light play, and tactile relief depth.
-                  </p>
-                </div>
-              </div>
-
-              {/* Right Column: Exhibition Display Plinth Stage */}
-              <div className="lg:col-span-7 w-full space-y-4">
-                {/* Stage Header Controls */}
-                <div className="flex items-center justify-between px-1">
-                  <span className="text-xs font-mono uppercase text-[var(--wine)] font-semibold flex items-center gap-1.5">
-                    <Sparkles size={13} />
-                    High-Relief Studio Lighting
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setComparePlateSide(comparePlateSide === "front" ? "rear" : "front")}
-                    className="text-xs bg-[#cfcbc0] hover:bg-[#c2beb2] text-[var(--ink)] px-3 py-1 rounded-full font-mono transition-colors"
-                  >
-                    View: {comparePlateSide === "front" ? "Front (White)" : "Rear (Yellow)"}
-                  </button>
-                </div>
-
-                {/* The Comparison Box Stage */}
-                <div
-                  ref={compareAreaRef}
-                  className="compare-area rounded-2xl shadow-2xl overflow-hidden border border-[var(--wine-deep)]/30 relative h-[380px] md:h-[420px] bg-[var(--wine-deep)] select-none cursor-ew-resize touch-none"
-                  onPointerDown={(e) => {
-                    setIsDraggingCompare(true);
-                    try {
-                      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-                    } catch {}
-                    updateCompareFromPointer(e.clientX);
-                  }}
-                  onPointerMove={(e) => {
-                    if (isDraggingCompare) {
-                      updateCompareFromPointer(e.clientX);
-                    }
-                  }}
-                  onPointerUp={(e) => {
-                    setIsDraggingCompare(false);
-                    try {
-                      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-                    } catch {}
-                  }}
-                  onPointerCancel={() => setIsDraggingCompare(false)}
-                >
-                  {/* Left Side (Base) */}
-                  <div
-                    key={`base-${comparePair}-${comparePlateSide}`}
-                    className="compare-base bg-gradient-to-br from-[#1a2930] to-[#0e171b] transition-opacity duration-300"
-                  >
-                    <div className="absolute top-4 left-5 flex items-center gap-2 z-10">
-                      <span className="font-mono text-xs font-bold text-[var(--wine-deep)] bg-[#f4f0e8] px-3 py-1 rounded-full shadow-md">
-                        {comparePair === "gel-4d" ? "3D GEL DOME" : "STANDARD FLAT"}
-                      </span>
-                      <span className="text-[11px] font-mono text-[#a0adab] hidden sm:inline-block">
-                        {comparePair === "gel-4d" ? "1.5mm Relief" : "0.0mm Flush"}
-                      </span>
-                    </div>
-                    <div className="w-full max-w-[490px] drop-shadow-2xl">
-                      <Plate
-                        reg={reg}
-                        kind={comparePair === "gel-4d" ? "gel" : "regular"}
-                        side={comparePlateSide}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Right Side (Raised) */}
-                  <div
-                    key={`raised-${comparePair}-${comparePlateSide}`}
-                    className="compare-raised bg-gradient-to-bl from-[#182a32] to-[#091216] transition-opacity duration-300"
-                    style={{
-                      clipPath: `inset(0 ${100 - compare}% 0 0)`,
-                      transition: isDraggingCompare ? "none" : "clip-path 0.28s cubic-bezier(0.16, 1, 0.3, 1)",
-                      willChange: "clip-path",
-                    }}
-                  >
-                    <div className="absolute top-4 right-5 flex items-center gap-2 z-10">
-                      <span className="text-[11px] font-mono text-[#e0ded5] hidden sm:inline-block">
-                        {comparePair === "reg-gel" ? "1.5mm Relief" : "3.0mm Laser Relief"}
-                      </span>
-                      <span className="font-mono text-xs font-bold text-white bg-[var(--wine)] px-3 py-1 rounded-full shadow-md">
-                        {comparePair === "reg-gel" ? "3D GEL DOME" : "4D 3MM LASER ACRYLIC"}
-                      </span>
-                    </div>
-                    <div className="w-full max-w-[490px] drop-shadow-2xl">
-                      <Plate
-                        reg={reg}
-                        kind={comparePair === "reg-gel" ? "gel" : "acrylic"}
-                        side={comparePlateSide}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Divider Handle */}
-                  <div
-                    className="compare-line pointer-events-none"
-                    style={{
-                      left: `${compare}%`,
-                      transition: isDraggingCompare ? "none" : "left 0.28s cubic-bezier(0.16, 1, 0.3, 1)",
-                      willChange: "left",
-                    }}
-                  >
-                    <div
-                      className={`w-11 h-11 rounded-full bg-[#f8f4eb] text-[#343e3d] flex items-center justify-center shadow-2xl border-2 border-[var(--wine)] transition-transform ${
-                        isDraggingCompare ? "scale-110 shadow-red-950/50" : "hover:scale-105"
-                      }`}
-                    >
-                      <MoveHorizontal size={20} className="text-[var(--wine)]" />
-                    </div>
-                  </div>
-
-                  {/* Range Slider for Interaction */}
-                  <input
-                    aria-label="Compare plate finishes"
-                    type="range"
-                    min="5"
-                    max="95"
-                    step="0.1"
-                    value={compare}
-                    onChange={(e) => setCompare(Number(e.target.value))}
-                    className="pointer-events-auto cursor-ew-resize"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <FinishComparison draft={draft} onSelect={finish => setDraft(previous => applyLettering(previous, finish))} />
 
         <section className="collection-section section-pad" id="collection">
           <div className="collection-heading">
@@ -388,15 +197,13 @@ export default function StudioPage() {
         </div>
 
         {/* Vehicle Lookbook Carousel (R5.4) */}
-        <div id="lookbook">
-          <LookbookGallery
+        <LookbookGallery
             onSelectSpec={(chosenKind, chosenReg) => {
               selectKind(chosenKind);
               updateDraft("reg", chosenReg);
               goStudio();
             }}
           />
-        </div>
 
         <NightDriveFilm />
 
@@ -440,6 +247,7 @@ export default function StudioPage() {
           </nav>
           <Link className="release-link" href="/releases">Version {packageInfo.version}</Link>
         </div>
+        <GuidanceSources />
       </footer>
 
       {/* Mobile Navigation Sheet */}
@@ -571,6 +379,8 @@ export default function StudioPage() {
     </>
   );
 }
+
+
 
 
 

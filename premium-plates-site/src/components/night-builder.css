@@ -46,3 +46,4 @@
 .bench-total strong{font-size:1.4rem;margin-left:.5rem;font-variant-numeric:tabular-nums}
 .bench-total button{background:#ffb43a;color:#16171a;padding:.8rem 1.2rem;border-radius:3px;font-weight:650}
 @media(max-width:700px){.night-hero{grid-template-columns:1fr;gap:2.5rem;padding-block:3.5rem}.hero-specimen{width:94%;justify-self:center}.night-builder{padding-inline:clamp(16px,5vw,34px)}.bench-dock{grid-template-columns:repeat(3,1fr)}.bench-controls{gap:.3rem}.bench-total{gap:.35rem}.bench-total strong{display:block;margin:0}.bench-tray input:not([type=checkbox]),.bench-tray select{max-width:100%}.bumper-inset{width:74%}}
+.bench-reset{padding:.5rem .65rem;color:#24262a;border-bottom:1px solid #888b8a;font-size:.85rem}

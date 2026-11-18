@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useRef, useState, type CSSProperties, type Dispatch, type SetStateAction } from "react";
 import Plate from "./Plate";
-import { applyLettering, applyProduct, collection, finishes, motorcyclePhoto, previewDimensions, priceDraft, type Draft } from "@/config/catalogue";
+import RulesPanel from "./RulesPanel";
+import { applyLettering, applyProduct, collection, defaultDraft, finishes, motorcyclePhoto, previewDimensions, priceDraft, type Draft } from "@/config/catalogue";
 import { identifierFee } from "@/config/pricing";
 import { checkLegality } from "@/lib/legalityChecker";
 import "./night-builder.css";
@@ -49,14 +50,14 @@ export default function NightBuilder({draft:d,setDraft,onReg,onAdd,error}:Props)
   const opts=plateOptions(d);
   const specimen=(flat=false)=><Plate reg={d.reg} kind={d.kind} side={activeSide} badge={d.badge} border={d.border} options={flat?{...opts,lettering:"regular"}:opts}/>;
   const stageStyle={"--rotation":angle+"deg","--lamp":lamp+"%","--edge":(lamp-50)/18+"px","--wipe":wipe+"%"} as CSSProperties;
-  return <section id="studio" className="night-builder"><header><h2>Plate builder</h2><span>{collection.find(p=>p.id===d.kind)?.name} · {previewDimensions(d).join(" × ")} mm</span></header>
+  return <section id="studio" className="night-builder"><header><h2>Plate builder</h2><span>{collection.find(p=>p.id===d.kind)?.name} · {previewDimensions(d).join(" × ")} mm</span><button type="button" className="bench-reset" onClick={()=>{setDraft(defaultDraft);onReg(defaultDraft.reg);setAngle(-8);setLamp(42);setFace("rear");setWipe(45);setTray("Registration");}}>Reset design</button></header>
     <div className="bumper-stage" style={stageStyle} data-bike={d.kind==="moto"} onPointerDown={e=>{if(e.button!==0)return;drag.current={start:e.clientX,angle};e.currentTarget.setPointerCapture(e.pointerId);}} onPointerMove={e=>{if(drag.current)setAngle(Math.min(32,Math.max(-32,drag.current.angle+(e.clientX-drag.current.start)*.16)));}} onLostPointerCapture={()=>{drag.current=null;}}>
       <div className="bumper-shell"><div className="bumper-inset"><div className="bumper-plate">{specimen()}{tray==="Finish"&&<div className="wipe-flat">{specimen(true)}</div>}
         <i className="surface-flash" key={JSON.stringify(d)} aria-hidden="true"/></div></div></div>
     </div>
     <div className="bench-controls"><label>Rotate<input aria-label="Rotate preview" type="range" min="-32" max="32" value={angle} onChange={e=>setAngle(+e.target.value)}/></label><label>Lamp<input aria-label="Move inspection lamp" type="range" min="0" max="100" value={lamp} onChange={e=>setLamp(+e.target.value)}/></label>
     {d.side==="both"&&<button onClick={()=>setFace(face==="rear"?"front":"rear")}>View {face==="rear"?"front":"rear"}</button>}</div>
-    <div className="bench-dock" aria-label="Configuration trays">{trays.map(t=><button key={t} aria-expanded={tray===t} aria-controls="bench-tray" onClick={()=>setTray(t)}>{t}</button>)}</div>
+    <div className="bench-dock" aria-label="Configuration trays">{trays.map(t=><button key={t} id={t==="Registration"?"registration-tray":undefined} aria-expanded={tray===t} aria-controls="bench-tray" onClick={()=>setTray(t)}>{t}</button>)}</div>
     <div id="bench-tray" className="bench-tray" role="region" aria-label={tray}>
     {tray==="Registration"&&<><label>Registration<input id="studio-reg" value={d.reg} maxLength={8} spellCheck={false} autoComplete="off" onChange={e=>onReg(e.target.value)} aria-describedby="reg-feedback"/></label>
     <p id="reg-feedback" role="status" data-valid={valid.isLegal}>{valid.isLegal?"✓ Registration format recognised.":valid.formatStyle==="misspaced"?"Check spacing. Try "+valid.formattedReg+".":"Check the letters and numbers against your registration document."}</p></>}
@@ -73,7 +74,10 @@ export default function NightBuilder({draft:d,setDraft,onReg,onAdd,error}:Props)
     {show&&<><label>Display slogan<input maxLength={25} value={d.slogan} onChange={e=>update("slogan",e.target.value)}/></label><label>Slogan colour<select value={d.sloganColour} onChange={e=>update("sloganColour",e.target.value as Draft["sloganColour"])}><option>ivory</option><option>gold</option></select></label>{d.badge!=="none"&&d.badge!=="eu"&&<label>Flag colour<select value={d.badgeColour} onChange={e=>update("badgeColour",e.target.value as Draft["badgeColour"])}><option>standard</option><option>ivory</option></select></label>}</>}</>}
     {tray==="Price"&&<dl>{price.breakdown.map(row=><div key={row.label}><dt>{row.label}</dt><dd>{currency(row.amount)}</dd></div>)}</dl>}
     </div>
+    <RulesPanel draft={d} />
     {error&&<p role="alert">{error}</p>}
     <div className="bench-total"><div>Estimated total <Price amount={price.total}/></div><button onClick={add}>Add to bag ↗</button></div>
   </section>;
 }
+
+

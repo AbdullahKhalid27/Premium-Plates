@@ -1,4 +1,5 @@
 import Link from "next/link";
+import GuidanceSources from "./GuidanceSources";
 import { ArrowUpRight } from "lucide-react";
 import { storefrontName } from "@/config/catalogue";
 
@@ -14,6 +15,8 @@ export default function CataloguePage({ children }: { children: React.ReactNode 
         </nav>
       </header>
       <main className="catalogue-page" id="main-content" tabIndex={-1}>{children}</main>
+      <footer className="catalogue-sources"><GuidanceSources /></footer>
     </>
   );
 }
+

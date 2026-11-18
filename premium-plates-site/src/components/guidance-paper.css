@@ -1,0 +1,16 @@
+#questions.guidance-paper{background:#f5f1e7;color:#17191d;scroll-margin-top:5rem}
+.guidance-paper-grid{max-width:78rem;margin:auto;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(2rem,8vw,8rem)}
+.guidance-intro h2{font:550 clamp(2.4rem,5.4vw,5.6rem)/.99 var(--font-ui,Arial),sans-serif;letter-spacing:-.045em;max-width:8ch;margin:0 0 1.5rem}
+.guidance-intro p,.guidance-answer p{font-size:1rem;line-height:1.6;max-width:55ch;margin:0 0 1rem;color:#36383b}
+.guidance-paper a,.guidance-sources a{text-decoration:underline;text-underline-offset:.19em}
+.guidance-paper a:focus-visible{outline:3px solid #304e66;outline-offset:3px}
+.guidance-questions h3{font-size:1.2rem;font-weight:650;margin:0 0 .85rem}
+.guidance-questions details{border-block-start:1px solid #8a887e}.guidance-questions details:last-child{border-bottom:1px solid #8a887e}
+.guidance-questions summary{display:flex;gap:1.5rem;justify-content:space-between;align-items:center;font-size:1.05rem;line-height:1.35;padding:1.15rem 0;font-weight:600;cursor:pointer;list-style:none}
+.guidance-questions summary::-webkit-details-marker{display:none}.guidance-questions summary svg{flex:none}.guidance-questions details[open] summary svg{transform:rotate(45deg)}
+.guidance-answer{padding:.1rem 1.3rem 1.25rem 0}
+.guidance-sources{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem 2rem;border-top:1px solid #55565b;padding:1.4rem 0;color:#f2f2ef;font-size:.85rem}
+.guidance-sources p{margin:.2rem 0;color:#c3c4c6}.guidance-sources nav{display:flex;align-items:center;flex-wrap:wrap;gap:.3rem 1.2rem}.guidance-sources a{display:inline-flex;align-items:center;gap:.3rem;min-height:44px}
+.catalogue-sources{padding:0 var(--space-page,5%);background:#0e0f12}
+@media(max-width:760px){.guidance-paper-grid{grid-template-columns:1fr}.guidance-intro h2{max-width:100%}}
+@media(prefers-reduced-motion:no-preference){.guidance-questions details::details-content{interpolate-size:allow-keywords;overflow:clip;block-size:0;transition:block-size .22s ease,content-visibility .22s allow-discrete}.guidance-questions details[open]::details-content{block-size:auto}.guidance-questions summary svg{transition:transform .2s ease}}
