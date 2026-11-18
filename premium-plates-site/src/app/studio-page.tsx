@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import NightBuilder, { NightHero } from "@/components/NightBuilder";
 import packageInfo from "../../package.json";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   ArrowRight,
@@ -13,96 +13,29 @@ import {
   ShoppingBag,
   Plus,
   Minus,
-  RotateCcw,
-  Car,
-  Layers,
   MoveHorizontal,
-  ShieldCheck,
-  AlertTriangle,
   Sparkles,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import Plate, { type PlateOptions } from "@/components/Plate";
-import CataloguePlate from "@/components/CataloguePlate";
+import Plate from "@/components/Plate";
+import { StyleCards } from "@/components/StyleCards";
 import {
-  applyLettering, applyProduct, collection, defaultDraft, draftKey, finishes,
-  isDraft, motorcyclePhoto, previewDimensions, priceDraft, storefrontName, type Draft,
+  applyProduct, collection, defaultDraft, draftKey, finishes,
+  isDraft, restoredDraft, priceDraft, storefrontName, type Draft,
 } from "@/config/catalogue";
-import PlateInspection, { type Inspection } from "@/components/PlateInspection";
+
 import FitSection from "@/components/FitSection";
 import FaqSection from "@/components/FaqSection";
-import ClosingSection from "@/components/ClosingSection";
+import NightDriveFilm from "@/components/NightDriveFilm";
 import StickyOrderBar from "@/components/StickyOrderBar";
 import LookbookGallery from "@/components/LookbookGallery";
 import MaterialCloseup from "@/components/MaterialCloseup";
 import { businessFacts } from "@/config/businessFacts";
 import {
   identifierFee,
-  type PlateBadge,
   type PlateKind,
-  type PlateSide,
 } from "@/config/pricing";
-import { checkLegality } from "@/lib/legalityChecker";
 
-const defaultInspection: Inspection = { face: "rear", angle: -14, headlights: false };
-
-function CinematicFit({
-  reg,
-  kind,
-  side,
-  badge,
-  border,
-  options,
-  replay,
-}: {
-  reg: string;
-  kind: PlateKind;
-  side: "front" | "rear" | "both";
-  badge: PlateBadge;
-  border: boolean;
-  options: PlateOptions;
-  replay: number;
-}) {
-  const [fitted, setFitted] = useState({ reg, kind, side, badge, border, options });
-  const [take, setTake] = useState(0);
-  const [installing, setInstalling] = useState(false);
-  const initial = useRef(true);
-
-  useEffect(() => {
-    if (initial.current) {
-      initial.current = false;
-      return;
-    }
-    const timer = window.setTimeout(
-      () => {
-        setFitted({ reg, kind, side, badge, border, options });
-        setTake((value) => value + 1);
-        setInstalling(true);
-      },
-      replay ? 60 : 220
-    );
-    return () => window.clearTimeout(timer);
-  }, [reg, kind, side, badge, border, options, replay]);
-
-  useEffect(() => {
-    if (!installing) return;
-    const timer = window.setTimeout(() => setInstalling(false), 1050);
-    return () => window.clearTimeout(timer);
-  }, [installing, take]);
-
-  return (
-    <>
-      <div className="fit-recess" aria-hidden="true" />
-      <div className="fit-plate" key={take} data-take={take}>
-        <Plate {...fitted} />
-      </div>
-      <div className="fit-light" key={`light-${take}`} aria-hidden="true" />
-      <span className="fit-status" aria-live="polite">
-        {installing ? "Fitting your plate" : "On-car preview"}
-      </span>
-    </>
-  );
-}
 
 function Brand() {
   return (
@@ -119,20 +52,11 @@ const money = (value: number) =>
 export default function StudioPage() {
   const [draft, setDraft] = useState<Draft>(defaultDraft);
   const [draftReady, setDraftReady] = useState(false);
-  const { reg, kind, side, badge, border, material } = draft;
+  const { reg, kind, side } = draft;
   const displayOnly = kind === "show";
   function updateDraft<K extends keyof Draft>(key: K, value: Draft[K]) {
     setDraft((previous) => ({ ...previous, [key]: value }));
   }
-  const plateOptions = useMemo<PlateOptions>(() => ({
-    layout: draft.layout, size: draft.size, material: draft.material, lettering: draft.lettering,
-    badgeColour: draft.badgeColour,
-    slogan: displayOnly ? draft.slogan : undefined,
-    sloganColour: displayOnly ? draft.sloganColour : undefined,
-  }), [displayOnly, draft.layout, draft.size, draft.material, draft.lettering, draft.badgeColour, draft.slogan, draft.sloganColour]);
-  const [view, setView] = useState<"car" | "detail">("car");
-  const [inspection, setInspection] = useState<Inspection>(defaultInspection);
-  const [fitReplay, setFitReplay] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [bagOpen, setBagOpen] = useState(false);
   const [bag, setBag] = useState<(Draft & { quantity: number }) | null>(null);
@@ -150,9 +74,9 @@ export default function StudioPage() {
       const stored = sessionStorage.getItem(draftKey);
       if (stored) {
         const saved = JSON.parse(stored) as { draft?: unknown; bag?: Draft & { quantity: number } } | null;
-        if (isDraft(saved?.draft)) nextDraft = saved.draft;
+        if (isDraft(saved?.draft)) nextDraft = restoredDraft(saved.draft);
         if (saved?.bag && isDraft(saved.bag) && Number.isSafeInteger(saved.bag.quantity) && saved.bag.quantity > 0) {
-          setBag(saved.bag);
+          setBag({ ...restoredDraft(saved.bag), quantity: saved.bag.quantity });
         }
       }
     } catch {
@@ -167,7 +91,7 @@ export default function StudioPage() {
       window.history.replaceState(null, "", url);
     }
     setDraft(nextDraft);
-    if (nextDraft.kind === "moto") setView("detail");
+
     setDraftReady(true);
   }, []);
 
@@ -193,14 +117,9 @@ export default function StudioPage() {
   const bagPricing = bag ? priceDraft(bag, bag.quantity) : null;
 
   // Dynamic UK road-legality check on active registration
-  const legality = checkLegality(reg);
+
 
   const selected = collection.find((item) => item.id === kind) || collection[2];
-  const previewSide = side === "front" ? "front" : "rear";
-  const dimensions = previewDimensions(draft).join(" × ") + " mm";
-  const setLettering = (lettering: Draft["lettering"]) =>
-    setDraft((previous) => applyLettering(previous, lettering));
-
   const updateReg = (value: string) => {
     const formatted = value.replace(/[^a-zA-Z0-9 ]/g, "").toUpperCase().slice(0, 8);
     updateDraft("reg", formatted);
@@ -209,7 +128,7 @@ export default function StudioPage() {
 
   const selectKind = (id: PlateKind) => {
     setDraft((previous) => applyProduct(previous, id));
-    if (id === "moto") setView("detail");
+
   };
 
   const goStudio = () =>
@@ -266,315 +185,8 @@ export default function StudioPage() {
       </header>
 
       <main id="main-content" tabIndex={-1}>
-        <section className="studio-opening workshop-opening" id="home">
-          <div className="opening-copy">
-            <h1>Make the road<br /> <em>your own.</em></h1>
-            <p>See how your registration looks in flat, 3D gel or 4D acrylic lettering.</p>
-            <div className="opening-entry">
-              <label htmlFor="hero-reg">Enter your registration</label>
-              <input
-                id="hero-reg"
-                value={reg}
-                onChange={(event) => updateReg(event.currentTarget.value)}
-                placeholder="e.g. PP24 LUX"
-                maxLength={8}
-                autoComplete="off"
-                spellCheck={false}
-                autoCapitalize="characters"
-              />
-            </div>
-            <div className="opening-finishes" role="group" aria-label="Preview finish">
-              <span>Lettering finish</span>
-              <div>
-                {(Object.keys(finishes) as Draft["lettering"][]).map((id) => (
-                  <button
-                    key={id}
-                    type="button"
-                    aria-pressed={draft.lettering === id}
-                    onClick={() => setLettering(id)}
-                  >
-                    {finishes[id]}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="opening-actions">
-              <a className="primary-button" href="#studio">Build a plate <ArrowUpRight size={18} /></a>
-              <Link href="/collection">Shop plates</Link>
-            </div>
-          </div>
-          <PlateInspection reg={reg} kind={kind} badge={badge} border={border} options={plateOptions} settings={inspection} onChange={setInspection} />
-        </section>
-
-        <section className="studio-section" id="studio">
-          <div className="studio-intro">
-            <h2>Build your <em>plate set.</em></h2>
-            <p>Check the finish on the plate or see it fitted to the car. Then choose the options for your set.</p>
-          </div>
-
-          <div className="studio-layout">
-            {/* Visual Stage */}
-            <div className="studio-visual">
-              <div className="preview-toolbar">
-                <span className="font-medium">
-                  {selected.name} · {finishes[draft.lettering]} lettering
-                </span>
-                <div className="view-switch" aria-label="Preview mode">
-                  <button
-                    aria-pressed={view === "car"}
-                    onClick={() => setView("car")}
-                    disabled={kind === "moto"}
-                  >
-                    <Car size={15} /> On car
-                  </button>
-                  <button
-                    aria-pressed={view === "detail"}
-                    onClick={() => setView("detail")}
-                  >
-                    <Layers size={15} /> Inspect plate
-                  </button>
-                </div>
-              </div>
-
-              {view === "car" ? (
-                <>
-                  <div className="vehicle-stage">
-                    <Image
-                      className="vehicle-image"
-                      src="/Premium-Plates/media/night-drive-poster.jpg"
-                      alt="Rear of a dark sports car at night"
-                      fill
-                      sizes="(max-width: 800px) 90vw, 50vw"
-                    />
-                    <div className="vehicle-live-plate">
-                      <CinematicFit
-                        reg={reg}
-                        kind={kind}
-                        side={previewSide}
-                        badge={badge}
-                        border={border}
-                        options={plateOptions}
-                        replay={fitReplay}
-                      />
-                    </div>
-                    <span className="preview-caption">On-car illustration</span>
-                  </div>
-                  <div className="preview-command">
-                    <button
-                      type="button"
-                      onClick={() => setFitReplay((value) => value + 1)}
-                      aria-label="Replay plate fitting animation"
-                    >
-                      <RotateCcw size={13} /> Replay fitment
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <PlateInspection reg={reg} kind={kind} badge={badge} border={border} options={plateOptions} settings={inspection} onChange={setInspection} />
-              )}
-
-              <div className="preview-spec">
-                <span>
-                  <b>{dimensions}</b>Preview dimensions
-                </span>
-                <span>
-                  <b>{material === "aluminium" ? "Pressed Aluminium" : material === "abs" ? "ABS" : "PMMA Acrylic"}</b>Baseplate
-                </span>
-                <span>
-                  <b>{side === "both" ? "Front & Rear Pair" : side === "front" ? "Front Only" : "Rear Only"}</b>Configuration
-                </span>
-              </div>
-            </div>
-
-            {/* Configurator Controls */}
-            <div className="studio-controls rounded-xl shadow-lg">
-              <div className="control-heading">
-                <h3>Plate builder</h3>
-                <button
-                  onClick={() => {
-                    setDraft(defaultDraft);
-                    setInspection(defaultInspection);
-                    setView("car");
-                    setError("");
-                  }}
-                  aria-label="Reset design to default"
-                >
-                  <RotateCcw size={16} />
-                </button>
-              </div>
-
-              {/* Registration Input */}
-              <label className="field-label" htmlFor="studio-reg">
-                Vehicle Registration Mark
-              </label>
-              <input
-                className="studio-input"
-                id="studio-reg"
-                value={reg}
-                onChange={(e) => updateReg(e.target.value)}
-                placeholder="YOUR REG"
-                aria-invalid={Boolean(error)}
-                aria-describedby={error ? "registration-error" : "registration-format"}
-                autoComplete="off"
-                spellCheck={false}
-              />
-              {error && <p className="field-error" id="registration-error" role="alert">{error}</p>}
-
-              {/* Registration-format feedback */}
-              <div
-                id="registration-format"
-                className={`p-3 rounded-lg text-xs mb-5 flex items-start gap-2.5 ${
-                  legality.isLegal
-                    ? "bg-[#25D366]/10 text-[#125828] border border-[#25D366]/30"
-                    : "bg-[var(--wine)]/10 text-[var(--wine)] border border-[var(--wine)]/30"
-                }`}
-              >
-                {legality.isLegal ? (
-                  <ShieldCheck size={16} className="text-[#25D366] flex-shrink-0 mt-0.5" />
-                ) : (
-                  <AlertTriangle size={16} className="text-[var(--wine)] flex-shrink-0 mt-0.5" />
-                )}
-                <div>
-                  <span className="font-semibold block">
-                    {legality.isLegal
-                      ? `Registration format: ${legality.formatStyle.toUpperCase()}`
-                      : "Registration format not recognised"}
-                  </span>
-                  <span className="text-[11px] leading-relaxed opacity-90">This check covers the registration format only.</span>
-                </div>
-              </div>
-
-              {/* Finish Selection */}
-              <fieldset className="finish-field">
-                <legend className="flex justify-between items-center w-full">
-                  <span>Plate style</span>
-                  <span className="text-xs text-[var(--wine)] font-normal">{selected.intendedUse}</span>
-                </legend>
-                <div className="finish-buttons">
-                  {collection.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      className={`${kind === item.id ? "active " : ""}${item.id === "moto" ? "motorcycle-finish" : ""}`}
-                      aria-pressed={kind === item.id}
-                      onClick={() => selectKind(item.id)}
-                    >
-                      {item.id === "moto" && <span className="motorcycle-finish-photo" style={{ backgroundImage: `url('${motorcyclePhoto}')` }} aria-hidden="true" />}
-                      <span>{item.name}</span>
-                      {kind === item.id && <Check size={14} />}
-                    </button>
-                  ))}
-                </div>
-              </fieldset>
-
-              {/* Front/Rear and Material Pairs */}
-              <div className="control-pair">
-                <label>
-                  Plate set
-                  <select
-                    value={side}
-                    onChange={(e) => updateDraft("side", e.target.value as PlateSide)}
-                  >
-                    <option value="both" disabled={kind === "moto"}>
-                      Front & Rear Pair
-                    </option>
-                    <option value="front" disabled={kind === "moto"}>
-                      Front Only (White)
-                    </option>
-                    <option value="rear">Rear Only (Yellow)</option>
-                  </select>
-                </label>
-
-                <label>
-                  Base material
-                  <select
-                    value={material}
-                    onChange={(e) => updateDraft("material", e.target.value as Draft["material"])}
-                  >
-                    <option value="acrylic">PMMA acrylic</option>
-                    <option value="aluminium">Pressed aluminium (+{money(side === "both" ? 15 : 8)})</option>
-                    <option value="abs">ABS (preview)</option>
-                  </select>
-                </label>
-              </div>
-
-              <div className="control-pair workshop-options">
-                <label>Vehicle
-                  <select value={draft.vehicle} onChange={(event) => selectKind(event.target.value === "motorcycle" ? "moto" : "regular")}>
-                    <option value="car">Car</option><option value="motorcycle">Motorcycle</option>
-                  </select>
-                </label>
-                <label>Layout
-                  <select value={draft.layout} disabled={kind === "moto"} onChange={(event) => updateDraft("layout", event.target.value as Draft["layout"])}>
-                    <option value="single-line">Single line</option><option value="two-line">Two lines</option>
-                  </select>
-                </label>
-                <label>Preview size
-                  <select value={draft.size} onChange={(event) => updateDraft("size", event.target.value as Draft["size"])}>
-                    <option value="standard">Standard</option><option value="compact">Compact</option>
-                  </select>
-                </label>
-                <label>Lettering
-                  <select value={draft.lettering} onChange={(event) => setLettering(event.target.value as Draft["lettering"])}>
-                    {Object.entries(finishes).map(([id, name]) => <option value={id} key={id}>{name}</option>)}
-                  </select>
-                </label>
-                <label>Identifier
-                  <select value={badge} onChange={(event) => updateDraft("badge", event.target.value as PlateBadge)}>
-                    <option value="none">None</option>
-                    <option value="uk">UK flag (+{money(identifierFee("uk", side === "both"))})</option>
-                    <option value="eu" disabled={!displayOnly}>EU flag (+{money(identifierFee("eu", side === "both"))}, show only)</option>
-                  </select>
-                </label>
-                {displayOnly && badge !== "none" && badge !== "eu" && (
-                  <label>Identifier colour
-                    <select value={draft.badgeColour} onChange={(event) => updateDraft("badgeColour", event.target.value as Draft["badgeColour"])}>
-                      <option value="standard">Original</option><option value="ivory">Ivory</option>
-                    </select>
-                  </label>
-                )}
-                {displayOnly && <>
-                  <label>Display slogan
-                    <input value={draft.slogan} maxLength={25} onChange={(event) => updateDraft("slogan", event.target.value)} />
-                  </label>
-                  <label>Slogan colour
-                    <select value={draft.sloganColour} onChange={(event) => updateDraft("sloganColour", event.target.value as Draft["sloganColour"])}>
-                      <option value="ivory">Ivory</option><option value="gold">Gold</option>
-                    </select>
-                  </label>
-                </>}
-              </div>
-              <div className="finishing-toggles">
-                <button type="button" role="switch" aria-checked={border} onClick={() => updateDraft("border", !border)}>
-                  <span>Pin-line border (+{money(side === "both" ? 4 : 2.5)})</span>
-                  <i className={border ? "on" : ""} />
-                </button>
-              </div>
-              <p className="workshop-option-note">
-                {displayOnly ? "Show plates are for display only. " : "The EU identifier is available on show plates. "}
-                <a href="https://www.gov.uk/displaying-number-plates/flags-identifiers-and-stickers">Read UK identifier guidance</a>.
-              </p>
-
-              {/* Dynamic Running Total */}
-              <div className="studio-total">
-                <div>
-                  <span className="text-xs uppercase tracking-wider text-[#4a4e48] block">
-                    Estimated total
-                  </span>
-                  <strong key={pricingResult.total} className="text-3xl font-serif font-bold text-[var(--ink)]">
-                    {pricingResult.formattedTotal}
-                  </strong>
-                </div>
-                <button className="primary-button" onClick={addToBag}>
-                  Add to bag <ArrowUpRight size={19} />
-                </button>
-              </div>
-              <p className="prototype-note">
-                Preview dimensions, options and prices are subject to supplier confirmation.
-              </p>
-            </div>
-          </div>
-        </section>
+        <NightHero draft={draft} onReg={updateReg} />
+        <NightBuilder draft={draft} setDraft={setDraft} onReg={updateReg} onAdd={addToBag} error={error} />
 
         {/* 3D vs 4D Interactive Split Compare (Transformed & Proportionate) */}
         <section className="difference-section section-pad bg-[var(--paper-soft)] text-[var(--ink)] border-y border-[var(--line)]" id="difference">
@@ -583,13 +195,8 @@ export default function StudioPage() {
               {/* Left Column: Context, Selector & Specs */}
               <div className="lg:col-span-5 space-y-6">
                 <div className="space-y-3">
-                  <span className="text-xs uppercase tracking-widest text-[var(--wine)] font-semibold flex items-center gap-1.5">
-                    <Layers size={14} />
-                    Finish Comparison · Physical Relief
-                  </span>
                   <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-[1.05]">
-                    Some details<br />
-                    change <em className="italic text-[var(--wine)]">everything.</em>
+                    Compare the finishes
                   </h2>
                 </div>
                 <p className="text-base text-[#4a4e48] leading-relaxed">
@@ -753,22 +360,6 @@ export default function StudioPage() {
                     className="pointer-events-auto cursor-ew-resize"
                   />
                 </div>
-
-                {/* 3 Material Spec Callouts beneath the stage */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs text-[#4a4e48]">
-                  <div className="p-3.5 rounded-xl bg-[#fffdf9]/70 border border-[#cfcbc0]">
-                    <span className="font-semibold block text-[var(--ink)]">90° Surgical Laser Edge</span>
-                    <span className="text-[11px] text-[#636861]">Sharp architectural shadow lines under streetlights.</span>
-                  </div>
-                  <div className="p-3.5 rounded-xl bg-[#fffdf9]/70 border border-[#cfcbc0]">
-                    <span className="font-semibold block text-[var(--ink)]">BS AU 145e Road Legal</span>
-                    <span className="text-[11px] text-[#636861]">Fully ANPR camera and annual MOT certified.</span>
-                  </div>
-                  <div className="p-3.5 rounded-xl bg-[#fffdf9]/70 border border-[#cfcbc0]">
-                    <span className="font-semibold block text-[var(--ink)]">Solid Jet-Black PMMA</span>
-                    <span className="text-[11px] text-[#636861]">High-density cast acrylic that never fades or peels.</span>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -779,18 +370,7 @@ export default function StudioPage() {
             <h2>Find your plate</h2>
             <Link className="text-action" href="/collection">Shop all plates <ArrowUpRight size={18} /></Link>
           </div>
-          <div className="featured-collection">
-            {collection.slice(0, 3).map((item) => (
-              <Link key={item.id} className={`collection-piece piece-${item.id}`} href={`/collection/${item.slug}`}>
-                <CataloguePlate kind={item.id} />
-                <div className="piece-info">
-                  <h3>{item.name}</h3>
-                  <p>{item.description}</p>
-                  <span>View plate <ArrowRight size={14} className="inline" /></span>
-                </div>
-              </Link>
-            ))}
-          </div>
+          <StyleCards featured reg={reg} onApply={chosen => { selectKind(chosen); goStudio(); }} />
           <div className="more-formats" aria-label="Specialist plates">
             {collection.slice(3).map((item) => (
               <Link className="text-action" key={item.id} href={`/collection/${item.slug}`}>{item.name} <ArrowUpRight size={15} /></Link>
@@ -800,7 +380,7 @@ export default function StudioPage() {
 
         {/* Studio Section with Interactive 3D Plate & Live Price Calculator */}
         {/* Redesigned Fit Section (R2) */}
-        <FitSection reg={reg} />
+        <FitSection reg={reg} onApply={(profile, size) => { selectKind(profile); updateDraft("size", size); goStudio(); }} />
 
         {/* Material Close-Up Anatomy (R5.5) */}
         <div id="anatomy">
@@ -818,26 +398,12 @@ export default function StudioPage() {
           />
         </div>
 
-        <section className="studio-film section-pad" aria-labelledby="studio-film-title">
-          <div>
-            <h2 id="studio-film-title">The night-drive film</h2>
-            <p>A short styling film featuring a display plate.</p>
-          </div>
-          <video
-            aria-label="Night-drive film"
-            controls
-            playsInline
-            preload="none"
-            poster="/Premium-Plates/media/night-drive-poster.jpg"
-          >
-            <source src="/Premium-Plates/media/night-drive-cinematic.mp4" type="video/mp4" />
-          </video>
-        </section>
+        <NightDriveFilm />
 
         {/* Redesigned FAQ & Trust Section (R2) */}
         <FaqSection />
 
-        <ClosingSection />
+
       </main>
 
       {/* Sticky Order Bar (R5.3) */}
@@ -1005,3 +571,6 @@ export default function StudioPage() {
     </>
   );
 }
+
+
+

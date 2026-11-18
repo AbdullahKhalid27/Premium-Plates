@@ -1,0 +1,118 @@
+/* Street lighting, road markings and the colour of reflective metal. */
+:root {
+  --road: #0e0f12;
+  --asphalt: #1c1d22;
+  --signal: #ffb43a;
+  --metal: #dee0df;
+  --sign-ink: #15161a;
+  --legal-paper: #f4f0e6;
+  --paper: var(--metal);
+  --paper-soft: #eceeed;
+  --ink: var(--sign-ink);
+  --wine: #303238;
+  --wine-deep: var(--road);
+  --wine-hover: #414349;
+  --copper: var(--signal);
+  --line: #afb1b1;
+  --studio-muted: #d3d4d2;
+  --muted-text: #505358;
+  --display: "Franklin Gothic Medium", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --sans: var(--font-sans);
+  --ring: #976100;
+}
+html { scroll-padding-top: 22px; }
+body { background: var(--road); font-family: var(--sans); }
+body h1, body h2 { font-family: var(--display); letter-spacing: -.047em; }
+body h1 em, body h2 em { font-style: normal; color: inherit; }
+body ::selection { color: var(--road); background: var(--signal); }
+body :is(a,button,input,textarea,select,summary,[tabindex]):focus-visible {
+  outline: 3px solid var(--signal); outline-offset: 3px; box-shadow: 0 0 0 3px var(--road);
+}
+body input { caret-color: currentColor; }
+.masthead.workshop-masthead {
+  --workshop-cream: #f1f2f0; --workshop-brass: var(--signal);
+  min-height: 76px; border-bottom: 1px solid #3a3c42; padding-block: 0;
+  background: var(--road); color: #eef0ed; gap: clamp(10px,2vw,32px);
+}
+.workshop-masthead .workshop-wordmark, .studio-footer .workshop-wordmark {
+  font: 650 clamp(1.04rem,1.55vw,1.45rem)/1 var(--display); letter-spacing: -.046em;
+}
+.workshop-mark {
+  width: 38px; height: 24px; display: inline-grid; place-items: center;
+  border: 1.5px solid currentColor; border-radius: 3px;
+  background: radial-gradient(circle at 4px 50%,currentColor 1px,transparent 1.5px),
+              radial-gradient(circle at calc(100% - 4px) 50%,currentColor 1px,transparent 1.5px);
+  color: #e9ebe7; transform: skewX(-6deg);
+}
+.workshop-mark span { display: none; }
+.workshop-mark::before { content: "W"; font: 800 14px/1 var(--display); letter-spacing: -.15em; margin-left:-2px; }
+.workshop-masthead .main-nav { align-self: stretch; gap: 0; margin-inline: auto; }
+.workshop-masthead .main-nav > a {
+  padding-inline: clamp(12px,1.45vw,24px); font-size: .855rem; font-weight: 500;
+  color: #c9cbcc; height: 100%;
+}
+.workshop-masthead .main-nav > a::after {
+  inset: auto 18px -1px; height: 2px; opacity: 0; transition: opacity .18s ease;
+}
+.workshop-masthead .main-nav > a:is(:hover,:focus-visible)::after { opacity: 1; }
+body:has(#difference[data-lamp-on]) .main-nav a[href="#difference"]::after,
+body:has(#lookbook[data-lamp-on]) .main-nav a[href="#lookbook"]::after,
+body:has(#questions[data-lamp-on]) .main-nav a[href="#questions"]::after { opacity:1; }
+.workshop-masthead .masthead-actions { align-items:center; gap:10px; }
+.workshop-masthead .workshop-nav-builder, .primary-button {
+  border: 0; background: var(--signal); color: var(--road);
+  font-weight: 650; border-radius: 3px; padding-inline: 16px;
+}
+.workshop-masthead .workshop-nav-builder:hover,.primary-button:hover { background: #ffc566; color:var(--road); }
+.workshop-masthead .bag-trigger { border-left:1px solid #54565b; padding-inline: 12px 0; }
+.workshop-masthead .menu-trigger { color: #e1e2df; }
+.catalogue-page,.release-page { background: var(--metal); color: var(--ink); }
+.catalogue-page { max-width:none; padding-inline:max(var(--space-page),calc((100% - 1400px)/2)); }
+.catalogue-specimen { background: radial-gradient(ellipse at 50% 10%, #4b4e51, var(--asphalt) 75%); }
+.catalogue-nav a:last-child { border-bottom:1px solid var(--signal); }
+.workshop-opening { background:var(--road); border-color:#3e4148; color:#f4f4f1; }
+.workshop-opening .opening-entry input { background:var(--asphalt); border-color:#666970; color:#f1f1ef; }
+.workshop-opening .opening-entry input::placeholder { color:#b9babf; }
+#studio { background:var(--asphalt); }
+#difference,#fit { background:var(--metal); color:var(--sign-ink); }
+#collection,#lookbook { background:var(--road); color:#f0f1ee; }
+#collection .text-action { color:#e3e5e1; }
+#questions { background:var(--legal-paper); color:var(--sign-ink); }
+.studio-footer { color:#e2e3df; background:var(--road); border-top:1px solid #3e4046; }
+.studio-footer .footer-bottom { color:#c0c3c5; border-color:#3e4046; }
+.navigation-sheet[data-slot="sheet-content"] { background:var(--asphalt); }
+.release-page { margin:0 auto; width:100%; }
+.way-road { position:relative; --rail-x:clamp(6px,1.35vw,28px); overflow:clip; }
+.way-road > section { position:relative; }
+.way-road .way-lamp {
+  pointer-events:none; position:absolute; z-index:2; top:0; bottom:0; left:var(--rail-x);
+  width:1px; background:linear-gradient(#84858999,#83848780);
+}
+.way-lamp::before {
+  content:""; position:absolute; top:clamp(30px,5vw,80px); left:0; width:10px; height:9px;
+  border-left:1px solid #85878b; border-top:2px solid #85878b; transform:skewY(-19deg);
+}
+.way-lamp::after {
+  content:""; position:absolute; top:calc(clamp(30px,5vw,80px) - 2px); left:6px;
+  width:8px; height:3px; border-radius:50%; background:#919398;
+}
+[data-lamp-on] > .way-lamp::after { background:var(--signal); box-shadow:0 3px 9px 2px #ffb43a66; }
+.way-road > section[data-lamp-on]:not(#home) > .way-lamp {
+  background:linear-gradient(to bottom,#83848780 calc(var(--pool-y,80px) - 90px),#f0bf73 var(--pool-y,80px),#83848780 calc(var(--pool-y,80px) + 90px));
+}
+.way-road > section[data-lamp-on]:not(#home) .number-plate::after {
+  background:linear-gradient(110deg,transparent 18%,#fff6 40%,transparent 61%);
+}
+@media(max-width:720px) {
+  .masthead.workshop-masthead { min-height:62px; padding-inline:16px; }
+  .workshop-masthead .masthead-actions { gap: 4px; }
+  .workshop-mark { width:29px; height:20px; }
+  .workshop-masthead .workshop-wordmark { gap:7px; }
+  .workshop-masthead .bag-trigger { border:0; padding:0; }
+  .way-lamp::before { width:5px; }
+  .way-lamp::after { left:3px; width:5px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .way-road > section[data-lamp-on]:not(#home) > .way-lamp { background:#83848780; }
+}

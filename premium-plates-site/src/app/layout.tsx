@@ -1,18 +1,11 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import StreetSpine from "@/components/StreetSpine";
 import localFont from "next/font/local";
 import "./redesign.css";
 import "./foundation.css";
 import "./workshop.css";
+import "./road.css";
 import { storefrontName } from "@/config/catalogue";
-
-// Modern British automotive sans-serif
-const modernSans = Plus_Jakarta_Sans({
-  variable: "--font-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
 
 // Authentic UK BS AU 145e Charles Wright registration font
 const charlesWright = localFont({
@@ -42,9 +35,9 @@ export default function RootLayout({
   return (
     <html
       lang="en-GB"
-      className={`${modernSans.variable} ${charlesWright.variable} h-full antialiased`}
+      className={`${charlesWright.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
+      <body className="min-h-full flex flex-col font-sans">{children}<StreetSpine /></body>
     </html>
   );
 }

@@ -25,7 +25,7 @@ export const collection = (Object.keys(productDetails) as PlateKind[]).map((id) 
 }));
 
 export type Lettering = keyof typeof finishes;
-export type Vehicle = "car" | "motorcycle";
+export type Vehicle = "car" | "motorcycle" | "van";
 export type Layout = "single-line" | "two-line";
 export type PlateSize = "standard" | "compact";
 export type BaseMaterial = "acrylic" | "aluminium" | "abs";
@@ -60,10 +60,10 @@ export function isDraft(value: unknown): value is Draft {
   return typeof draft.reg === "string" && /^[A-Z0-9 ]{0,8}$/.test(draft.reg) &&
     collection.some(({ id }) => id === draft.kind) &&
     (draft.side === "both" || draft.side === "front" || draft.side === "rear") &&
-    (draft.vehicle === "car" || draft.vehicle === "motorcycle") &&
+    (["car", "motorcycle", "van"] as const).some(v => v === draft.vehicle) &&
     (draft.kind === "moto"
       ? draft.vehicle === "motorcycle" && draft.layout === "two-line" && draft.side === "rear"
-      : draft.vehicle === "car" && (draft.layout === "single-line" || draft.layout === "two-line")) &&
+      : (draft.vehicle === "car" || draft.vehicle === "van") && (draft.layout === "single-line" || draft.layout === "two-line")) &&
     (draft.size === "standard" || draft.size === "compact") &&
     (draft.material === "acrylic" || draft.material === "aluminium" || draft.material === "abs") &&
     (draft.lettering === "regular" || draft.lettering === "gel" || draft.lettering === "acrylic") &&
@@ -89,12 +89,18 @@ export function applyProduct(draft: Draft, kind: PlateKind): Draft {
   return {
     ...draft, kind, lettering,
     side: motorcycle ? "rear" : draft.side,
-    vehicle: motorcycle ? "motorcycle" : "car",
+    vehicle: motorcycle ? "motorcycle" : draft.vehicle === "van" ? "van" : "car",
     layout: motorcycle ? "two-line" : "single-line",
     size: kind === "short" || motorcycle ? "compact" : "standard",
     badge: kind !== "show" && draft.badge === "eu" ? "none" : draft.badge,
     badgeColour: kind === "show" ? draft.badgeColour : "standard",
+    slogan: kind === "show" ? draft.slogan : "",
+    sloganColour: kind === "show" ? draft.sloganColour : "ivory",
   };
+}
+
+export function restoredDraft(draft: Draft): Draft {
+  return draft.kind === "show" ? draft : { ...draft, badgeColour: "standard", slogan: "", sloganColour: "ivory" };
 }
 
 export function priceDraft(draft: Draft, quantity = 1) {
@@ -114,3 +120,5 @@ export function applyLettering(draft: Draft, lettering: Lettering): Draft {
 }
 
 export const draftKey = "number-plate-workshop:draft:v1";
+
+

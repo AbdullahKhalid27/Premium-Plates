@@ -20,6 +20,7 @@ export interface PlateProps {
   border?: boolean;
   options?: PlateOptions;
   className?: string;
+  stamp?: boolean;
 }
 
 export default function Plate({
@@ -30,6 +31,7 @@ export default function Plate({
   border = false,
   options,
   className = "",
+  stamp = false,
 }: PlateProps) {
   const text = reg.trim() || "YOUR REG";
   const displaySide = side === "both" ? "rear" : side;
@@ -43,6 +45,8 @@ export default function Plate({
   const dimensions = options?.size
     ? previewDimensions({ kind: kind as PlateKind, layout: twoLines ? "two-line" : "single-line", size: options.size })
     : undefined;
+
+  const letters = (line: string) => stamp ? Array.from(line, (char, i) => <i key={i + char} className="stamp-letter">{char}</i>) : line;
 
   return (
     <div
@@ -78,9 +82,10 @@ export default function Plate({
         </span>
       )}
       <span className="plate-lettering">
-        {twoLines ? lines.filter(Boolean).map((line, index) => <span key={index}>{line}</span>) : text}
+        {twoLines ? lines.filter(Boolean).map((line, index) => <span key={index}>{letters(line)}</span>) : letters(text)}
       </span>
       <small data-slogan-colour={options?.sloganColour}>{options?.slogan || "WORKSHOP · PREVIEW"}</small>
     </div>
   );
 }
+

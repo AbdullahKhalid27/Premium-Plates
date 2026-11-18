@@ -1,4 +1,11 @@
 # Design language and prototype review
+
+## Current client decision, 18 November 2026
+
+Complete F3 corrections and the F1–F3 source audit, ship F3 for review, then research, code and ship F4 followed by F5. Run the accumulated F1–F5 checks and mobile/desktop visual evidence after F5. Keep required GitHub CI enabled. Main publication needs explicit merge approval. Phase 6 and Ponytail are deferred.
+
+Current storefront colours are road black #0E0F12, asphalt #1C1D22 and sodium amber #FFB43A for action, glow and active state. Alternate section surfaces. Reserve cream paper for official guidance. One streetlamp spine connects sections outside the hero backdrop. Limit continuous section animations to comparison, anatomy and film. Keep registration stamping, accessible controls and reduced-motion fallbacks. Use expand-in-place cards. The builder uses a drawn bumper and the optional film plays muted in view. Historical descriptions below record earlier design and checkpoint decisions; this section governs current work.
+
 Phase 1 · Start with [the playground](Playground/index.html). Use the direction links in the masthead to compare. Choose one scene after trying the same registration, front and rear faces, and the three finishes in each. Retain the approved MVP’s product-specific letterform, live studio and finish comparison.
 |Direction|Canvas · type · accent|Composition and type|
 |---|---|---|
