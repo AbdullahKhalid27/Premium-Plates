@@ -27,6 +27,8 @@ export default function FaqSection() {
               <summary>{question}<Plus size={18} aria-hidden="true"/></summary>
               <div className="guidance-answer">
                 {rule ? <>
+                  {rule === "show" && <p>Use a show plate for a static exhibition or photo shoot.</p>}
+                  {rule === "documents" && <p>A driving licence can establish your name and address. The V5C shows your entitlement to that registration.</p>}
                   <p>{plateRules[rule].reason}</p><p>{plateRules[rule].action}</p>
                   <a href={ruleSources[plateRules[rule].source].url}>{ruleSources[plateRules[rule].source].label} <span aria-hidden="true">↗</span></a>
                 </> : <p>In the order preview, payment comes first. Staff check the evidence before releasing the plates for manufacture. A delivery estimate depends on the supplier and delivery service. This preview gives no dispatch date.</p>}
@@ -38,3 +40,4 @@ export default function FaqSection() {
     </section>
   );
 }
+

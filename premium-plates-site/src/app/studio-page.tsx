@@ -1,5 +1,7 @@
 "use client";
 
+import BagDrawer from "@/components/BagDrawer";
+import { parseBasket, type BasketLine } from "@/lib/basket";
 import Link from "next/link";
 import NightBuilder, { NightHero } from "@/components/NightBuilder";
 import packageInfo from "../../package.json";
@@ -57,7 +59,9 @@ export default function StudioPage() {
   }
   const [menuOpen, setMenuOpen] = useState(false);
   const [bagOpen, setBagOpen] = useState(false);
-  const [bag, setBag] = useState<(Draft & { quantity: number }) | null>(null);
+  const [items, setItems] = useState<BasketLine[]>([]);
+  const [editing, setEditing] = useState<string | null>(null);
+  const [writable, setWritable] = useState(true);
   const [error, setError] = useState("");
   const menuTrigger = useRef<HTMLButtonElement>(null);
 
@@ -68,9 +72,7 @@ export default function StudioPage() {
       if (stored) {
         const saved = JSON.parse(stored) as { draft?: unknown; bag?: Draft & { quantity: number } } | null;
         if (isDraft(saved?.draft)) nextDraft = restoredDraft(saved.draft);
-        if (saved?.bag && isDraft(saved.bag) && Number.isSafeInteger(saved.bag.quantity) && saved.bag.quantity > 0) {
-          setBag({ ...restoredDraft(saved.bag), quantity: saved.bag.quantity });
-        }
+        setItems(parseBasket(saved));
       }
     } catch {
       // A disabled or unavailable browser store leaves the draft in memory.
@@ -91,15 +93,15 @@ export default function StudioPage() {
   useEffect(() => {
     if (!draftReady) return;
     try {
-      sessionStorage.setItem(draftKey, JSON.stringify({ draft, bag }));
+      sessionStorage.setItem(draftKey, JSON.stringify({ draft, items }));
     } catch {
-      // The builder remains usable without browser storage.
+      setWritable(false);
     }
-  }, [draft, bag, draftReady]);
+  }, [draft, items, draftReady]);
 
   // Dynamic pricing calculation from centralized catalog
   const pricingResult = priceDraft(draft);
-  const bagPricing = bag ? priceDraft(bag, bag.quantity) : null;
+  const count = items.reduce((sum, line) => sum + line.quantity, 0);
 
   const selected = collection.find((item) => item.id === kind) || collection[2];
   const updateReg = (value: string) => {
@@ -126,7 +128,9 @@ export default function StudioPage() {
       requestAnimationFrame(() => document.getElementById("studio-reg")?.focus());
       return;
     }
-    setBag({ ...draft, quantity: 1 });
+    const id = editing ?? crypto.randomUUID();
+    setItems(lines => editing ? lines.map(line => line.id === editing ? {...draft,id,quantity:line.quantity} : line) : [...lines,{...draft,id,quantity:1}]);
+    setEditing(null);
     setBagOpen(true);
   };
 
@@ -150,10 +154,10 @@ export default function StudioPage() {
           <button
             className="bag-trigger"
             onClick={() => setBagOpen(true)}
-            aria-label={`Open bag, ${bag?.quantity ?? 0} items`}
+            aria-label={`Open bag, ${count} items`}
           >
             <ShoppingBag size={18} />
-            <span>{bag?.quantity ?? 0}</span>
+            <span>{count}</span>
           </button>
           <button
             ref={menuTrigger}
@@ -289,98 +293,9 @@ export default function StudioPage() {
       </Sheet>
 
       {/* Shopping Bag Drawer with Itemized Total */}
-      <Sheet open={bagOpen} onOpenChange={setBagOpen}>
-        <SheetContent className="pp-sheet basket-sheet">
-          <SheetTitle className="text-3xl font-serif">Your bag</SheetTitle>
-          <SheetDescription className="text-xs">
-            Review your plate configuration and estimated total.
-          </SheetDescription>
-
-          {bag && bagPricing ? (
-            <>
-              <div className="bag-plate my-6 p-6 rounded-lg bg-[var(--paper-soft)]">
-                <Plate
-                  reg={bag.reg}
-                  kind={bag.kind}
-                  side={bag.side === "front" ? "front" : "rear"}
-                  badge={bag.badge}
-                  border={bag.border}
-                  options={{ ...bag, slogan: bag.kind === "show" ? bag.slogan : undefined }}
-                />
-              </div>
-
-              <div className="bag-description space-y-1">
-                <h3 className="text-xl font-serif font-bold text-[var(--ink)]">
-                  {collection.find((i) => i.id === bag.kind)?.name} plate
-                </h3>
-                <p className="text-xs text-[#4a4e48]">
-                  {bag.side === "both" ? "Front & Rear Pair" : `${bag.side} plate`} · Registration:{" "}
-                  <span className="font-mono font-bold text-[var(--ink)]">{bag.reg}</span>
-                </p>
-                <p className="text-xs text-[var(--muted-text)]">{bag.kind === "show" ? "Display only" : "Road-style preview"} · {finishes[bag.lettering]} · {bag.layout.replace("-", " ")} · {bag.size} · {bag.material.toUpperCase()}</p>
-                {bag.badge !== "none" && <p className="text-xs">{bag.badge.toUpperCase()} identifier (+{money(identifierFee(bag.badge, bag.side === "both"))})</p>}
-              </div>
-
-              <div className="bag-quantity my-6 flex items-center gap-4">
-                <span className="text-xs uppercase tracking-wider text-[#4a4e48]">Quantity</span>
-                <div className="flex items-center border border-[#c8c4ba] rounded">
-                  <button
-                    aria-label="Decrease quantity"
-                    className="p-2 hover:bg-[var(--paper-soft)]"
-                    onClick={() =>
-                      setBag(bag.quantity > 1 ? { ...bag, quantity: bag.quantity - 1 } : null)
-                    }
-                  >
-                    <Minus size={14} />
-                  </button>
-                  <span className="px-3 font-mono font-bold text-sm">{bag.quantity}</span>
-                  <button
-                    aria-label="Increase quantity"
-                    className="p-2 hover:bg-[var(--paper-soft)]"
-                    onClick={() => setBag({ ...bag, quantity: bag.quantity + 1 })}
-                  >
-                    <Plus size={14} />
-                  </button>
-                </div>
-                <button
-                  className="remove-item ml-auto text-xs text-[var(--wine)] underline"
-                  onClick={() => setBag(null)}
-                >
-                  Remove
-                </button>
-              </div>
-
-              <div className="bag-total pt-4 border-t border-[var(--line)] flex justify-between items-center">
-                <span className="text-sm font-medium">Estimated total</span>
-                <b className="text-2xl font-serif font-bold text-[var(--ink)]">
-                  {bagPricing.formattedTotal}
-                </b>
-              </div>
-
-              <ul className="mt-2 space-y-1 text-xs text-[var(--muted-text)]">
-                {bagPricing.breakdown.map(({ label, amount }) => (
-                  <li key={label} className="flex justify-between gap-3"><span>{label}</span><span>{money(amount)}</span></li>
-                ))}
-              </ul>
-
-              <p className="workshop-option-note">Checkout will be available after catalogue and fulfilment approval.</p>
-            </>
-          ) : (
-            <div className="empty-bag py-16 text-center space-y-4">
-              <ShoppingBag size={48} className="mx-auto text-[#7d8c7c]" strokeWidth={1} />
-              <h3 className="text-2xl font-serif">Your bag is empty.</h3>
-              <p className="text-xs text-[#62645f] max-w-xs mx-auto">
-                Choose your options in the plate builder and select Add to bag.
-              </p>
-            </div>
-          )}
-        </SheetContent>
-      </Sheet>
+      <BagDrawer open={bagOpen} onOpen={setBagOpen} items={items} writable={writable}
+        edit={line => {setEditing(line.id); setDraft(line); setBagOpen(false); goStudio();}}
+        quantity={(id,quantity) => setItems(lines => quantity ? lines.map(line => line.id===id ? {...line,quantity} : line) : lines.filter(line => line.id!==id))}/>
     </>
   );
 }
-
-
-
-
-
