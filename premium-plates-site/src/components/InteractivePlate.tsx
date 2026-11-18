@@ -1,17 +1,17 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import Plate from "./Plate";
-import type { PlateKind, PlateSide } from "../config/pricing";
+import Plate, { type PlateOptions } from "./Plate";
+import type { PlateBadge, PlateKind, PlateSide } from "../config/pricing";
 
 interface InteractivePlateProps {
   reg: string;
   kind: PlateKind;
   side: PlateSide;
-  badge?: boolean;
+  badge?: PlateBadge;
   border?: boolean;
+  options?: PlateOptions;
   angle: number;
-  lightPosition: number;
   headlights: boolean;
 }
 
@@ -19,10 +19,10 @@ export default function InteractivePlate({
   reg,
   kind,
   side,
-  badge = false,
+  badge = "none",
   border = false,
+  options,
   angle,
-  lightPosition,
   headlights,
 }: InteractivePlateProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -38,9 +38,8 @@ export default function InteractivePlate({
     const px = (e.clientX - rect.left) / rect.width;
     const py = (e.clientY - rect.top) / rect.height;
 
-    // Subtle 3D tilt angles
-    const rotateY = (px - 0.5) * 18;
-    const rotateX = (0.5 - py) * 14;
+    const rotateY = (px - 0.5) * 46;
+    const rotateX = (0.5 - py) * 38;
 
     setTilt({ x: rotateX, y: rotateY });
     setLight({ x: px * 100, y: py * 100, opacity: 0.6 });
@@ -52,14 +51,15 @@ export default function InteractivePlate({
   };
 
   // Gel and 4D finishes have stronger specular reflections
-  const is3D = kind === "gel" || kind === "acrylic";
+  const lettering = options?.lettering || kind;
+  const is3D = lettering === "gel" || lettering === "acrylic";
 
   return (
     <div
       ref={containerRef}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
-      className="relative select-none perspective-[800px]"
+      className="inspection-object relative select-none perspective-[800px]"
     >
       <div
         className="w-full transition-transform duration-150 ease-out"
@@ -74,6 +74,7 @@ export default function InteractivePlate({
           side={side}
           badge={badge}
           border={border}
+          options={options}
           className="shadow-2xl"
         />
 
@@ -82,7 +83,7 @@ export default function InteractivePlate({
           aria-hidden="true"
           style={{
             opacity: headlights ? 0.85 : is3D ? 0.55 : 0.28,
-            background: `radial-gradient(ellipse at ${lightPosition}% ${headlights ? 70 : 0}%, #fff8e3 0%, transparent ${headlights ? 48 : 68}%)`,
+            background: `radial-gradient(ellipse at 35% ${headlights ? 70 : 0}%, #fff8e3 0%, transparent ${headlights ? 48 : 68}%)`,
           }}
         />
 

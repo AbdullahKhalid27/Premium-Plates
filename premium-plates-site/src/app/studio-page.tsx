@@ -4,12 +4,11 @@ import Link from "next/link";
 import Image from "next/image";
 import packageInfo from "../../package.json";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowUpRight,
   ArrowRight,
   Check,
-  ChevronDown,
   Menu,
   ShoppingBag,
   Plus,
@@ -23,7 +22,12 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import Plate from "@/components/Plate";
+import Plate, { type PlateOptions } from "@/components/Plate";
+import CataloguePlate from "@/components/CataloguePlate";
+import {
+  applyLettering, applyProduct, collection, defaultDraft, draftKey, finishes,
+  isDraft, motorcyclePhoto, previewDimensions, priceDraft, storefrontName, type Draft,
+} from "@/config/catalogue";
 import PlateInspection, { type Inspection } from "@/components/PlateInspection";
 import FitSection from "@/components/FitSection";
 import FaqSection from "@/components/FaqSection";
@@ -33,30 +37,14 @@ import LookbookGallery from "@/components/LookbookGallery";
 import MaterialCloseup from "@/components/MaterialCloseup";
 import { businessFacts } from "@/config/businessFacts";
 import {
-  calculateTotal,
+  identifierFee,
+  type PlateBadge,
   type PlateKind,
   type PlateSide,
 } from "@/config/pricing";
 import { checkLegality } from "@/lib/legalityChecker";
 
-const collection: Array<{
-  id: PlateKind;
-  name: string;
-  description: string;
-  price: number;
-  finish: string;
-  dimension: string;
-}> = [
-  { id: "regular", name: "Regular", description: "Precision-pressed flat British Standard acrylic.", price: 19.99, finish: "Flat Acrylic", dimension: "520 × 111 mm" },
-  { id: "gel", name: "3D Gel", description: "Tactile curved polyurethane resin dome with high UV gloss.", price: 29.99, finish: "Domed Resin", dimension: "520 × 111 mm" },
-  { id: "acrylic", name: "4D Acrylic", description: "Surgical laser-cut 3mm solid-black acrylic blocks.", price: 39.99, finish: "Raised 3mm", dimension: "520 × 111 mm" },
-  { id: "short", name: "Short", description: "Proportionally trimmed outer margins for 5-6 digit marks.", price: 24.99, finish: "Short Form", dimension: "Custom Profile" },
-  { id: "hex", name: "Hex", description: "Angular beveled profile contoured for performance diffusers.", price: 34.99, finish: "Hexagonal Cut", dimension: "Shaped Profile" },
-  { id: "show", name: "Show", description: "Track, exhibition, and photoshoot bespoke styling.", price: 27.99, finish: "Show Studio", dimension: "Custom Display" },
-  { id: "moto", name: "Motorbike", description: "Dual-row square layout for imports and two-wheelers.", price: 22.99, finish: "Two-Tier Square", dimension: "178 × 229 mm" },
-];
-
-const defaultInspection: Inspection = { face: "rear", angle: -12, light: 35, headlights: false };
+const defaultInspection: Inspection = { face: "rear", angle: -14, headlights: false };
 
 function CinematicFit({
   reg,
@@ -64,16 +52,18 @@ function CinematicFit({
   side,
   badge,
   border,
+  options,
   replay,
 }: {
   reg: string;
   kind: PlateKind;
   side: "front" | "rear" | "both";
-  badge: boolean;
+  badge: PlateBadge;
   border: boolean;
+  options: PlateOptions;
   replay: number;
 }) {
-  const [fitted, setFitted] = useState({ reg, kind, side, badge, border });
+  const [fitted, setFitted] = useState({ reg, kind, side, badge, border, options });
   const [take, setTake] = useState(0);
   const [installing, setInstalling] = useState(false);
   const initial = useRef(true);
@@ -85,14 +75,14 @@ function CinematicFit({
     }
     const timer = window.setTimeout(
       () => {
-        setFitted({ reg, kind, side, badge, border });
+        setFitted({ reg, kind, side, badge, border, options });
         setTake((value) => value + 1);
         setInstalling(true);
       },
       replay ? 60 : 220
     );
     return () => window.clearTimeout(timer);
-  }, [reg, kind, side, badge, border, replay]);
+  }, [reg, kind, side, badge, border, options, replay]);
 
   useEffect(() => {
     if (!installing) return;
@@ -116,8 +106,9 @@ function CinematicFit({
 
 function Brand() {
   return (
-    <a className="brand-lockup" href="#home" aria-label="Plate Studio home">
-      <span>Plate Studio<span className="brand-label">Number plates, made yours.</span></span>
+    <a className="workshop-wordmark" href="#home" aria-label={`${storefrontName} home`}>
+      <span className="workshop-mark" aria-hidden="true"><span /><span /></span>
+      <span>{storefrontName}</span>
     </a>
   );
 }
@@ -126,27 +117,25 @@ const money = (value: number) =>
   new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(value);
 
 export default function StudioPage() {
-  const [reg, setReg] = useState("PP24 LUX");
-  const [kind, setKind] = useState<PlateKind>("acrylic");
-  const [side, setSide] = useState<PlateSide>("both");
-  const [badge, setBadge] = useState(false);
-  const [border, setBorder] = useState(false);
-  const [material, setMaterial] = useState("acrylic");
+  const [draft, setDraft] = useState<Draft>(defaultDraft);
+  const [draftReady, setDraftReady] = useState(false);
+  const { reg, kind, side, badge, border, material } = draft;
+  const displayOnly = kind === "show";
+  function updateDraft<K extends keyof Draft>(key: K, value: Draft[K]) {
+    setDraft((previous) => ({ ...previous, [key]: value }));
+  }
+  const plateOptions = useMemo<PlateOptions>(() => ({
+    layout: draft.layout, size: draft.size, material: draft.material, lettering: draft.lettering,
+    badgeColour: draft.badgeColour,
+    slogan: displayOnly ? draft.slogan : undefined,
+    sloganColour: displayOnly ? draft.sloganColour : undefined,
+  }), [displayOnly, draft.layout, draft.size, draft.material, draft.lettering, draft.badgeColour, draft.slogan, draft.sloganColour]);
   const [view, setView] = useState<"car" | "detail">("car");
   const [inspection, setInspection] = useState<Inspection>(defaultInspection);
   const [fitReplay, setFitReplay] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [bagOpen, setBagOpen] = useState(false);
-  const [dropdown, setDropdown] = useState(false);
-  const [bag, setBag] = useState<{
-    reg: string;
-    kind: PlateKind;
-    side: PlateSide;
-    badge: boolean;
-    border: boolean;
-    price: number;
-    quantity: number;
-  } | null>(null);
+  const [bag, setBag] = useState<(Draft & { quantity: number }) | null>(null);
   const [error, setError] = useState("");
   const [compare, setCompare] = useState(55);
   const [comparePair, setComparePair] = useState<"reg-4d" | "gel-4d" | "reg-gel">("reg-4d");
@@ -154,6 +143,42 @@ export default function StudioPage() {
   const [isDraggingCompare, setIsDraggingCompare] = useState(false);
   const compareAreaRef = useRef<HTMLDivElement>(null);
   const menuTrigger = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    let nextDraft = defaultDraft;
+    try {
+      const stored = sessionStorage.getItem(draftKey);
+      if (stored) {
+        const saved = JSON.parse(stored) as { draft?: unknown; bag?: Draft & { quantity: number } } | null;
+        if (isDraft(saved?.draft)) nextDraft = saved.draft;
+        if (saved?.bag && isDraft(saved.bag) && Number.isSafeInteger(saved.bag.quantity) && saved.bag.quantity > 0) {
+          setBag(saved.bag);
+        }
+      }
+    } catch {
+      // A disabled or unavailable browser store leaves the draft in memory.
+    }
+    const slug = new URLSearchParams(window.location.search).get("product");
+    const product = collection.find((item) => item.slug === slug);
+    if (product) {
+      nextDraft = applyProduct(nextDraft, product.id);
+      const url = new URL(window.location.href);
+      url.searchParams.delete("product");
+      window.history.replaceState(null, "", url);
+    }
+    setDraft(nextDraft);
+    if (nextDraft.kind === "moto") setView("detail");
+    setDraftReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!draftReady) return;
+    try {
+      sessionStorage.setItem(draftKey, JSON.stringify({ draft, bag }));
+    } catch {
+      // The builder remains usable without browser storage.
+    }
+  }, [draft, bag, draftReady]);
 
   const updateCompareFromPointer = (clientX: number) => {
     if (!compareAreaRef.current) return;
@@ -164,32 +189,27 @@ export default function StudioPage() {
   };
 
   // Dynamic pricing calculation from centralized catalog
-  const pricingResult = calculateTotal({
-    kind,
-    side,
-    badge: badge ? "uk" : "none",
-    border,
-    upgrades: material === "aluminium" ? ["pressedAluminium"] : [],
-  });
+  const pricingResult = priceDraft(draft);
+  const bagPricing = bag ? priceDraft(bag, bag.quantity) : null;
 
   // Dynamic UK road-legality check on active registration
   const legality = checkLegality(reg);
 
   const selected = collection.find((item) => item.id === kind) || collection[2];
   const previewSide = side === "front" ? "front" : "rear";
+  const dimensions = previewDimensions(draft).join(" × ") + " mm";
+  const setLettering = (lettering: Draft["lettering"]) =>
+    setDraft((previous) => applyLettering(previous, lettering));
 
   const updateReg = (value: string) => {
     const formatted = value.replace(/[^a-zA-Z0-9 ]/g, "").toUpperCase().slice(0, 8);
-    setReg(formatted);
+    updateDraft("reg", formatted);
     setError("");
   };
 
   const selectKind = (id: PlateKind) => {
-    setKind(id);
-    if (id === "moto") {
-      setView("detail");
-      setSide("rear");
-    }
+    setDraft((previous) => applyProduct(previous, id));
+    if (id === "moto") setView("detail");
   };
 
   const goStudio = () =>
@@ -203,15 +223,7 @@ export default function StudioPage() {
       document.getElementById("studio-reg")?.focus();
       return;
     }
-    setBag({
-      reg,
-      kind,
-      side,
-      badge,
-      border,
-      price: pricingResult.total,
-      quantity: 1,
-    });
+    setBag({ ...draft, quantity: 1 });
     setBagOpen(true);
   };
 
@@ -222,51 +234,16 @@ export default function StudioPage() {
       </a>
 
       {/* Masthead Header */}
-      <header className="masthead">
+      <header className="masthead workshop-masthead">
         <Brand />
         <nav className="main-nav" aria-label="Main navigation">
-          <div
-            className="nav-dropdown"
-            onMouseEnter={() => setDropdown(true)}
-            onMouseLeave={() => setDropdown(false)}
-            onBlur={(event) => {
-              if (!event.currentTarget.contains(event.relatedTarget)) setDropdown(false);
-            }}
-            onKeyDown={(event) => {
-              if (event.key === "Escape") {
-                setDropdown(false);
-                event.currentTarget.querySelector("button")?.focus();
-              }
-            }}
-          >
-            <button aria-expanded={dropdown} aria-controls="collection-options" onClick={() => setDropdown(!dropdown)}>
-              The collection <ChevronDown size={14} />
-            </button>
-            {dropdown && (
-              <div className="collection-menu" id="collection-options">
-                {collection.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      selectKind(item.id);
-                      setDropdown(false);
-                      goStudio();
-                    }}
-                  >
-                    <span>{item.name}</span>
-                    <span className="text-xs text-[var(--wine)] font-mono">From {money(item.price)}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-          <a href="#studio">Plate studio</a>
-          <a href="#difference">The difference</a>
-          <a href="#anatomy">Material anatomy</a>
+          <Link href="/collection">Shop plates</Link>
+          <a href="#difference">Compare finishes</a>
           <a href="#lookbook">Lookbook</a>
-          <a href="#questions">Good to know</a>
+          <a href="#questions">FAQs</a>
         </nav>
         <div className="masthead-actions">
+          <a className="workshop-nav-builder" href="#studio">Build a plate <ArrowUpRight size={15} /></a>
           <button
             className="bag-trigger"
             onClick={() => setBagOpen(true)}
@@ -289,10 +266,10 @@ export default function StudioPage() {
       </header>
 
       <main id="main-content" tabIndex={-1}>
-        <section className="studio-opening" id="home">
+        <section className="studio-opening workshop-opening" id="home">
           <div className="opening-copy">
-            <h1>Give your car<br /> <em>its finishing touch.</em></h1>
-            <p>Compare flat, 3D gel and 4D acrylic lettering on your registration.</p>
+            <h1>Make the road<br /> <em>your own.</em></h1>
+            <p>See how your registration looks in flat, 3D gel or 4D acrylic lettering.</p>
             <div className="opening-entry">
               <label htmlFor="hero-reg">Enter your registration</label>
               <input
@@ -309,23 +286,24 @@ export default function StudioPage() {
             <div className="opening-finishes" role="group" aria-label="Preview finish">
               <span>Lettering finish</span>
               <div>
-                {collection.slice(0, 3).map(({ id, name }) => (
+                {(Object.keys(finishes) as Draft["lettering"][]).map((id) => (
                   <button
                     key={id}
                     type="button"
-                    aria-pressed={kind === id}
-                    onClick={() => selectKind(id)}
+                    aria-pressed={draft.lettering === id}
+                    onClick={() => setLettering(id)}
                   >
-                    {id === "regular" ? "Flat" : name}
+                    {finishes[id]}
                   </button>
                 ))}
               </div>
             </div>
-            <a className="primary-button" href="#studio">
-              Open the builder <ArrowUpRight size={18} />
-            </a>
+            <div className="opening-actions">
+              <a className="primary-button" href="#studio">Build a plate <ArrowUpRight size={18} /></a>
+              <Link href="/collection">Shop plates</Link>
+            </div>
           </div>
-          <PlateInspection reg={reg} kind={kind} badge={badge} border={border} settings={inspection} onChange={setInspection} />
+          <PlateInspection reg={reg} kind={kind} badge={badge} border={border} options={plateOptions} settings={inspection} onChange={setInspection} />
         </section>
 
         <section className="studio-section" id="studio">
@@ -339,7 +317,7 @@ export default function StudioPage() {
             <div className="studio-visual">
               <div className="preview-toolbar">
                 <span className="font-medium">
-                  {selected.name} · {selected.finish}
+                  {selected.name} · {finishes[draft.lettering]} lettering
                 </span>
                 <div className="view-switch" aria-label="Preview mode">
                   <button
@@ -353,7 +331,7 @@ export default function StudioPage() {
                     aria-pressed={view === "detail"}
                     onClick={() => setView("detail")}
                   >
-                    <Layers size={15} /> 3D Light Studio
+                    <Layers size={15} /> Inspect plate
                   </button>
                 </div>
               </div>
@@ -375,6 +353,7 @@ export default function StudioPage() {
                         side={previewSide}
                         badge={badge}
                         border={border}
+                        options={plateOptions}
                         replay={fitReplay}
                       />
                     </div>
@@ -391,15 +370,15 @@ export default function StudioPage() {
                   </div>
                 </>
               ) : (
-                <PlateInspection reg={reg} kind={kind} badge={badge} border={border} settings={inspection} onChange={setInspection} />
+                <PlateInspection reg={reg} kind={kind} badge={badge} border={border} options={plateOptions} settings={inspection} onChange={setInspection} />
               )}
 
               <div className="preview-spec">
                 <span>
-                  <b>{selected.dimension}</b>Profile Size
+                  <b>{dimensions}</b>Preview dimensions
                 </span>
                 <span>
-                  <b>{material === "aluminium" ? "Pressed Aluminium" : "PMMA Acrylic"}</b>Baseplate
+                  <b>{material === "aluminium" ? "Pressed Aluminium" : material === "abs" ? "ABS" : "PMMA Acrylic"}</b>Baseplate
                 </span>
                 <span>
                   <b>{side === "both" ? "Front & Rear Pair" : side === "front" ? "Front Only" : "Rear Only"}</b>Configuration
@@ -410,15 +389,10 @@ export default function StudioPage() {
             {/* Configurator Controls */}
             <div className="studio-controls rounded-xl shadow-lg">
               <div className="control-heading">
-                <h3>Bespoke Builder.</h3>
+                <h3>Plate builder</h3>
                 <button
                   onClick={() => {
-                    setReg("PP24 LUX");
-                    setKind("acrylic");
-                    setSide("both");
-                    setBadge(false);
-                    setBorder(false);
-                    setMaterial("acrylic");
+                    setDraft(defaultDraft);
                     setInspection(defaultInspection);
                     setView("car");
                     setError("");
@@ -473,17 +447,19 @@ export default function StudioPage() {
               {/* Finish Selection */}
               <fieldset className="finish-field">
                 <legend className="flex justify-between items-center w-full">
-                  <span>Choose Plate Finish</span>
-                  <span className="text-xs text-[var(--wine)] font-normal">From {money(selected.price)}</span>
+                  <span>Plate style</span>
+                  <span className="text-xs text-[var(--wine)] font-normal">{selected.intendedUse}</span>
                 </legend>
                 <div className="finish-buttons">
                   {collection.map((item) => (
                     <button
                       key={item.id}
-                      className={kind === item.id ? "active" : ""}
+                      type="button"
+                      className={`${kind === item.id ? "active " : ""}${item.id === "moto" ? "motorcycle-finish" : ""}`}
                       aria-pressed={kind === item.id}
                       onClick={() => selectKind(item.id)}
                     >
+                      {item.id === "moto" && <span className="motorcycle-finish-photo" style={{ backgroundImage: `url('${motorcyclePhoto}')` }} aria-hidden="true" />}
                       <span>{item.name}</span>
                       {kind === item.id && <Check size={14} />}
                     </button>
@@ -494,10 +470,10 @@ export default function StudioPage() {
               {/* Front/Rear and Material Pairs */}
               <div className="control-pair">
                 <label>
-                  Set Quantity
+                  Plate set
                   <select
                     value={side}
-                    onChange={(e) => setSide(e.target.value as PlateSide)}
+                    onChange={(e) => updateDraft("side", e.target.value as PlateSide)}
                   >
                     <option value="both" disabled={kind === "moto"}>
                       Front & Rear Pair
@@ -510,44 +486,80 @@ export default function StudioPage() {
                 </label>
 
                 <label>
-                  Substrate Material
+                  Base material
                   <select
                     value={material}
-                    onChange={(e) => setMaterial(e.target.value)}
+                    onChange={(e) => updateDraft("material", e.target.value as Draft["material"])}
                   >
-                    <option value="acrylic">Surgical PMMA Acrylic</option>
-                    <option value="aluminium">Pressed Aluminium Base (+£15)</option>
+                    <option value="acrylic">PMMA acrylic</option>
+                    <option value="aluminium">Pressed aluminium (+{money(side === "both" ? 15 : 8)})</option>
+                    <option value="abs">ABS (preview)</option>
                   </select>
                 </label>
               </div>
 
-              {/* Toggles */}
+              <div className="control-pair workshop-options">
+                <label>Vehicle
+                  <select value={draft.vehicle} onChange={(event) => selectKind(event.target.value === "motorcycle" ? "moto" : "regular")}>
+                    <option value="car">Car</option><option value="motorcycle">Motorcycle</option>
+                  </select>
+                </label>
+                <label>Layout
+                  <select value={draft.layout} disabled={kind === "moto"} onChange={(event) => updateDraft("layout", event.target.value as Draft["layout"])}>
+                    <option value="single-line">Single line</option><option value="two-line">Two lines</option>
+                  </select>
+                </label>
+                <label>Preview size
+                  <select value={draft.size} onChange={(event) => updateDraft("size", event.target.value as Draft["size"])}>
+                    <option value="standard">Standard</option><option value="compact">Compact</option>
+                  </select>
+                </label>
+                <label>Lettering
+                  <select value={draft.lettering} onChange={(event) => setLettering(event.target.value as Draft["lettering"])}>
+                    {Object.entries(finishes).map(([id, name]) => <option value={id} key={id}>{name}</option>)}
+                  </select>
+                </label>
+                <label>Identifier
+                  <select value={badge} onChange={(event) => updateDraft("badge", event.target.value as PlateBadge)}>
+                    <option value="none">None</option>
+                    <option value="uk">UK flag (+{money(identifierFee("uk", side === "both"))})</option>
+                    <option value="eu" disabled={!displayOnly}>EU flag (+{money(identifierFee("eu", side === "both"))}, show only)</option>
+                  </select>
+                </label>
+                {displayOnly && badge !== "none" && badge !== "eu" && (
+                  <label>Identifier colour
+                    <select value={draft.badgeColour} onChange={(event) => updateDraft("badgeColour", event.target.value as Draft["badgeColour"])}>
+                      <option value="standard">Original</option><option value="ivory">Ivory</option>
+                    </select>
+                  </label>
+                )}
+                {displayOnly && <>
+                  <label>Display slogan
+                    <input value={draft.slogan} maxLength={25} onChange={(event) => updateDraft("slogan", event.target.value)} />
+                  </label>
+                  <label>Slogan colour
+                    <select value={draft.sloganColour} onChange={(event) => updateDraft("sloganColour", event.target.value as Draft["sloganColour"])}>
+                      <option value="ivory">Ivory</option><option value="gold">Gold</option>
+                    </select>
+                  </label>
+                </>}
+              </div>
               <div className="finishing-toggles">
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={badge}
-                  onClick={() => setBadge(!badge)}
-                >
-                  <span>UK Identifier Flag (+£6)</span>
-                  <i className={badge ? "on" : ""} />
-                </button>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={border}
-                  onClick={() => setBorder(!border)}
-                >
-                  <span>Pin-line Border (+£4)</span>
+                <button type="button" role="switch" aria-checked={border} onClick={() => updateDraft("border", !border)}>
+                  <span>Pin-line border (+{money(side === "both" ? 4 : 2.5)})</span>
                   <i className={border ? "on" : ""} />
                 </button>
               </div>
+              <p className="workshop-option-note">
+                {displayOnly ? "Show plates are for display only. " : "The EU identifier is available on show plates. "}
+                <a href="https://www.gov.uk/displaying-number-plates/flags-identifiers-and-stickers">Read UK identifier guidance</a>.
+              </p>
 
               {/* Dynamic Running Total */}
               <div className="studio-total">
                 <div>
                   <span className="text-xs uppercase tracking-wider text-[#4a4e48] block">
-                    Calculated Total
+                    Estimated total
                   </span>
                   <strong key={pricingResult.total} className="text-3xl font-serif font-bold text-[var(--ink)]">
                     {pricingResult.formattedTotal}
@@ -558,7 +570,7 @@ export default function StudioPage() {
                 </button>
               </div>
               <p className="prototype-note">
-                Handcrafted in Great Britain · {businessFacts.dispatchTime}
+                Preview dimensions, options and prices are subject to supplier confirmation.
               </p>
             </div>
           </div>
@@ -762,71 +774,26 @@ export default function StudioPage() {
           </div>
         </section>
 
-        {/* Collection Grid with "From £X" Badges */}
         <section className="collection-section section-pad" id="collection">
           <div className="collection-heading">
-            <div>
-              <span className="text-xs uppercase tracking-widest text-[var(--wine)] font-semibold">The Catalogue</span>
-              <h2 className="text-4xl md:text-5xl font-serif mt-1">
-                One registration.<br />
-                <em>More presence.</em>
-              </h2>
-            </div>
-            <div>
-              <p>
-                From clean legal standard oblongs to 4D 3mm raised acrylic blocks.<br />
-                Choose the architectural finish that belongs on your vehicle.
-              </p>
-              <a className="text-action" href="#studio">
-                Launch bespoke studio <ArrowUpRight size={18} />
-              </a>
-            </div>
+            <h2>Find your plate</h2>
+            <Link className="text-action" href="/collection">Shop all plates <ArrowUpRight size={18} /></Link>
           </div>
-
           <div className="featured-collection">
-            {collection.slice(0, 3).map((item, index) => (
-              <button
-                key={item.id}
-                className={`collection-piece piece-${item.id}`}
-                onClick={() => {
-                  selectKind(item.id);
-                  goStudio();
-                }}
-              >
-                <div className="piece-top">
-                  <span className="font-mono text-xs">{item.finish}</span>
-                  <span className="bg-[var(--ink)]/10 px-2 py-0.5 rounded text-xs font-semibold">
-                    From {money(item.price)}
-                  </span>
-                </div>
-                <div className="piece-art">
-                  <Plate reg="PP24 LUX" kind={item.id} side={index === 1 ? "rear" : "front"} />
-                </div>
+            {collection.slice(0, 3).map((item) => (
+              <Link key={item.id} className={`collection-piece piece-${item.id}`} href={`/collection/${item.slug}`}>
+                <CataloguePlate kind={item.id} />
                 <div className="piece-info">
                   <h3>{item.name}</h3>
                   <p>{item.description}</p>
-                  <span className="font-medium text-xs text-[var(--wine)] flex items-center gap-1">
-                    Customise finish in studio <ArrowRight size={14} />
-                  </span>
+                  <span>View plate <ArrowRight size={14} className="inline" /></span>
                 </div>
-              </button>
+              </Link>
             ))}
           </div>
-
-          <div className="more-formats">
-            <span>Specialist Vehicle Profiles:</span>
+          <div className="more-formats" aria-label="Specialist plates">
             {collection.slice(3).map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  selectKind(item.id);
-                  goStudio();
-                }}
-              >
-                <span>{item.name}</span>
-                <span className="text-xs text-[var(--wine)] font-mono">From {money(item.price)}</span>
-                <ArrowUpRight size={15} />
-              </button>
+              <Link className="text-action" key={item.id} href={`/collection/${item.slug}`}>{item.name} <ArrowUpRight size={15} /></Link>
             ))}
           </div>
         </section>
@@ -844,8 +811,8 @@ export default function StudioPage() {
         <div id="lookbook">
           <LookbookGallery
             onSelectSpec={(chosenKind, chosenReg) => {
-              setKind(chosenKind);
-              setReg(chosenReg);
+              selectKind(chosenKind);
+              updateDraft("reg", chosenReg);
               goStudio();
             }}
           />
@@ -876,7 +843,8 @@ export default function StudioPage() {
       {/* Sticky Order Bar (R5.3) */}
       <StickyOrderBar
         reg={reg}
-        kind={kind}
+        styleName={selected.name}
+        displayOnly={displayOnly}
         side={side}
         formattedTotal={pricingResult.formattedTotal}
         onContinue={() => {
@@ -896,9 +864,9 @@ export default function StudioPage() {
           </a>
         </div>
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} Plate Studio</span>
+          <span>© {new Date().getFullYear()} {storefrontName}</span>
           <nav aria-label="Footer navigation">
-            <a href="#collection">Collection</a>
+            <Link href="/collection">Collection</Link>
             <a href="#studio">Studio</a>
             <a href="#anatomy">Materials</a>
             <a href="#lookbook">Lookbook</a>
@@ -917,28 +885,27 @@ export default function StudioPage() {
             menuTrigger.current?.focus();
           }}
         >
-          <SheetTitle className="text-3xl font-serif">Plate Studio</SheetTitle>
+          <SheetTitle className="text-3xl font-serif">{storefrontName}</SheetTitle>
           <SheetDescription className="text-xs text-[var(--wine)] font-mono">
             Explore the collection and your plate design.
           </SheetDescription>
           <nav id="mobile-navigation" aria-label="Mobile navigation" className="mt-8 space-y-4">
             {[
-              ["The Collection", "collection"],
-              ["Plate Studio", "studio"],
-              ["The Difference", "difference"],
-              ["Material Anatomy", "anatomy"],
-              ["Lookbook", "lookbook"],
-              ["Good to Know", "questions"],
+              ["Shop plates", "/collection"],
+              ["Build a plate", "#studio"],
+              ["Compare finishes", "#difference"],
+              ["Lookbook", "#lookbook"],
+              ["FAQs", "#questions"],
             ].map(([label, id]) => (
-              <a
+              <Link
                 key={id}
-                href={`#${id}`}
+                href={id}
                 onClick={() => setMenuOpen(false)}
                 className="flex items-center justify-between text-2xl font-serif py-3 border-b border-[#ffffff1f] hover:text-[var(--copper)]"
               >
                 {label}
                 <ArrowUpRight size={20} />
-              </a>
+              </Link>
             ))}
           </nav>
           <p className="mt-auto pt-8 text-sm italic font-serif text-[#c4b09a]">
@@ -950,12 +917,12 @@ export default function StudioPage() {
       {/* Shopping Bag Drawer with Itemized Total */}
       <Sheet open={bagOpen} onOpenChange={setBagOpen}>
         <SheetContent className="pp-sheet basket-sheet">
-          <SheetTitle className="text-3xl font-serif">Your Bespoke Selection.</SheetTitle>
+          <SheetTitle className="text-3xl font-serif">Your bag</SheetTitle>
           <SheetDescription className="text-xs">
-            Review your plate specifications prior to order submission.
+            Review your plate configuration and estimated total.
           </SheetDescription>
 
-          {bag ? (
+          {bag && bagPricing ? (
             <>
               <div className="bag-plate my-6 p-6 rounded-lg bg-[var(--paper-soft)]">
                 <Plate
@@ -964,20 +931,20 @@ export default function StudioPage() {
                   side={bag.side === "front" ? "front" : "rear"}
                   badge={bag.badge}
                   border={bag.border}
+                  options={{ ...bag, slogan: bag.kind === "show" ? bag.slogan : undefined }}
                 />
               </div>
 
               <div className="bag-description space-y-1">
                 <h3 className="text-xl font-serif font-bold text-[var(--ink)]">
-                  {collection.find((i) => i.id === bag.kind)?.name} Finish
+                  {collection.find((i) => i.id === bag.kind)?.name} plate
                 </h3>
                 <p className="text-xs text-[#4a4e48]">
                   {bag.side === "both" ? "Front & Rear Pair" : `${bag.side} plate`} · Registration:{" "}
                   <span className="font-mono font-bold text-[var(--ink)]">{bag.reg}</span>
                 </p>
-                <p className="text-xs text-[#2e6b5a] font-medium pt-1">
-                  ✓ {businessFacts.britishStandard} Road Legal Certification Included
-                </p>
+                <p className="text-xs text-[var(--muted-text)]">{bag.kind === "show" ? "Display only" : "Road-style preview"} · {finishes[bag.lettering]} · {bag.layout.replace("-", " ")} · {bag.size} · {bag.material.toUpperCase()}</p>
+                {bag.badge !== "none" && <p className="text-xs">{bag.badge.toUpperCase()} identifier (+{money(identifierFee(bag.badge, bag.side === "both"))})</p>}
               </div>
 
               <div className="bag-quantity my-6 flex items-center gap-4">
@@ -1010,29 +977,26 @@ export default function StudioPage() {
               </div>
 
               <div className="bag-total pt-4 border-t border-[var(--line)] flex justify-between items-center">
-                <span className="text-sm font-medium">Total (inc. VAT & Tracked 24)</span>
+                <span className="text-sm font-medium">Estimated total</span>
                 <b className="text-2xl font-serif font-bold text-[var(--ink)]">
-                  {money(bag.price * bag.quantity)}
+                  {bagPricing.formattedTotal}
                 </b>
               </div>
 
-              <div className="mt-6 space-y-2">
-                <a
-                  href={`https://wa.me/447884208718?text=Hello%20Premium%20Plates%2C%20I%20would%20like%20to%20order%20the%20${bag.kind}%20plate%20for%20registration%20${bag.reg}%20(${bag.side}%20set)`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="primary-button w-full justify-center text-sm py-3.5"
-                >
-                  Order via WhatsApp Concierge <ArrowRight size={16} />
-                </a>
-              </div>
+              <ul className="mt-2 space-y-1 text-xs text-[var(--muted-text)]">
+                {bagPricing.breakdown.map(({ label, amount }) => (
+                  <li key={label} className="flex justify-between gap-3"><span>{label}</span><span>{money(amount)}</span></li>
+                ))}
+              </ul>
+
+              <p className="workshop-option-note">Checkout will be available after catalogue and fulfilment approval.</p>
             </>
           ) : (
             <div className="empty-bag py-16 text-center space-y-4">
               <ShoppingBag size={48} className="mx-auto text-[#7d8c7c]" strokeWidth={1} />
               <h3 className="text-2xl font-serif">Your bag is empty.</h3>
               <p className="text-xs text-[#62645f] max-w-xs mx-auto">
-                Select your style and click &apos;Add to bag&apos; in the Plate Studio to reserve your specification.
+                Choose your options in the plate builder and select Add to bag.
               </p>
             </div>
           )}

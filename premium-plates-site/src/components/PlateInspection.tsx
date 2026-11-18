@@ -1,32 +1,36 @@
-import type { PlateKind } from "@/config/pricing";
+import { motorcyclePhoto } from "@/config/catalogue";
+import type { PlateBadge, PlateKind } from "@/config/pricing";
 import InteractivePlate from "./InteractivePlate";
+import type { PlateOptions } from "./Plate";
 
 type Face = "front" | "rear";
 export type Inspection = {
   face: Face;
   angle: number;
-  light: number;
   headlights: boolean;
 };
 
 type PlateInspectionProps = {
   reg: string;
   kind: PlateKind;
-  badge: boolean;
+  badge: PlateBadge;
   border: boolean;
+  options?: PlateOptions;
   settings: Inspection;
   onChange: (settings: Inspection) => void;
 };
 
 export default function PlateInspection({
-  reg, kind, badge, border, settings, onChange,
+  reg, kind, badge, border, options, settings, onChange,
 }: PlateInspectionProps) {
-  const { face, angle, light, headlights } = settings;
-  const hasTwoFaces = kind !== "moto" && kind !== "show";
+  const { face, angle, headlights } = settings;
+  const hasTwoFaces = kind !== "moto";
 
   return (
     <div className="plate-inspection">
-      <div className="inspection-stage" data-headlights={headlights}>
+      <div className="inspection-stage" data-headlights={headlights} data-motorcycle={kind === "moto"}>
+        {kind === "moto" && <div className="motorcycle-scene" style={{ backgroundImage: `url('${motorcyclePhoto}')` }} aria-hidden="true" />}
+        {kind !== "moto" && <><span className="street-lamp street-lamp-left" aria-hidden="true" /><span className="street-lamp street-lamp-right" aria-hidden="true" /></>}
         <InteractivePlate
           reg={reg}
           kind={kind}
@@ -34,8 +38,8 @@ export default function PlateInspection({
           badge={badge}
           border={border}
           angle={angle}
-          lightPosition={light}
           headlights={headlights}
+          options={options}
         />
         <span className="inspection-caption">Illustrative preview</span>
       </div>
@@ -74,16 +78,6 @@ export default function PlateInspection({
               value={angle}
               aria-valuetext={`${angle} degrees`}
               onChange={(event) => onChange({ ...settings, angle: event.currentTarget.valueAsNumber })}
-            />
-          </label>
-          <label>
-            <span>Light position</span>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={light}
-              onChange={(event) => onChange({ ...settings, light: event.currentTarget.valueAsNumber })}
             />
           </label>
         </div>

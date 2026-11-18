@@ -1,0 +1,266 @@
+.workshop-masthead,
+.workshop-opening {
+  --workshop-maroon: #57232f;
+  --workshop-dark: #301319;
+  --workshop-cream: #f8ede1;
+  --workshop-brass: #f4c38b;
+}
+
+.workshop-masthead {
+  color: var(--workshop-cream);
+  background: var(--workshop-dark);
+  border-bottom: 1px solid #a67261;
+  min-height: 74px;
+}
+
+.workshop-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  flex-shrink: 0;
+  font: 400 clamp(20px, 2.1vw, 31px)/1 var(--display);
+  letter-spacing: -.035em;
+}
+
+.workshop-mark {
+  display: grid;
+  place-content: center;
+  gap: 3px;
+  width: 28px;
+  height: 23px;
+  border: 1px solid var(--workshop-brass, var(--copper));
+  border-radius: 3px;
+}
+
+.workshop-mark span { background: var(--workshop-brass, var(--copper)); width: 13px; height: 1px; }
+.workshop-mark span:last-child { width: 8px; }
+.workshop-masthead .main-nav > a::after { background: var(--workshop-brass); }
+.workshop-masthead .masthead-actions { gap: clamp(4px, 1.3vw, 20px); }
+.workshop-masthead :focus-visible,
+.workshop-opening :focus-visible { outline-color: var(--workshop-brass); }
+.workshop-masthead .bag-trigger:hover,
+.workshop-masthead .menu-trigger:hover { color: var(--workshop-brass); }
+
+.workshop-nav-builder {
+  display: inline-flex;
+  min-height: 44px;
+  gap: 8px;
+  padding-inline: 15px;
+  align-items: center;
+  border: 1px solid #b68071;
+  font-size: .85rem;
+  white-space: nowrap;
+}
+
+.workshop-nav-builder:hover { background: var(--workshop-maroon); }
+
+.workshop-opening {
+  max-width: none;
+  min-height: min(690px, 80svh);
+  grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr);
+  gap: clamp(24px, 4.5vw, 86px);
+  padding-block: clamp(46px, 7vw, 110px);
+  padding-inline: max(var(--space-page), calc((100vw - 1480px) / 2));
+  background: radial-gradient(ellipse at 77% 15%, #763541, transparent 60%), var(--workshop-maroon);
+  color: var(--workshop-cream);
+  border-bottom: 1px solid #9d645d;
+}
+
+.workshop-opening .opening-copy h1 { font-size: clamp(46px, 6.25vw, 96px); }
+.workshop-opening .opening-copy h1 em { color: var(--workshop-brass); }
+.workshop-opening .opening-copy p { color: #f3d9c9; }
+.workshop-opening .opening-entry input {
+  background: #35151e;
+  border-color: #bd8a7e;
+  color: var(--workshop-cream);
+  caret-color: var(--workshop-brass);
+}
+.workshop-opening .opening-entry input::placeholder { color: #dcbbaf; }
+.workshop-opening .opening-finishes button { border-color: #be8d81; }
+.workshop-opening .opening-finishes button:hover { background: #381720; }
+.workshop-opening .opening-finishes button[aria-pressed="true"],
+.workshop-opening .primary-button { background: var(--workshop-brass); color: var(--workshop-dark); }
+.workshop-opening .primary-button:hover { background: #ffdaa9; }
+
+.opening-actions { display: flex; align-items: center; gap: 12px 21px; flex-wrap: wrap; }
+.opening-actions > a:not(.primary-button) { display: inline-grid; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: 5px; }
+
+.plate-inspection { border: 1px solid #966075; }
+.inspection-stage { padding-inline: clamp(20px, 5vw, 84px); }
+.inspection-stage > .inspection-object { width: min(100%, 560px); }
+.inspection-ranges { grid-template-columns: minmax(0, 1fr); }
+.workshop-opening .plate-inspection { background: var(--workshop-dark); border-color: #ac786f; }
+.workshop-opening .inspection-stage {
+  background: radial-gradient(ellipse at 50% 92%, #794439, #421d28 52%, #23121b);
+  min-height: clamp(255px, 31vw, 470px);
+}
+.workshop-opening .inspection-stage::before {
+  inset: 9% 12% -19%;
+  border-color: #e0a28155;
+  background: linear-gradient(180deg, #26121b, #6b343d);
+}
+.workshop-opening .inspection-stage[data-headlights="true"]::before { background: linear-gradient(180deg, #26121b, #9f6352); }
+.workshop-opening .inspection-options button[aria-pressed="true"] { background: var(--workshop-brass); border-color: var(--workshop-brass); }
+.workshop-opening .inspection-ranges input { accent-color: var(--workshop-brass); }
+
+.street-lamp {
+  position: absolute;
+  z-index: -1;
+  bottom: 0;
+  width: clamp(24px, 5vw, 85px);
+  height: 78%;
+  pointer-events: none;
+  background: linear-gradient(90deg, #301923, #69434a 60%, #2b1720) 0 100% / 5px 93% no-repeat;
+}
+.street-lamp-left { left: 5%; }
+.street-lamp-right { right: 5%; transform: scaleX(-1); }
+.street-lamp::before {
+  content: "";
+  position: absolute;
+  inset: 7% 18% auto 0;
+  height: 17%;
+  border: 4px solid #54333b;
+  border-right: 0;
+  border-bottom: 0;
+  border-radius: 36px 0 0 0;
+}
+.street-lamp::after {
+  content: "";
+  position: absolute;
+  top: 7%;
+  right: 0;
+  width: 35%;
+  min-width: 14px;
+  height: 8px;
+  border-radius: 50% 55% 25% 25%;
+  background: #ffe1aa;
+  border-top: 3px solid #65444a;
+  box-shadow: 0 11px 26px 9px #f4a96d63;
+}
+.inspection-stage[data-motorcycle="true"] .street-lamp { display: none; }
+.motorcycle-scene {
+  position: absolute;
+  inset: 0 0 0 auto;
+  z-index: -1;
+  width: 57%;
+  pointer-events: none;
+  background-position: center 60%;
+  background-size: cover;
+  mask-image: linear-gradient(90deg, transparent, #000 24%);
+}
+.inspection-stage[data-motorcycle="true"] > .motorcycle-scene { width: 57%; }
+.inspection-stage[data-motorcycle="true"] > .inspection-object {
+  width: min(48%, 250px);
+  justify-self: start;
+}
+.inspection-stage[data-motorcycle="true"]::before { display: none; }
+.motorcycle-finish-photo {
+  align-self: stretch;
+  flex: 0 0 52px;
+  min-height: 44px;
+  border-radius: 4px;
+  background-position: 58% 61%;
+  background-size: cover;
+}
+.finish-buttons > button.motorcycle-finish {
+  grid-column: 1 / -1;
+  justify-content: flex-start;
+  gap: 11px;
+}
+.motorcycle-finish svg { margin-left: auto; }
+
+.number-plate[data-layout="two-line"] {
+  aspect-ratio: 1.29;
+  max-width: 57%;
+  margin-inline: auto;
+  padding-block: 4% 7%;
+}
+.number-plate[data-layout="two-line"] .plate-lettering {
+  display: grid;
+  justify-items: center;
+  font-size: 22cqw;
+  line-height: 1.04;
+  letter-spacing: .025em;
+}
+.number-plate[data-layout="two-line"].with-badge .plate-lettering { font-size: 19cqw; }
+.number-plate[data-layout="two-line"] .country-badge { flex: 0 0 12%; margin-right: 4%; }
+.number-plate[data-layout="two-line"] > small { font-size: 3.2cqw; }
+.inspection-stage[data-motorcycle="true"] .number-plate,
+.catalogue-specimen[data-motorcycle="true"] .number-plate { max-width: 100%; }
+.number-plate[data-size="compact"][data-layout="single-line"] { max-width: 80%; margin-inline: auto; }
+.number-plate[data-layout="single-line"][data-size="standard"] { max-width: none; }
+.number-plate[data-material="aluminium"]:not(.np-show) { box-shadow: inset 0 0 0 2px #a3a6a0, 0 12px 22px #0005; }
+.number-plate[data-material="abs"]::after { opacity: .4; }
+.number-plate[data-lettering="regular"] .plate-lettering { text-shadow: none; }
+.number-plate[data-lettering="gel"] .plate-lettering { text-shadow: 0 -1px #f3f0d5, 1px 2px #030807, 2px 3px 3px #0004; }
+.number-plate[data-lettering="acrylic"] .plate-lettering { text-shadow: 1px 1px #6e736f, 2px 2px #252a27, 3px 4px 3px #0006; }
+.number-plate .country-badge[data-colour="ivory"] { filter: grayscale(1) sepia(.35) brightness(1.22); }
+.np-show > small[data-slogan-colour="ivory"] { color: #f8edd6; opacity: 1; }
+.np-show > small[data-slogan-colour="gold"] { color: #dfbd79; opacity: 1; }
+.country-badge[data-identifier="eu"] { flex-shrink: 0; }
+
+.workshop-options { margin-block: 12px; }
+.workshop-options input { width: 100%; min-height: 44px; border: 1px solid var(--line); background: #fbf7f0; padding: 8px; }
+.workshop-options select:disabled { opacity: .68; }
+.workshop-option-note { margin-block: 12px; font-size: .85rem; color: var(--muted-text); }
+.workshop-option-note a { text-decoration: underline; text-underline-offset: 3px; }
+.studio-controls .prototype-note { color: var(--muted-text); }
+
+.catalogue-nav { display: flex; align-items: center; gap: clamp(8px, 3vw, 32px); font-size: .875rem; }
+.catalogue-nav a { display: inline-flex; gap: 6px; align-items: center; min-height: 44px; }
+.catalogue-nav a:hover { color: var(--workshop-brass); }
+.catalogue-page { width: 100%; max-width: 1480px; margin-inline: auto; padding: clamp(35px, 7vw, 100px) var(--space-page); }
+.catalogue-page h1 { font-size: clamp(48px, 7.5vw, 94px); line-height: .99; }
+.catalogue-intro { color: var(--muted-text); margin-block: 16px 32px; max-width: 48ch; }
+.catalogue-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 265px), 1fr)); gap: 28px 20px; }
+.catalogue-card { border-bottom: 1px solid var(--line); }
+.catalogue-card:hover h2 { color: var(--wine); text-decoration: underline; text-underline-offset: 5px; }
+.catalogue-card-copy { padding: 18px 0 24px; }
+.catalogue-card-copy > span { color: var(--wine); font-size: .78rem; }
+.catalogue-card h2 { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; font-size: clamp(28px, 3.3vw, 44px); }
+.catalogue-card p { color: var(--muted-text); max-width: 37ch; margin-top: 5px; font-size: .9rem; }
+.catalogue-breadcrumb { display: inline-flex; align-items: center; min-height: 44px; margin-bottom: 21px; text-decoration: underline; text-underline-offset: 4px; }
+.product-page { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: center; gap: clamp(24px, 6vw, 90px); }
+.product-spec { display: grid; margin-bottom: 25px; }
+.product-spec > div { display: grid; grid-template-columns: 1fr 1.25fr; gap: 8px; padding-block: 10px; border-top: 1px solid var(--line); }
+.product-spec dt { color: var(--muted-text); }
+.product-spec dd { margin: 0; font-weight: 600; }
+.catalogue-specimen {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  min-height: clamp(130px, 17vw, 250px);
+  padding: 26px 10%;
+  background: radial-gradient(ellipse at 55% 75%, #754255, #3e1c2c 80%);
+}
+.catalogue-specimen .number-plate { width: min(100%, 570px); }
+.catalogue-specimen[data-motorcycle="true"] { justify-items: start; }
+.catalogue-specimen[data-motorcycle="true"] .number-plate { width: min(47%, 230px); margin-inline: 0; }
+.product-page .catalogue-specimen { min-height: clamp(220px, 33vw, 520px); }
+.collection-piece .catalogue-specimen { min-height: 130px; width: 100%; }
+.collection-piece .piece-info { padding-top: 18px; }
+.collection-piece .piece-info > span { font-size: .85rem; }
+.more-formats .text-action { margin-block: 8px; }
+
+@media (max-width: 835px) {
+  .workshop-opening, .product-page { grid-template-columns: minmax(0, 1fr); }
+  .workshop-opening { min-height: auto; }
+  .workshop-opening .inspection-stage { min-height: clamp(245px, 49vw, 400px); }
+  .collection-piece.piece-acrylic { display: flex; flex-direction: column; }
+}
+@media (max-width: 520px) {
+  .workshop-nav-builder { display: none; }
+  .catalogue-nav a > svg { display: none; }
+  .catalogue-nav { gap: 10px; font-size: .78rem; }
+  .workshop-opening .opening-copy h1 { font-size: clamp(43px, 10vw, 58px); }
+  .workshop-opening .opening-copy h1 br { display: initial; }
+  .workshop-opening .inspection-stage { padding-inline: 29px; }
+  .street-lamp-left { left: 3%; }
+  .street-lamp-right { right: 3%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inspection-object > div { transition: none; }
+}

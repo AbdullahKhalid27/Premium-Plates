@@ -5,6 +5,12 @@
 
 export type PlateKind = "regular" | "gel" | "acrylic" | "short" | "hex" | "show" | "moto";
 export type PlateSide = "both" | "rear" | "front";
+export type PlateBadge = "none" | "gb" | "uk" | "eu";
+
+export function identifierFee(badge: PlateBadge, isPair: boolean) {
+  if (badge === "none") return 0;
+  return badge === "eu" || isPair ? 6 : 3.5;
+}
 
 export interface StylePricing {
   kind: PlateKind;
@@ -107,7 +113,7 @@ export interface PlateOrderSelection {
   kind?: PlateKind;
   isPair?: boolean;
   side?: PlateSide;
-  badge?: "none" | "gb" | "uk";
+  badge?: PlateBadge;
   border?: boolean;
   upgrades?: string[];
   fixingKit?: boolean;
@@ -166,8 +172,9 @@ export function calculateTotal(selection: PlateOrderSelection): CalculatedTotal 
   }
 
   // Direct boolean/property options support
-  if (selection.badge && selection.badge !== "none" && !selection.upgrades?.includes("ukBadge")) {
-    const badgeCost = isPair ? 6.0 : 3.5;
+  if (selection.badge && selection.badge !== "none" &&
+    (selection.badge === "eu" || !selection.upgrades?.some((upgrade) => upgrade === "ukBadge" || upgrade === "gbBadge"))) {
+    const badgeCost = identifierFee(selection.badge, isPair);
     breakdown.push({
       label: `${selection.badge.toUpperCase()} Identifier Flag`,
       amount: badgeCost,

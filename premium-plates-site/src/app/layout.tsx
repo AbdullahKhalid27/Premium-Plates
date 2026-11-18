@@ -3,6 +3,8 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import "./redesign.css";
 import "./foundation.css";
+import "./workshop.css";
+import { storefrontName } from "@/config/catalogue";
 
 // Modern British automotive sans-serif
 const modernSans = Plus_Jakarta_Sans({
@@ -22,10 +24,10 @@ const charlesWright = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Plate Studio — Design your number plates",
+  title: `${storefrontName} | Design your number plates`,
   description: "Explore number plate finishes and compare your registration in the plate studio.",
   openGraph: {
-    title: "Plate Studio",
+    title: storefrontName,
     description: "Explore number plate finishes and personalise your preview.",
     locale: "en_GB",
     type: "website",

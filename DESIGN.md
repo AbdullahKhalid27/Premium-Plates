@@ -22,3 +22,6 @@ Research/Code/Test/Ship and exact skills are in Phase Prompts.md. Use Awesome DE
 
 ## F1 foundation implementation
 Body and UI retain Plus Jakarta Sans. Editorial display uses Georgia with Times New Roman fallback. UI sizes are 12, 14, 15, 16 and 24px; display 36–96px responsive. Supporting text colours #252329 and #58515A keep legibility on beige. Hairline #C9C2B9 supports structure. Plum footer uses beige type and an apricot focus ring. The translucent footer separator is #A47C945C. Existing product-specific colours are retained until their planned review.
+
+## F3 storefront refinement
+The neutral storefront label is Plate Workshop. For the opening and masthead, use warm maroon #57232F, dark maroon #301319, cream #F8EDE1 and warm brass #F4C38B. Paired UK-inspired streetlamps and the live plate anchor the opening. Continue the beige/plum system on the catalogue and builder. Keep the plate angle and headlights, remove the light-position slider, and increase pointer tilt. Use the supplied motorcycle photo in the style chooser and rear two-line preview. Offer the £6 EU identifier on display-only show plates. F1–F3 checkpoint execution is deferred until the user requests testing.

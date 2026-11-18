@@ -2,11 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import { ArrowUpRight, ShoppingBag, Sparkles } from "lucide-react";
-import { stylePricing, type PlateKind, type PlateSide } from "../config/pricing";
+import type { PlateSide } from "../config/pricing";
 
 interface StickyOrderBarProps {
   reg: string;
-  kind: PlateKind;
+  styleName: string;
+  displayOnly: boolean;
   side: PlateSide;
   formattedTotal: string;
   onContinue: () => void;
@@ -14,7 +15,8 @@ interface StickyOrderBarProps {
 
 export default function StickyOrderBar({
   reg,
-  kind,
+  styleName,
+  displayOnly,
   side,
   formattedTotal,
   onContinue,
@@ -31,7 +33,6 @@ export default function StickyOrderBar({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const style = stylePricing[kind] || stylePricing.regular;
   const sideLabel = side === "both" ? "Front & Rear Pair" : side === "front" ? "Front Plate" : "Rear Plate";
 
   return (
@@ -54,11 +55,11 @@ export default function StickyOrderBar({
                   {reg || "PP24 LUX"}
                 </span>
                 <span className="text-xs bg-[#ffffff14] text-[var(--copper)] px-2 py-0.5 rounded uppercase font-medium">
-                  {style.name}
+                  {styleName}
                 </span>
               </div>
               <p className="text-xs text-[var(--studio-muted)] truncate hidden sm:block">
-                {sideLabel}
+                {displayOnly ? "Display only" : sideLabel}
               </p>
             </div>
           </div>
@@ -78,7 +79,7 @@ export default function StickyOrderBar({
               className="inline-flex items-center gap-2 bg-[var(--wine)] hover:bg-[var(--wine-hover)] text-[#f8f0e8] text-xs md:text-sm font-medium px-4 md:px-5 py-2.5 rounded-lg transition-colors shadow-lg"
             >
               <ShoppingBag size={15} />
-              <span>Review Order</span>
+              <span>Review plate</span>
               <ArrowUpRight size={15} />
             </button>
           </div>
