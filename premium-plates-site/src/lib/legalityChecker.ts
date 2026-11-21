@@ -17,7 +17,7 @@ export function checkLegality(rawReg: string): LegalityResult {
     };
   }
 
-  const trimmed = rawReg.trim().toUpperCase();
+  const trimmed = rawReg.trim().replace(/[a-z]/g, letter => letter.toUpperCase());
   if (trimmed.length === 0) {
     return {
       isLegal: false,
@@ -28,7 +28,7 @@ export function checkLegality(rawReg: string): LegalityResult {
   }
 
   // Remove all internal spacing for raw character validation
-  const compact = trimmed.replace(/\s+/g, "");
+  const compact = trimmed.replace(/ +/g, "");
 
   // Check character legality: Only A-Z and 0-9 allowed
   if (/[^A-Z0-9]/.test(compact)) {
@@ -39,6 +39,15 @@ export function checkLegality(rawReg: string): LegalityResult {
       reason: "Contains invalid characters or symbols. Only letters and numbers are permitted.",
     };
   }
+
+  const inputProblem = (reason: string): LegalityResult => ({
+    isLegal: false, formattedReg: trimmed, formatStyle: "invalid", reason,
+  });
+  if (/^(?:GIR0AA|[A-Z]{1,2}[0-9][A-Z0-9]?[0-9][A-Z]{2})$/.test(compact)) {
+    return inputProblem("That looks like a postcode. Enter the registration from your vehicle document.");
+  }
+  if (/^\d+$/.test(compact)) return inputProblem("This builder expects letters and numbers. If your document shows digits only, ask the supplier to check it.");
+  if (/^[A-Z]+$/.test(compact)) return inputProblem("Enter the assigned letters and numbers from your document. Names alone cannot be ordered here as road registrations.");
 
   // Length boundaries: UK marks are between 2 and 7 characters (compact)
   if (compact.length < 2) {
@@ -55,7 +64,7 @@ export function checkLegality(rawReg: string): LegalityResult {
       isLegal: false,
       formattedReg: trimmed,
       formatStyle: "invalid",
-      reason: "Registration exceeds the maximum legal UK plate length of 7 characters.",
+      reason: "This builder recognises registrations with up to 7 letters and digits. Check what you pasted.",
     };
   }
 
@@ -113,12 +122,12 @@ export function checkLegality(rawReg: string): LegalityResult {
       };
     }
 
-    if (/[IQZ]/.test(prefixYear) || /[IQ]/.test(letters)) {
+    if (/[IZ]/.test(prefixYear) || /[IQ]/.test(letters)) {
       return {
         isLegal: false,
         formattedReg: `${prefixYear}${seq} ${letters}`,
         formatStyle: "invalid",
-        reason: "Prefix marks do not use 'I' or 'Q' in random letters, or 'I', 'Q', 'Z' as year prefixes.",
+        reason: "Prefix marks do not use 'I' or 'Q' in random letters, or 'I' or 'Z' as prefixes.",
       };
     }
 
@@ -225,8 +234,19 @@ export function checkLegality(rawReg: string): LegalityResult {
     isLegal: false,
     formattedReg: trimmed,
     formatStyle: "invalid",
-    reason: "Unrecognised format. Compare the registration with your entitlement document.",
+    reason: "Check each character against your document, especially O and 0. If it matches, ask the supplier to review this format.",
   };
 }
 
 export default checkLegality;
+
+export function registrationEntry(raw: string, displayOnly: boolean) {
+  if (!raw.trim()) return { ready: false, message: displayOnly ? "Enter the text for your display plate." : "Copy the registration from your V5C or entitlement document." };
+  if (displayOnly) {
+    const ready = /^[A-Z0-9 ]{1,8}$/.test(raw.trim());
+    return { ready, message: ready ? "Display only. For off-road use." : "Use up to eight letters, numbers or spaces for this display plate." };
+  }
+  const result = checkLegality(raw);
+  return { ready: result.isLegal, message: result.isLegal ? "Format recognised. The supplier still needs to check your documents." : result.reason,
+    correction: result.formatStyle === "misspaced" ? result.formattedReg : undefined };
+}

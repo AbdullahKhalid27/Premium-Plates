@@ -4,7 +4,7 @@ import Plate from "./Plate";
 import RulesPanel from "./RulesPanel";
 import { applyLettering, applyProduct, collection, defaultDraft, finishes, motorcyclePhoto, previewDimensions, priceDraft, type Draft } from "@/config/catalogue";
 import { identifierFee } from "@/config/pricing";
-import { checkLegality } from "@/lib/legalityChecker";
+import { registrationEntry } from "@/lib/legalityChecker";
 import "./night-builder.css";
 
 const currency = (n: number) => n.toLocaleString("en-GB", {style:"currency", currency:"GBP"});
@@ -12,8 +12,8 @@ const plateOptions = (d: Draft) => ({...d, slogan: d.kind === "show" ? d.slogan 
 export function NightHero({draft, onReg}: {draft: Draft; onReg: (s:string)=>void}) {
   return <section id="home" className="night-hero">
     <div><h1>Make the road your own.</h1><label htmlFor="hero-reg">Your registration</label>
-    <input id="hero-reg" value={draft.reg} onChange={e=>onReg(e.target.value)} placeholder="PP24 LUX" maxLength={8} autoComplete="off" spellCheck={false}/></div>
-    <div className="hero-specimen" data-bike={draft.kind==="moto"}><Plate stamp reg={draft.reg} kind={draft.kind} side={draft.side} badge={draft.badge} border={draft.border} options={plateOptions(draft)}/></div>
+    <input id="hero-reg" value={draft.reg} onChange={e=>onReg(e.target.value)} placeholder="PP24 LUX" aria-describedby="hero-registration-help" autoComplete="off" spellCheck={false}/><small id="hero-registration-help">{registrationEntry(draft.reg,draft.kind==="show").message}</small></div>
+    <div className="hero-specimen" data-bike={draft.kind==="moto"}><Plate stamp reg={draft.reg.trim().length <= 8 ? draft.reg : ""} kind={draft.kind} side={draft.side} badge={draft.badge} border={draft.border} options={plateOptions(draft)}/></div>
   </section>;
 }
 const trays = ["Registration","Style","Finish","Size","Extras","Price"] as const;
@@ -42,15 +42,15 @@ export default function NightBuilder({draft:d,setDraft,onReg,onAdd,error}:Props)
   const [angle,setAngle]=useState(-8), [lamp,setLamp]=useState(42), [wipe,setWipe]=useState(45);
   const [face,setFace]=useState<"front"|"rear">("rear");
   const drag=useRef<{start:number;angle:number}|null>(null);
-  const price=priceDraft(d), valid=checkLegality(d.reg), show=d.kind==="show";
+  const price=priceDraft(d), show=d.kind==="show", entry=registrationEntry(d.reg,show);
   const activeSide = d.side === "both" ? face : d.side;
   const update=<K extends keyof Draft>(key:K,value:Draft[K])=>setDraft(old=>({...old,[key]:value}));
   const selectVehicle=(vehicle:Draft["vehicle"])=>setDraft(old=>({...applyProduct(old,vehicle==="motorcycle"?"moto":old.kind==="moto"?"regular":old.kind),vehicle}));
   const add=()=>{if(!d.reg.trim()){setTray("Registration"); requestAnimationFrame(()=>document.getElementById("studio-reg")?.focus());} onAdd();};
   const opts=plateOptions(d);
-  const specimen=(flat=false)=><Plate reg={d.reg} kind={d.kind} side={activeSide} badge={d.badge} border={d.border} options={flat?{...opts,lettering:"regular"}:opts}/>;
+  const specimen=(flat=false)=><Plate reg={d.reg.trim().length <= 8 ? d.reg : ""} kind={d.kind} side={activeSide} badge={d.badge} border={d.border} options={flat?{...opts,lettering:"regular"}:opts}/>;
   const stageStyle={"--rotation":angle+"deg","--lamp":lamp+"%","--edge":(lamp-50)/18+"px","--wipe":wipe+"%"} as CSSProperties;
-  return <section id="studio" className="night-builder"><header><h2>Plate builder</h2><span>{collection.find(p=>p.id===d.kind)?.name} · {previewDimensions(d).join(" × ")} mm</span><button type="button" className="bench-reset" onClick={()=>{setDraft(defaultDraft);onReg(defaultDraft.reg);setAngle(-8);setLamp(42);setFace("rear");setWipe(45);setTray("Registration");}}>Reset design</button></header>
+  return <section id="studio" className="night-builder"><header><h2>Plate builder</h2><span>{collection.find(p=>p.id===d.kind)?.name} · {previewDimensions(d).join(" × ")} mm</span><button type="button" className="bench-reset" onClick={()=>{setDraft(defaultDraft);onReg("");setAngle(-8);setLamp(42);setFace("rear");setWipe(45);setTray("Registration");}}>Reset design</button></header>
     <div className="bumper-stage" style={stageStyle} data-bike={d.kind==="moto"} onPointerDown={e=>{if(e.button!==0)return;drag.current={start:e.clientX,angle};e.currentTarget.setPointerCapture(e.pointerId);}} onPointerMove={e=>{if(drag.current)setAngle(Math.min(32,Math.max(-32,drag.current.angle+(e.clientX-drag.current.start)*.16)));}} onLostPointerCapture={()=>{drag.current=null;}}>
       <div className="bumper-shell"><div className="bumper-inset"><div className="bumper-plate">{specimen()}{tray==="Finish"&&<div className="wipe-flat">{specimen(true)}</div>}
         <i className="surface-flash" key={JSON.stringify(d)} aria-hidden="true"/></div></div></div>
@@ -59,8 +59,12 @@ export default function NightBuilder({draft:d,setDraft,onReg,onAdd,error}:Props)
     {d.side==="both"&&<button onClick={()=>setFace(face==="rear"?"front":"rear")}>View {face==="rear"?"front":"rear"}</button>}</div>
     <div className="bench-dock" aria-label="Configuration trays">{trays.map(t=><button key={t} id={t==="Registration"?"registration-tray":undefined} aria-expanded={tray===t} aria-controls="bench-tray" onClick={()=>setTray(t)}>{t}</button>)}</div>
     <div id="bench-tray" className="bench-tray" role="region" aria-label={tray}>
-    {tray==="Registration"&&<><label>Registration<input id="studio-reg" value={d.reg} maxLength={8} spellCheck={false} autoComplete="off" onChange={e=>onReg(e.target.value)} aria-describedby="reg-feedback"/></label>
-    <p id="reg-feedback" role="status" data-valid={valid.isLegal}>{valid.isLegal?"✓ Registration format recognised.":valid.formatStyle==="misspaced"?"Check spacing. Try "+valid.formattedReg+".":"Check the letters and numbers against your registration document."}</p></>}
+    {tray==="Registration"&&<div className="registration-entry">
+      <label htmlFor="studio-reg">{show ? "Display text" : "Your registration"}</label>
+      <input id="studio-reg" value={d.reg} placeholder={show ? "Your text" : "AB51 CDE"} spellCheck={false} autoComplete="off" aria-describedby="reg-feedback" aria-invalid={Boolean(d.reg.trim()) && !entry.ready} onChange={e=>onReg(e.target.value)}/>
+      <p id="reg-feedback" role="status">{entry.message}</p>
+      {entry.correction && <button type="button" onClick={()=>onReg(entry.correction!)}>Use {entry.correction}</button>}
+    </div>}
     {tray==="Style"&&collection.map(p=><button key={p.id} aria-pressed={d.kind===p.id} onClick={()=>setDraft(old=>applyProduct(old,p.id))}>{p.id==="moto"&&<img width="44" height="30" src={motorcyclePhoto} alt=""/>}{p.name}</button>)}
     {tray==="Finish"&&<><label>Lettering<select value={d.lettering} onChange={e=>setDraft(old=>applyLettering(old,e.target.value as Draft["lettering"]))}>{Object.entries(finishes).map(([v,n])=><option value={v} key={v}>{n}</option>)}</select></label>
     <label>Base material<select value={d.material} onChange={e=>update("material",e.target.value as Draft["material"])}><option value="acrylic">PMMA acrylic</option><option value="aluminium">Pressed aluminium</option><option value="abs">ABS preview</option></select></label>

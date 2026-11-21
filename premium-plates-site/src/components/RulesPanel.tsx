@@ -8,9 +8,9 @@ export default function RulesPanel({ draft }: { draft: Draft }) {
       <summary>Rules for this plate</summary>
       <ul>{rulesForPlate(draft).map(rule => (
         <li key={rule.title}>
-          <strong>{rule.title}</strong>
+          <details><summary>{rule.title}</summary>
           <p>{rule.reason} {rule.action}</p>
-          <a href={ruleSources[rule.source].url}>{ruleSources[rule.source].label}</a>
+          <a href={ruleSources[rule.source].url}>{ruleSources[rule.source].label}</a></details>
         </li>
       ))}</ul>
       <small>Last checked <time dateTime={rulesCheckedOn}>{rulesCheckedLabel}</time></small>

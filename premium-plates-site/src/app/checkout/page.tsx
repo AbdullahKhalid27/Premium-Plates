@@ -1,4 +1,5 @@
 "use client";
+import {registrationEntry} from "@/lib/legalityChecker";
 import Link from "@/components/StoreLink";
 import {useEffect,useState} from "react";
 import {basketTotal,parseBasket,readBasket,type BasketLine} from "@/lib/basket";
@@ -25,6 +26,7 @@ export default function Checkout(){
  if(!order.items.length)return <main className="order-desk"><h1>Your bag is empty</h1>{back}</main>;
  if(order.expires<=Date.now())return <main className="order-desk"><h1>Your sample return link expired</h1><p>Renew access to the sample order saved in this tab.</p><button onClick={()=>change({expires:Date.now()+86400000})}>Renew sample link</button></main>;
  const {stage}=order;const payment=["checkout","pending","failed"].includes(stage);
+ if(payment && order.items.some(item=>!registrationEntry(item.reg,item.kind==="show").ready))return <main className="order-desk"><h1>Check your saved registration</h1><p>Open your bag and edit the flagged design before starting payment.</p><ul>{order.items.filter(item=>!registrationEntry(item.reg,item.kind==="show").ready).map(item=><li key={item.id}>{item.reg || "Empty registration"} — {registrationEntry(item.reg,item.kind==="show").message}</li>)}</ul>{back}</main>;
  const docs=order.identity==="received"&&order.entitlement==="received";
  return <main className="order-desk">{back}<p>Sample order · No payment or personal files required</p><h1>{payment?"Review and checkout":stage==="paid"||stage==="review"?"Verification desk":"Track your plates"}</h1>
  <section><h2>Your designs</h2>{order.items.map(i=><p key={i.id}>{i.quantity} × {i.reg} · {i.kind==="show"?"Display only":i.vehicle}</p>)}<strong>Estimated total {basketTotal(order.items).toLocaleString("en-GB",{style:"currency",currency:"GBP"})}</strong></section>

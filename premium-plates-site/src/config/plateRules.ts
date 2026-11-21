@@ -15,6 +15,12 @@ function rule(appliesTo: string, title: string, reason: string, action: string, 
 }
 
 export const plateRules = {
+  assigned: {
+    ...rule("Road registrations", "Can I put my name on a road plate?",
+      "A personalised registration can resemble a name. Enter the registration shown on your vehicle or entitlement document.",
+      "Keep every letter and digit in its assigned position. The preview checks common formats. Your supplier checks your original documents.", "evidence"),
+    checkedOn: "2026-11-22",
+  },
   standard: rule("New road plates", "Reflective faces and markings",
     "A road plate needs a reflective face, black lettering and the supplier’s marking. Plates fitted after 1 September 2021 must carry BS AU 145e.",
     "Choose white for the front and yellow for the rear. Ask the supplier to confirm the finished plate’s markings.", "display"),
@@ -43,7 +49,7 @@ export const plateRules = {
 
 export function rulesForPlate(draft: Pick<Draft, "kind" | "lettering" | "size" | "badge">) {
   if (draft.kind === "show") return draft.badge === "none" ? [plateRules.show] : [plateRules.show, plateRules.identifier];
-  const rules = [plateRules.standard, plateRules.spacing];
+  const rules = [plateRules.assigned, plateRules.documents, plateRules.spacing, plateRules.standard];
   if (draft.kind === "moto") rules.unshift(plateRules.motorcycle);
   if (draft.kind === "short" || draft.kind === "hex" || draft.size === "compact") rules.push(plateRules.profile);
   if (draft.lettering !== "regular") rules.push(plateRules.raised);

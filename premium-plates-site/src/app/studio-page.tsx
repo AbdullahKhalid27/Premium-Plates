@@ -1,5 +1,6 @@
 "use client";
 
+import { registrationEntry } from "@/lib/legalityChecker";
 import BagDrawer from "@/components/BagDrawer";
 import { parseBasket, type BasketLine } from "@/lib/basket";
 import Link from "@/components/StoreLink";
@@ -50,7 +51,7 @@ const money = (value: number) =>
   new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(value);
 
 export default function StudioPage() {
-  const [draft, setDraft] = useState<Draft>(defaultDraft);
+  const [draft, setDraft] = useState<Draft>({...defaultDraft, reg: ""});
   const [draftReady, setDraftReady] = useState(false);
   const { reg, kind, side } = draft;
   const displayOnly = kind === "show";
@@ -66,7 +67,7 @@ export default function StudioPage() {
   const menuTrigger = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    let nextDraft = defaultDraft;
+    let nextDraft = {...defaultDraft, reg: ""};
     try {
       const stored = sessionStorage.getItem(draftKey);
       if (stored) {
@@ -105,7 +106,7 @@ export default function StudioPage() {
 
   const selected = collection.find((item) => item.id === kind) || collection[2];
   const updateReg = (value: string) => {
-    const formatted = value.replace(/[^a-zA-Z0-9 ]/g, "").toUpperCase().slice(0, 8);
+    const formatted = value.replace(/[a-z]/g, letter => letter.toUpperCase());
     updateDraft("reg", formatted);
     setError("");
   };
@@ -121,15 +122,16 @@ export default function StudioPage() {
     });
 
   const addToBag = () => {
-    if (!reg.trim()) {
-      setError("Enter your registration to preview your selection.");
+    const entry = registrationEntry(reg, displayOnly);
+    if (!entry.ready) {
+      setError(entry.message);
       document.getElementById("studio")?.scrollIntoView({block:"start"});
       document.getElementById("registration-tray")?.click();
       requestAnimationFrame(() => document.getElementById("studio-reg")?.focus());
       return;
     }
     const id = editing ?? crypto.randomUUID();
-    setItems(lines => editing ? lines.map(line => line.id === editing ? {...draft,id,quantity:line.quantity} : line) : [...lines,{...draft,id,quantity:1}]);
+    setItems(lines => editing ? lines.map(line => line.id === editing ? {...draft,reg:reg.trim(),id,quantity:line.quantity} : line) : [...lines,{...draft,reg:reg.trim(),id,quantity:1}]);
     setEditing(null);
     setBagOpen(true);
   };
