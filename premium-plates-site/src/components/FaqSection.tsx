@@ -1,4 +1,5 @@
 import { plateRules, ruleSources } from "@/config/plateRules";
+import Link from "./StoreLink";
 import { Plus } from "lucide-react";
 import "./guidance-paper.css";
 
@@ -15,13 +16,19 @@ export default function FaqSection() {
     <section id="questions" className="guidance-paper section-pad" aria-labelledby="guidance-heading">
       <div className="guidance-paper-grid">
         <div className="guidance-intro">
-          <h2 id="guidance-heading">What the law says</h2>
+          <h2 id="guidance-heading">Frequently asked questions</h2>
           <p>For a modern UK road plate, use black lettering on a reflective white front or yellow rear face. Keep the registration in its assigned groups.</p>
           <p>For new plates, the supplier’s details and the BS AU 145e mark belong on the finished plate. The supplier must also check who you are and your right to display the number.</p>
           <a href={ruleSources.display.url}>Read the rules on GOV.UK <span aria-hidden="true">↗</span></a>
         </div>
         <div className="guidance-questions">
-          <h3>Frequently Asked Questions</h3>
+          <h3>Choosing and ordering a plate</h3>
+          <details><summary>What is the difference between flat, 3D gel and 4D acrylic lettering?<Plus size={18} aria-hidden="true"/></summary>
+            <div className="guidance-answer"><p>Flat letters sit flush with the face. Gel has a rounded surface that catches a curved highlight. Acrylic has a crisp edge with a more defined shadow.</p><Link href="/#difference">Compare the three finishes</Link></div></details>
+          <details><summary>Can I change a design after adding it to my bag?<Plus size={18} aria-hidden="true"/></summary>
+            <div className="guidance-answer"><p>Open your bag and choose Edit design. Change the registration, finish or size in the builder, then add it back to update the same item. You can change quantities directly in the bag.</p></div></details>
+          <details><summary>Which files can I try in the checkout preview?<Plus size={18} aria-hidden="true"/></summary>
+            <div className="guidance-answer"><p>Download the two fictional text files from the checklist. Attach each in its matching box and send them together. A receipt appears when the local receiver accepts both samples.</p><Link href="/checkout/?sample=1">Try the sample checklist</Link></div></details>
           {questions.map(({ id, question, rule }) => (
             <details key={id} id={'faq-' + id}>
               <summary>{question}<Plus size={18} aria-hidden="true"/></summary>

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import {storeMetadata} from "@/lib/storeSeo";
 import Link from "@/components/StoreLink";
 import { InteriorHeader } from "@/components/WorkshopBrand";
 import MaterialCloseup from "@/components/MaterialCloseup";
@@ -7,7 +7,7 @@ import FaqSection from "@/components/FaqSection";
 import { storefrontName } from "@/config/catalogue";
 import { ruleSources } from "@/config/plateRules";
 
-export const metadata: Metadata = {title: "About Us | " + storefrontName, description: "Meet the plate studio and explore the materials behind your design."};
+export const metadata=storeMetadata("about/", "About the number plate studio | "+storefrontName, "Explore how a raised number plate is assembled, compare lettering materials and follow the four steps from a design to document review.");
 
 export default function AboutPage() {
   return <><InteriorHeader/><main className="about-workshop">

@@ -19,7 +19,7 @@ type Props = {
 export default function BagDrawer({ open, onOpen, items, edit, quantity, writable }: Props) {
   return <Sheet open={open} onOpenChange={onOpen}><SheetContent className="pp-sheet basket-sheet order-bag">
     <SheetTitle>Your bag</SheetTitle>
-    <SheetDescription>Review your plate designs and estimated prices.</SheetDescription>
+    <SheetDescription>Check each registration, finish and quantity before continuing to your document checklist.</SheetDescription>
     {!items.length && <p>Your bag is empty. <button onClick={() => {onOpen(false); document.getElementById("studio")?.scrollIntoView();}}>Build a plate</button></p>}
     {items.map(line => {
       const quote = priceDraft(line, line.quantity);
@@ -42,6 +42,7 @@ export default function BagDrawer({ open, onOpen, items, edit, quantity, writabl
       </article>;
     })}
     {!!items.length && <footer><div>Estimated total <strong>{money(basketTotal(items))}</strong></div>
+      <p>Next step: try the identity and registration samples. Checkout skips the charge in this preview.</p>
       {writable ? <Link href="/checkout/">Continue to checkout</Link> : <p role="status">Enable session storage to carry this bag into checkout.</p>}
     </footer>}
   </SheetContent></Sheet>;

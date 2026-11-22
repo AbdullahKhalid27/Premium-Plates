@@ -1,3 +1,4 @@
+import {publicUrl,storeMetadata} from "@/lib/storeSeo";
 import RulesPanel from "@/components/RulesPanel";
 import type { Metadata } from "next";
 import Link from "@/components/StoreLink";
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   const { slug } = await params;
   const product = collection.find((item) => item.slug === slug);
   if (!product) return {};
-  return { title: `${product.name} number plates | ${storefrontName}`, description: product.description };
+  return storeMetadata("collection/"+slug+"/", `${product.name} number plates | ${storefrontName}`, product.description);
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
@@ -30,6 +31,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <CataloguePage>
+      {publicUrl("") && <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify({
+        "@context":"https://schema.org","@type":"BreadcrumbList",
+        itemListElement:[["Home",""],["Collection","collection/"],[product.name,"collection/"+slug+"/"]].map(([name,path],i)=>({"@type":"ListItem",position:i+1,name,item:publicUrl(path)}))
+      }).replace(/</g,"\\u003c")}}/>}
       <Link className="catalogue-breadcrumb" href="/collection">All number plates</Link>
       <article className="product-page">
         <div>

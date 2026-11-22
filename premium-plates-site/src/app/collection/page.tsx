@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
+import {storeMetadata} from "@/lib/storeSeo";
 import CataloguePage from "@/components/CataloguePage";
 import { StyleCards } from "@/components/StyleCards";
 import { storefrontName } from "@/config/catalogue";
 
-export const metadata: Metadata = { title: `Number plate collection | ${storefrontName}` };
+export const metadata=storeMetadata("collection/", "Number plate collection | "+storefrontName, "Browse seven number plate styles, including flat, 3D gel, 4D acrylic, short, hex and motorcycle profiles. Open a style to see its dimensions and options.");
 
 export default function CollectionPage() {
   return (

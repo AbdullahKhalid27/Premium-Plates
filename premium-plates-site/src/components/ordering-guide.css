@@ -25,3 +25,7 @@
 .route-arrow {position:absolute;left:100%;top:48%;width:1.6rem;color:var(--signal)}
 #collection + #difference {border-top:8px double var(--chapter-edge);padding-top:clamp(4rem,8vw,8rem)}
 @media(max-width:820px){.order-route{grid-template-columns:1fr;gap:1.8rem}.route-arrow{top:100%;left:50%;transform:rotate(90deg);height:1.8rem}.order-route h3{margin-top:.6rem}.about-opening,.work-intro{grid-template-columns:1fr}.about-opening figure{min-height:16rem}.inside-header nav{gap:.2rem .85rem}}
+@media(hover:hover) and (pointer:fine){.order-route li:hover {border-color:var(--signal)}}
+@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){.order-route li{transition:transform .18s ease,border-color .18s ease}.order-route li:hover {transform:translateY(-4px) scale(1.015);z-index:1}}
+.order-route li:focus-within {outline:2px solid var(--signal);outline-offset:2px}
+
