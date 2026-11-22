@@ -27,25 +27,16 @@ import FinishComparison from "@/components/FinishComparison";
 import FitSection from "@/components/FitSection";
 import FaqSection from "@/components/FaqSection";
 import GuidanceSources from "@/components/GuidanceSources";
-import NightDriveFilm from "@/components/NightDriveFilm";
+import Brand, { navigation } from "@/components/WorkshopBrand";
 import StickyOrderBar from "@/components/StickyOrderBar";
 import LookbookGallery from "@/components/LookbookGallery";
-import MaterialCloseup from "@/components/MaterialCloseup";
+import OrderingGuide from "@/components/OrderingGuide";
 import { businessFacts } from "@/config/businessFacts";
 import {
   identifierFee,
   type PlateKind,
 } from "@/config/pricing";
 
-
-function Brand() {
-  return (
-    <a className="workshop-wordmark" href="#home" aria-label={`${storefrontName} home`}>
-      <span className="workshop-mark" aria-hidden="true"><span /><span /></span>
-      <span>{storefrontName}</span>
-    </a>
-  );
-}
 
 const money = (value: number) =>
   new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(value);
@@ -144,12 +135,9 @@ export default function StudioPage() {
 
       {/* Masthead Header */}
       <header className="masthead workshop-masthead">
-        <Brand />
+        <Brand home />
         <nav className="main-nav" aria-label="Main navigation">
-          <Link href="/collection">Shop plates</Link>
-          <a href="#difference">Compare finishes</a>
-          <a href="#lookbook">Lookbook</a>
-          <a href="#questions">FAQs</a>
+          {navigation.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
         </nav>
         <div className="masthead-actions">
           <a className="workshop-nav-builder" href="#studio">Build a plate <ArrowUpRight size={15} /></a>
@@ -178,11 +166,10 @@ export default function StudioPage() {
         <NightHero draft={draft} onReg={updateReg} />
         <NightBuilder draft={draft} setDraft={setDraft} onReg={updateReg} onAdd={addToBag} error={error} />
 
-        <FinishComparison draft={draft} onSelect={finish => setDraft(previous => applyLettering(previous, finish))} />
 
         <section className="collection-section section-pad" id="collection">
           <div className="collection-heading">
-            <h2>Find your plate</h2>
+            <h2>Find Your Taste</h2>
             <Link className="text-action" href="/collection">Shop all plates <ArrowUpRight size={18} /></Link>
           </div>
           <StyleCards featured reg={reg} onApply={chosen => { selectKind(chosen); goStudio(); }} />
@@ -193,27 +180,23 @@ export default function StudioPage() {
           </div>
         </section>
 
-        {/* Studio Section with Interactive 3D Plate & Live Price Calculator */}
+        <FinishComparison draft={draft} onSelect={finish => setDraft(previous => applyLettering(previous, finish))} />
         {/* Redesigned Fit Section (R2) */}
         <FitSection reg={reg} onApply={(profile, size) => { selectKind(profile); updateDraft("size", size); goStudio(); }} />
-
-        {/* Material Close-Up Anatomy (R5.5) */}
-        <div id="anatomy">
-          <MaterialCloseup />
-        </div>
 
         {/* Vehicle Lookbook Carousel (R5.4) */}
         <LookbookGallery
             onSelectSpec={(chosenKind, chosenReg) => {
               selectKind(chosenKind);
-              updateDraft("reg", chosenReg);
+              if (!reg.trim()) updateDraft("reg", chosenReg);
               goStudio();
             }}
           />
 
-        <NightDriveFilm />
+        
 
         {/* Redesigned FAQ & Trust Section (R2) */}
+        <OrderingGuide />
         <FaqSection />
 
 
@@ -234,7 +217,7 @@ export default function StudioPage() {
       {/* Footer with Real Business Facts & Professional Branding */}
       <footer className="studio-footer">
         <div className="footer-top">
-          <Brand />
+          <Brand home />
           <p className="text-sm italic font-serif text-[#c4b09a]">
             {businessFacts.tagline}
           </p>
@@ -247,7 +230,7 @@ export default function StudioPage() {
           <nav aria-label="Footer navigation">
             <Link href="/collection">Collection</Link>
             <a href="#studio">Studio</a>
-            <a href="#anatomy">Materials</a>
+            <Link href="/about#anatomy">Materials</Link>
             <a href="#lookbook">Lookbook</a>
             <a href="#questions">FAQs</a>
           </nav>
@@ -270,13 +253,7 @@ export default function StudioPage() {
             Explore the collection and your plate design.
           </SheetDescription>
           <nav id="mobile-navigation" aria-label="Mobile navigation" className="mt-8 space-y-4">
-            {[
-              ["Shop plates", "/collection"],
-              ["Build a plate", "#studio"],
-              ["Compare finishes", "#difference"],
-              ["Lookbook", "#lookbook"],
-              ["FAQs", "#questions"],
-            ].map(([label, id]) => (
+            {navigation.map(([label, id]) => (
               <Link
                 key={id}
                 href={id}

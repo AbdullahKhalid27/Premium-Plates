@@ -50,12 +50,13 @@
 .finish-list a{display:inline-flex;align-items:center;min-height:32px;text-decoration:underline;text-underline-offset:3px;font-size:.83rem}
 .finish-instrument-controls,.finish-caption{display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.6rem 0}
 .finish-instrument-controls select,.finish-instrument-controls button{border:1px solid #81858b;background:white;color:#16171b;padding:.45rem;min-height:44px}
-.finish-stage.compare-area{border-radius:3px;height:clamp(13rem,26vw,24rem);position:relative;overflow:hidden;background:#222428}
-.finish-stage .finish-sample{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(155deg,#3a3d44,#191b1e 70%);padding:0}
-.finish-stage .number-plate{width:80%}
+.finish-stage{border-radius:3px;height:clamp(13rem,26vw,24rem);position:relative;overflow:hidden;isolation:isolate;background:radial-gradient(ellipse at 50% 75%,var(--chapter-edge,#41454e),var(--chapter-deep,#222428) 84%)}
+.finish-stage .finish-sample{position:absolute;inset:0;display:grid;place-items:center;padding:0}
+.finish-stage .number-plate{width:80%;max-height:85%;height:auto}
+.finish-stage .number-plate[data-layout="two-line"]{width:min(55%,16rem)}
 .finish-stage .finish-divider{position:absolute;inset-block:0;width:2px;background:#fff;pointer-events:none;z-index:3}
 .finish-divider span{position:absolute;top:72%;left:1px;transform:translateX(-50%);background:#fff;border:1px solid #63656b;border-radius:20px;padding:.1rem .5rem}
-.finish-stage.compare-area input[type=range]{position:absolute;inset:0;z-index:4;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;touch-action:pan-y;appearance:none}
+.finish-stage input[type=range]{position:absolute;inset:0;z-index:4;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;touch-action:pan-y;appearance:none}
 .finish-stage input::-webkit-slider-thumb{appearance:none;width:1px;height:44px}
 .finish-stage:focus-within{outline:3px solid #1b467b;outline-offset:4px}
 @media(max-width:740px){.finish-study-grid{grid-template-columns:1fr}.finish-list article{padding:.4rem .7rem}.finish-list article p,.finish-list article a{font-size:.8rem}}

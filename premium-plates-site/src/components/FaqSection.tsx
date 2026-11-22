@@ -21,7 +21,7 @@ export default function FaqSection() {
           <a href={ruleSources.display.url}>Read the rules on GOV.UK <span aria-hidden="true">↗</span></a>
         </div>
         <div className="guidance-questions">
-          <h3>Plate and order questions</h3>
+          <h3>Frequently Asked Questions</h3>
           {questions.map(({ id, question, rule }) => (
             <details key={id} id={'faq-' + id}>
               <summary>{question}<Plus size={18} aria-hidden="true"/></summary>

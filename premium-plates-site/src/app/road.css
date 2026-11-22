@@ -116,3 +116,16 @@ body:has(#questions[data-lamp-on]) .main-nav a[href="#questions"]::after { opaci
 @media(prefers-reduced-motion:reduce) {
   .way-road > section[data-lamp-on]:not(#home) > .way-lamp { background:#83848780; }
 }
+
+#studio.night-builder {background:#191b20;color:#f2f2ee}
+#studio.night-builder > header :is(h2,span),#studio .bench-controls {color:#f2f2ee}
+#studio .bench-tray {color:#17191d}
+#studio .bumper-stage {--lamp:inherit;user-select:none;background:radial-gradient(ellipse at var(--lamp,50%) 8%,#8b806a,#3e4044 35%,#141519 75%)}
+#studio .bumper-stage:focus-visible{outline:3px solid #ffb43a;outline-offset:-4px}
+@media(prefers-reduced-motion:no-preference){
+ .way-road > section:not(#home) h2 {translate:0 var(--drift,0px)}
+ .guidance-questions details::details-content{interpolate-size:allow-keywords;block-size:0;overflow:clip;transition:block-size .3s ease,content-visibility .3s allow-discrete}
+ .guidance-questions details[open]::details-content{block-size:auto}
+}
+
+#studio .bench-reset{color:#f3f1eb}

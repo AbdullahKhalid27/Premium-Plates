@@ -1,7 +1,6 @@
 import { calculateTotal, stylePricing, type PlateBadge, type PlateKind, type PlateSide } from "./pricing";
 
-export const storefrontName = "Plate Workshop";
-export const motorcyclePhoto = "/Premium-Plates/media/motorcycle-workshop.webp";
+export const storefrontName = "Nightmark Plates";
 
 export const finishes = {
   regular: "Flat",

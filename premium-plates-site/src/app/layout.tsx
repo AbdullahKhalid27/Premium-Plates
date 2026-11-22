@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
+import PreviewThemePicker from "@/components/PreviewThemePicker";
 import StreetSpine from "@/components/StreetSpine";
 import localFont from "next/font/local";
 import "./redesign.css";
 import "./foundation.css";
 import "./workshop.css";
 import "./road.css";
+import "./oxblood.css";
+import "./theme-flow.css";
+import "@/components/ordering-guide.css";
 import { storefrontName } from "@/config/catalogue";
 
 // Authentic UK BS AU 145e Charles Wright registration font
@@ -15,6 +19,13 @@ const charlesWright = localFont({
   display: "swap",
   fallback: ["Impact", "Arial Black", "sans-serif"],
 });
+
+const previewPalette = `try {
+  const theme = new URLSearchParams(location.search).get("theme");
+  if (theme === "midnight" || theme === "oxblood" || theme === "graphite") sessionStorage.setItem("plate-preview-theme", theme);
+  const selected = theme || sessionStorage.getItem("plate-preview-theme");
+  if (selected === "midnight" || selected === "graphite") document.documentElement.dataset.previewTheme = selected;
+} catch {}`;
 
 export const metadata: Metadata = {
   title: `${storefrontName} | Design your number plates`,
@@ -34,10 +45,12 @@ export default function RootLayout({
 }) {
   return (
     <html
+      suppressHydrationWarning
       lang="en-GB"
       className={`${charlesWright.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans">{children}<StreetSpine /></body>
+      <head><script dangerouslySetInnerHTML={{ __html: previewPalette }} /></head>
+      <body className="min-h-full flex flex-col font-sans"><PreviewThemePicker />{children}<StreetSpine /></body>
     </html>
   );
 }

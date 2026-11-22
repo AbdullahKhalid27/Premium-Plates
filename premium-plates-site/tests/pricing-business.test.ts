@@ -42,7 +42,7 @@ describe('R5.6 & R4: Business Facts & Pricing Config Specification', () => {
 
   describe('Tier 1: Centralized Business Facts Contract (R5.6)', () => {
     test('Uses a neutral storefront identity while the trading name is pending', () => {
-      assert.equal(require('../src/config/catalogue').storefrontName, 'Plate Workshop');
+      assert.equal(require('../src/config/catalogue').storefrontName, 'Nightmark Plates');
     });
     test('Omits unconfirmed supplier registration', t => runFactsTest(t, facts => assert.equal(facts.dvlaRnpsNumber, undefined)));
     test('Omits unconfirmed contact channels', t => runFactsTest(t, facts => {

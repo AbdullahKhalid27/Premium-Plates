@@ -1,5 +1,9 @@
 # Project memory and working instructions
 
+## Client review update, 22 November 2026
+
+Nightmark Plates is a provisional name and logo for client review. About Us leads the navigation. Remove the after-dark film from the homepage. Show ordering as four connected steps. Checkout skips payment in the preview and submits only the two fictional training files to a loopback receiver. Real customer evidence and live payment remain pending secure backend integration.
+
 ## Current client decision, 18 November 2026
 
 Complete F3 corrections and the F1–F3 source audit, ship F3 for review, then research, code and ship F4 followed by F5. Run the accumulated F1–F5 checks and mobile/desktop visual evidence after F5. Keep required GitHub CI enabled. Main publication needs explicit merge approval. Phase 6 and Ponytail are deferred.

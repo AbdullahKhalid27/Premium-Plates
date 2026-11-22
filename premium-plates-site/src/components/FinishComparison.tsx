@@ -19,7 +19,7 @@ export default function FinishComparison({draft, onSelect}: {draft: Draft; onSel
   const [face, setFace] = useState<"front" | "rear">("rear");
   const current = draft.lettering;
   const other = reference === current ? (current === "regular" ? "acrylic" : "regular") : reference;
-  const plate = (finish: Lettering) => <Plate reg={draft.reg} side={face} kind={finish} options={{lettering:finish}} />;
+  const plate = (finish: Lettering) => <Plate reg={draft.reg} side={draft.kind==="moto"?"rear":face} kind={draft.kind} options={{...draft,lettering:finish}} />;
   return <section id="difference" className="difference-section finish-study section-pad" aria-labelledby="finish-study-title">
     <div className="finish-study-heading"><h2 id="finish-study-title">Compare the finishes</h2>
       <p>Choose your builder finish, then move the divider to see how its edge catches light.</p></div>
@@ -31,13 +31,14 @@ export default function FinishComparison({draft, onSelect}: {draft: Draft; onSel
     </div><div className="finish-instrument">
       <div className="finish-instrument-controls"><label>Compare against <select value={other} onChange={e => setReference(e.target.value as Lettering)}>
         {finishIds.filter(id => id !== current).map(id => <option key={id} value={id}>{finishes[id]}</option>)}</select></label>
-        <button type="button" onClick={() => setFace(face === "rear" ? "front" : "rear")}>{face === "rear" ? "Rear" : "Front"} face ⇄</button></div>
-      <div className="finish-stage compare-area">
-        <div className="finish-sample">{plate(other)}</div>
-        <div className="finish-sample compare-raised" style={{clipPath:"inset(0 " + (100 - wipe) + "% 0 0)"}}>{plate(current)}</div>
+        <button type="button" disabled={draft.kind==="moto"} onClick={() => setFace(face === "rear" ? "front" : "rear")}>{draft.kind==="moto" || face === "rear" ? "Rear" : "Front"} face ⇄</button></div>
+      <div className="finish-stage">
+        <div className="finish-sample" aria-hidden="true">{plate(other)}</div>
+        <div className="finish-sample" aria-hidden="true" style={{clipPath:"inset(0 " + (100 - wipe) + "% 0 0)"}}>{plate(current)}</div>
         <div className="finish-divider" aria-hidden="true" style={{left:wipe+"%"}}><span>↔</span></div>
         <input type="range" aria-label="Compare plate finishes" aria-valuetext={wipe + "% " + finishes[current] + ", " + (100-wipe) + "% " + finishes[other]} min="0" max="100" value={wipe} onChange={e => setWipe(Number(e.target.value))} />
       </div>
+      <div className="comparison-actions"><button type="button" onClick={()=>setWipe(100)}>Show {finishes[current]}</button><button type="button" onClick={()=>setWipe(0)}>Show {finishes[other]}</button><a href="#studio">Back to builder ↑</a></div>
       <p className="finish-caption"><span>{finishes[current]} · builder finish</span><span>{finishes[other]} · comparison</span></p>
     </div></div>
   </section>;

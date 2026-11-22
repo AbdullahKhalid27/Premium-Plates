@@ -26,6 +26,18 @@ export default function StreetSpine() {
     let frame = 0;
     function locate() {
       frame = 0;
+      for (const section of sections) {
+        const bounds = section.getBoundingClientRect();
+        if (bounds.bottom < 0) continue;
+        const progress = reduced.matches ? .5 : Math.max(0, Math.min(1,(innerHeight-bounds.top)/(innerHeight+bounds.height)));
+        const entry = Math.max(0, Math.min(1, (innerHeight - bounds.top) / (innerHeight * .54)));
+        const remaining = reduced.matches ? 0 : (1 - entry) ** 2;
+        section.style.setProperty("--arrival", String(remaining));
+        section.style.setProperty("--sweep", (8 + 84 * progress) + "%");
+        section.style.setProperty("--lamp", (8+84*progress)+"%");
+        section.style.setProperty("--edge", (progress-.5)*5+"px");
+        section.style.setProperty("--drift", (progress-.5)*22+"px");
+      }
       const level = window.innerHeight * 0.44;
       const current = sections.find(section => section.getBoundingClientRect().bottom > level) ?? sections[sections.length - 1];
       if (active !== current) {

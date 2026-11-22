@@ -1,0 +1,101 @@
+/* Use related shades across the sections below the builder. */
+:root {
+  --chapter-deep: color-mix(in srgb, var(--asphalt) 87%, var(--road));
+  --chapter-surface: color-mix(in srgb, var(--asphalt) 88%, var(--signal));
+  --chapter-edge: color-mix(in srgb, var(--asphalt) 64%, var(--signal));
+  --chapter-tint: color-mix(in srgb, var(--signal) 20%, var(--legal-paper));
+  --chapter-text: #fff8f1;
+}
+#collection, #lookbook, .layer-study {
+  color: var(--chapter-text);
+  background: linear-gradient(150deg, var(--chapter-surface), var(--chapter-deep) 80%);
+}
+#difference, #fit, #questions { background: var(--chapter-tint); }
+#collection .text-action { color: var(--chapter-text); border-color: var(--chapter-edge); }
+.plate-style-card, .vehicle-card {
+  background: var(--chapter-deep);
+  color: var(--chapter-text);
+  border-color: var(--chapter-edge);
+}
+.plate-style-card .catalogue-specimen,
+.vehicle-specimen,
+.product-page .catalogue-specimen,
+.profile-stage,
+.finish-stage.compare-area,
+.finish-stage .finish-sample {
+  background: radial-gradient(ellipse at var(--beam-x,50%) 75%, var(--chapter-edge), var(--chapter-surface) 40%, var(--chapter-deep) 84%);
+  border-color: var(--chapter-edge);
+}
+.plate-card-action, .profile-switch button[aria-pressed=true] {
+  background: var(--signal);
+  border-color: var(--chapter-edge);
+  color: var(--road);
+}
+.layer-study dt { border-color: var(--chapter-edge); }
+.layer-study dd { color: var(--chapter-text); }
+.layer-backing { background: linear-gradient(var(--chapter-edge), var(--chapter-deep)); }
+.night-drive, .studio-footer { background: var(--chapter-deep); }
+.night-drive::after, .compare-area::after {
+  background-image: linear-gradient(107deg, transparent 38%, color-mix(in srgb,var(--signal) 26%,transparent) 50%, transparent 62%);
+}
+
+/* A single outline stays mounted as its proportions and corners change. */
+#studio .bumper-inset { width: min(60%,650px); }
+.builder-profile {
+  position: relative;
+  width: var(--profile-width);
+  height: var(--profile-height);
+  margin-inline: auto;
+  clip-path: polygon(0 0,100% 0,100% 50%,100% 100%,0 100%,0 50%);
+  border-radius: 6px;
+}
+.builder-profile[data-profile=hex] {
+  clip-path: polygon(7% 0,93% 0,100% 50%,93% 100%,7% 100%,0 50%);
+  border-radius: 0;
+}
+#studio .builder-profile .number-plate {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  clip-path: none;
+  border-radius: 0;
+}
+@media (max-width: 700px) { #studio .bumper-inset { width: 74%; } }
+
+@media (prefers-reduced-motion: no-preference) {
+  .builder-profile {
+    transition: width .52s cubic-bezier(.22,1,.36,1), height .52s cubic-bezier(.22,1,.36,1),
+      clip-path .52s cubic-bezier(.22,1,.36,1), border-radius .35s ease;
+  }
+  .way-road > section:not(#home) h2 { translate: none; }
+  .way-road :is(.finish-study-heading,.collection-heading,.profile-study > div,.layer-study > div:first-child,.vehicle-studies-heading,.guidance-paper h2) {
+    transform: translateY(calc(var(--arrival,0) * 76px));
+    opacity: calc(1 - var(--arrival,0) * .45);
+  }
+  .way-road :is(.finish-stage,.profile-stage,.plate-style-grid,.vehicle-track) {
+    transform: translateY(calc(var(--arrival,0) * 110px)) scale(calc(1 - var(--arrival,0) * .065));
+    transform-origin: center bottom;
+  }
+  .way-road > section:not(#home,#studio,.night-drive)::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    opacity: calc(var(--arrival,0) * .65);
+    background: radial-gradient(ellipse at var(--sweep,50%) 0%, color-mix(in srgb,var(--signal) 30%,transparent),transparent 66%);
+  }
+}
+
+.preview-theme-bar {
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap;
+  gap:.5rem 1rem; padding:.5rem clamp(1rem,4vw,4rem);
+  background:var(--wine-deep); color:#fff8f1;
+  border-bottom:1px solid var(--chapter-edge); font-size:.85rem;
+}
+.preview-theme-bar label { display:flex; gap:.55rem; align-items:center; flex-wrap:wrap; }
+.preview-theme-bar select {
+  color:var(--road); background:var(--signal); min-height:44px;
+  border:1px solid var(--chapter-edge); border-radius:4px; padding:.35rem .55rem;
+}
+body:has(.preview-theme-bar) .masthead.workshop-masthead { position:relative; inset:auto; }

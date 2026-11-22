@@ -1,4 +1,3 @@
-import { motorcyclePhoto } from "@/config/catalogue";
 import type { PlateBadge, PlateKind } from "@/config/pricing";
 import InteractivePlate from "./InteractivePlate";
 import type { PlateOptions } from "./Plate";
@@ -29,7 +28,6 @@ export default function PlateInspection({
   return (
     <div className="plate-inspection">
       <div className="inspection-stage" data-headlights={headlights} data-motorcycle={kind === "moto"}>
-        {kind === "moto" && <div className="motorcycle-scene" style={{ backgroundImage: `url('${motorcyclePhoto}')` }} aria-hidden="true" />}
         {kind !== "moto" && <><span className="street-lamp street-lamp-left" aria-hidden="true" /><span className="street-lamp street-lamp-right" aria-hidden="true" /></>}
         <InteractivePlate
           reg={reg}

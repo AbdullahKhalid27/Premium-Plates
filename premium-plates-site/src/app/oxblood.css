@@ -1,0 +1,73 @@
+/* Oxblood and Brass storefront palette */
+:root {
+  --road: #191516;
+  --asphalt: #48232c;
+  --signal: #e4ad68;
+  --metal: #e3d8cd;
+  --legal-paper: #f4f0e6;
+  --paper-soft: #f2e9e0;
+  --wine: #48232c;
+  --wine-deep: #2b191e;
+  --wine-hover: #60313d;
+  --line: #bca99d;
+  --ring: #8b571f;
+}
+.masthead.workshop-masthead { background: var(--asphalt); border-color: #80545b; }
+.workshop-masthead .main-nav > a { color: #f3e7e2; }
+.workshop-masthead .workshop-nav-builder:hover, .primary-button:hover { background: #f3c38a; }
+.workshop-mark { color: var(--signal); }
+#home.night-hero { background: radial-gradient(ellipse at 76% 64%, #57313a, var(--road) 63%); }
+#studio.night-builder { background: var(--asphalt); }
+#studio .bumper-stage {
+  background: radial-gradient(ellipse at var(--lamp, 50%) 8%, #ab8052, #593440 34%, #1e1518 78%);
+}
+#studio .bench-controls, #studio .bench-dock, #studio .bench-total { background: #2b191e; }
+#studio .bench-tray { background: var(--paper-soft); }
+#studio .bench-total button, .sticky-order-action { background: var(--signal); color: var(--road); }
+#studio .bench-dock button[aria-expanded=true] { color: var(--signal); border-color: var(--signal); }
+#studio .bumper-stage:focus-visible { outline-color: var(--signal); }
+.catalogue-specimen { background: radial-gradient(ellipse at 50% 10%, #70444a, var(--road) 78%); }
+[data-lamp-on] > .way-lamp::after { box-shadow: 0 3px 12px 3px #e4ad6877; }
+.studio-footer { background: #2b191e; border-color: #63434a; }
+
+/* Midnight Blue & Copper preview */
+html[data-preview-theme="midnight"] {
+  --road: #101923;
+  --asphalt: #223341;
+  --signal: #e59c73;
+  --metal: #d9dfe4;
+  --paper-soft: #e9edf0;
+  --wine: #223341;
+  --wine-deep: #14212d;
+  --wine-hover: #314859;
+  --line: #a2adb6;
+}
+[data-preview-theme="midnight"] :is(.masthead.workshop-masthead,.studio-footer) { border-color: #516171; }
+[data-preview-theme="midnight"] .workshop-masthead .main-nav > a { color: #e5edf4; }
+[data-preview-theme="midnight"] .workshop-masthead .workshop-nav-builder:hover { background: #f3b693; }
+[data-preview-theme="midnight"] #home.night-hero { background: radial-gradient(ellipse at 76% 64%, #2a4359, var(--road) 63%); }
+[data-preview-theme="midnight"] #studio .bumper-stage { background: radial-gradient(ellipse at var(--lamp, 50%) 8%, #b98569, #354959 36%, #111d28 78%); }
+[data-preview-theme="midnight"] :is(#studio .bench-controls,#studio .bench-dock,#studio .bench-total,.studio-footer) { background: var(--wine-deep); }
+[data-preview-theme="midnight"] .catalogue-specimen { background: radial-gradient(ellipse at 50% 10%, #405e73, var(--road) 78%); }
+[data-preview-theme="midnight"] [data-lamp-on] > .way-lamp::after { box-shadow: 0 3px 12px 3px #e59c7377; }
+
+/* Graphite & Ice Blue preview */
+html[data-preview-theme="graphite"] {
+  --road: #16191d;
+  --asphalt: #292f36;
+  --signal: #a8d8ee;
+  --metal: #dce3e8;
+  --paper-soft: #eaf0f3;
+  --wine: #292f36;
+  --wine-deep: #20262d;
+  --wine-hover: #3a4650;
+  --line: #a2b1ba;
+}
+[data-preview-theme="graphite"] :is(.masthead.workshop-masthead,.studio-footer) { border-color: #53636f; }
+[data-preview-theme="graphite"] .workshop-masthead .main-nav > a { color: #e2edf3; }
+[data-preview-theme="graphite"] :is(.workshop-masthead .workshop-nav-builder,.primary-button):hover { background: #c7edff; }
+[data-preview-theme="graphite"] #home.night-hero { background: radial-gradient(ellipse at 76% 64%, #364854, var(--road) 63%); }
+[data-preview-theme="graphite"] #studio .bumper-stage { background: radial-gradient(ellipse at var(--lamp, 50%) 8%, #86aebf, #354651 36%, #161c22 78%); }
+[data-preview-theme="graphite"] :is(#studio .bench-controls,#studio .bench-dock,#studio .bench-total,.studio-footer) { background: var(--wine-deep); }
+[data-preview-theme="graphite"] .catalogue-specimen { background: radial-gradient(ellipse at 50% 10%, #47616e, var(--road) 78%); }
+[data-preview-theme="graphite"] [data-lamp-on] > .way-lamp::after { box-shadow: 0 3px 12px 3px #a8d8ee77; }
