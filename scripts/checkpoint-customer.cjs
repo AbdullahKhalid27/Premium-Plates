@@ -10,11 +10,25 @@ await p.getByRole('link',{name:'Continue to checkout'}).click();await p.getByRol
 assert(await p.getByRole('button',{name:'Send both documents'}).isDisabled());
 await shot('verification');
 for(const slot of ['identity','entitlement']){
+  await p.locator('#file-'+slot+':enabled').waitFor();
   await p.locator('#file-'+slot).setInputFiles(path.join(__dirname,'../premium-plates-site/public/samples',slot+'.txt'));
 }
+await p.route('**/api/sample-documents', async route => {
+  await route.fulfill({status:503});
+}, {times:1});
+await click('Send both documents');
+await p.getByRole('alert').filter({hasText:'ready to retry'}).waitFor();
 await click('Send both documents');
 await p.getByRole('heading',{name:'Submission receipt'}).waitFor();
 await p.reload();
 await p.getByRole('heading',{name:'Submission receipt'}).waitFor();
-assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await p.close();console.log('PASS customer workflow '+width);}
+assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+await p.route('**/api/sample-documents', route => route.fulfill({status:404}));
+await p.goto(new URL('checkout/?sample=1',process.env.PREVIEW_URL || 'http://127.0.0.1:4192/Premium-Plates/').href);
+await p.evaluate(()=>sessionStorage.clear());
+await p.reload();
+await p.getByRole('status').filter({hasText:'Samples are available to download'}).waitFor();
+assert(await p.locator('#file-identity').isDisabled());
+assert(await p.getByRole('button',{name:'Send both documents'}).isDisabled());
+await p.close();console.log('PASS customer workflow '+width);}
 }finally{await b.close()}})().catch(e=>{console.error(e);process.exitCode=1;});

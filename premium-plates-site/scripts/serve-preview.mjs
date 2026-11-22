@@ -15,6 +15,10 @@ const slots=["identity","entitlement"];
 const server=http.createServer(async(req,res)=>{
   const fail=code=>{res.writeHead(code);res.end();};
   try {
+    if(req.method==="GET" && req.url===base+"api/sample-documents") {
+      res.writeHead(200,{"Content-Type":"application/json","Cache-Control":"no-store"});
+      return res.end(JSON.stringify({acceptsSamples:true}));
+    }
     if(req.method==="POST" && req.url===base+"api/sample-documents") {
       if(req.headers.origin && req.headers.origin!=="http://127.0.0.1:"+port) return fail(403);
       if(req.headers["content-type"]!=="application/json") return fail(415);

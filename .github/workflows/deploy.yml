@@ -32,6 +32,8 @@ jobs:
           cache-dependency-path: premium-plates-site/package-lock.json
       - run: npm ci
       - run: npm run build
+        env:
+          STOREFRONT_PUBLIC_URL: ${{ vars.STOREFRONT_PUBLIC_URL }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: premium-plates-site/out

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FileText, Download, Send } from "lucide-react";
 import { ruleSources } from "@/config/plateRules";
 
@@ -10,9 +10,21 @@ const slots = [
 type Slot = typeof slots[number]["id"];
 const sample = (id:Slot) => "/Premium-Plates/samples/"+id+".txt";
 
+const receiver = "/Premium-Plates/api/sample-documents";
 export default function SampleChecklist({order,onReceived}:{order:string;onReceived:(receipt:string)=>void}) {
   const [files,setFiles]=useState<Partial<Record<Slot,File>>>({});
   const [busy,setBusy]=useState(false),[error,setError]=useState("");
+  const [available, setAvailable] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch(receiver, { signal: controller.signal })
+      .then(response => response.ok ? response.json() : null)
+      .then(status => { if (!controller.signal.aborted) setAvailable(status?.acceptsSamples === true); })
+      .catch(() => { if (!controller.signal.aborted) setAvailable(false); });
+    return () => controller.abort();
+  }, []);
+
   async function send() {
     setBusy(true);setError("");
     try {
@@ -26,7 +38,7 @@ export default function SampleChecklist({order,onReceived}:{order:string;onRecei
         if(content!==await response.text()) throw new Error("Choose the original "+title.toLowerCase()+" sample. Personal files cannot be sent here.");
         payload[id]=content;
       }
-      const response=await fetch("/Premium-Plates/api/sample-documents",{method:"POST",headers:{"Content-Type":"application/json","X-Preview-Order":order},body:JSON.stringify(payload)});
+      const response=await fetch(receiver,{method:"POST",headers:{"Content-Type":"application/json","X-Preview-Order":order},body:JSON.stringify(payload)});
       if(!response.ok) throw new Error("The preview receiver is unavailable. Your selections are ready to retry.");
       const result=await response.json();
       if(typeof result.receipt!=="string" || !result.receipt) throw new Error("No receipt arrived. Please try again.");
@@ -40,10 +52,11 @@ export default function SampleChecklist({order,onReceived}:{order:string;onRecei
       <div className="route-index"><span>DOCUMENT 0{i+1}</span><FileText aria-hidden="true"/></div>
       <h3>{title}</h3><p>{copy}</p><a download href={sample(id)}><Download size={16}/> Download sample (.txt)</a>
       <label htmlFor={"file-"+id}>Attach {title.toLowerCase()} sample</label>
-      <input id={"file-"+id} type="file" accept=".txt,text/plain" disabled={busy} onChange={e=>{const file=e.target.files?.[0];setFiles(old=>({...old,[id]:file}));setError("");}}/>
+      <input id={"file-"+id} type="file" accept=".txt,text/plain" disabled={busy || available !== true} onChange={e=>{const file=e.target.files?.[0];setFiles(old=>({...old,[id]:file}));setError("");}}/>
     </article>)}</div>
     <p className="originals-note">For a road plate, the supplier must see accepted originals. <a href={ruleSources.evidence.url}>View the full GOV.UK list</a>.</p>
     {error&&<p role="alert">{error}</p>}
-    <button disabled={busy||!files.identity||!files.entitlement} onClick={send}><Send size={16}/>{busy?"Sending samples…":"Send both documents"}</button>
+    {available === false && <p role="status">Samples are available to download. Use the local preview server to practise sending them.</p>}
+    <button disabled={available !== true || busy || !files.identity || !files.entitlement} onClick={send}><Send size={16}/>{busy?"Sending samples…":"Send both documents"}</button>
   </section>;
 }

@@ -25,3 +25,14 @@ test("Display text and road registration have separate ordering rules", () => {
   assert.equal(registrationEntry("Q123 ABC", false).ready, true);
   assert.equal(registrationEntry("BIG 1234", false).ready, true);
 });
+
+test("Registration format checks keep ambiguous and non-ASCII characters intact", () => {
+  for (const input of ["AB5O CDE", "AB51 CD0", "ＡB51 CDE", "АB51 CDE", "AB51\tCDE", "AB51 CDE🚘"]) {
+    const result = registrationEntry(input, false);
+    assert.equal(result.ready, false, input);
+    assert.equal(result.correction, undefined, input);
+  }
+  for (const input of ["A123 BCD", "ABC 123D", "BIG 1234", "1234 AB"]) {
+    assert.equal(registrationEntry(input, false).ready, true, input);
+  }
+});
