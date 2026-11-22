@@ -1,25 +1,29 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import Plate from "./Plate";
-import type { PlateKind, PlateSide } from "../config/pricing";
+import Plate, { type PlateOptions } from "./Plate";
+import type { PlateBadge, PlateKind, PlateSide } from "../config/pricing";
 
 interface InteractivePlateProps {
   reg: string;
   kind: PlateKind;
   side: PlateSide;
-  badge?: boolean;
+  badge?: PlateBadge;
   border?: boolean;
-  className?: string;
+  options?: PlateOptions;
+  angle: number;
+  headlights: boolean;
 }
 
 export default function InteractivePlate({
   reg,
   kind,
   side,
-  badge = false,
+  badge = "none",
   border = false,
-  className = "",
+  options,
+  angle,
+  headlights,
 }: InteractivePlateProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
@@ -27,15 +31,15 @@ export default function InteractivePlate({
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType !== "mouse" && e.pointerType !== "pen") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
 
     const px = (e.clientX - rect.left) / rect.width;
     const py = (e.clientY - rect.top) / rect.height;
 
-    // Subtle 3D tilt angles
-    const rotateY = (px - 0.5) * 18;
-    const rotateX = (0.5 - py) * 14;
+    const rotateY = (px - 0.5) * 46;
+    const rotateX = (0.5 - py) * 38;
 
     setTilt({ x: rotateX, y: rotateY });
     setLight({ x: px * 100, y: py * 100, opacity: 0.6 });
@@ -47,20 +51,20 @@ export default function InteractivePlate({
   };
 
   // Gel and 4D finishes have stronger specular reflections
-  const is3D = kind === "gel" || kind === "acrylic";
+  const lettering = options?.lettering || kind;
+  const is3D = lettering === "gel" || lettering === "acrylic";
 
   return (
     <div
       ref={containerRef}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
-      className={`relative cursor-grab active:cursor-grabbing select-none perspective-[800px] ${className}`}
-      style={{ touchAction: "pan-y" }}
+      className="inspection-object relative select-none perspective-[800px]"
     >
       <div
-        className="w-full transition-transform duration-150 ease-out will-change-transform"
+        className="w-full transition-transform duration-150 ease-out"
         style={{
-          transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+          transform: `rotateX(${tilt.x + 5}deg) rotateY(${tilt.y + angle}deg)`,
           transformStyle: "preserve-3d",
         }}
       >
@@ -70,10 +74,20 @@ export default function InteractivePlate({
           side={side}
           badge={badge}
           border={border}
+          options={options}
           className="shadow-2xl"
         />
 
-        {/* Dynamic Specular Light Sweep Overlay for 3D/4D Finishes */}
+        <div
+          className="inspection-light"
+          aria-hidden="true"
+          style={{
+            opacity: headlights ? 0.85 : is3D ? 0.55 : 0.28,
+            background: `radial-gradient(ellipse at 35% ${headlights ? 70 : 0}%, #fff8e3 0%, transparent ${headlights ? 48 : 68}%)`,
+          }}
+        />
+
+        {/* Pointer reflection supplements the persistent, keyboard-controlled light. */}
         {is3D && (
           <div
             className="absolute inset-0 rounded-md pointer-events-none transition-opacity duration-300 mix-blend-overlay"

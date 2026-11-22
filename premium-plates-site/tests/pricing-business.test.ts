@@ -41,38 +41,16 @@ function runPricingTest(t: any, fn: (pricing: any) => void) {
 describe('R5.6 & R4: Business Facts & Pricing Config Specification', () => {
 
   describe('Tier 1: Centralized Business Facts Contract (R5.6)', () => {
-    test('1. Exports company & trading identity', (t) => {
-      runFactsTest(t, (facts) => {
-        const name = facts.companyName || facts.tradingName;
-        assert.ok(typeof name === 'string' && name.includes('Premium Plates'), 'Should include Premium Plates trading name');
-      });
+    test('Uses a neutral storefront identity while the trading name is pending', () => {
+      assert.equal(require('../src/config/catalogue').storefrontName, 'Nightmark Plates');
     });
-
-    test('2. Exports DVLA RNPS supplier registration identifier', (t) => {
-      runFactsTest(t, (facts) => {
-        const rnps = facts.dvlaRnpsNumber || facts.dvlaNumber || facts.rnps;
-        assert.ok(typeof rnps === 'string' && rnps.length > 0, 'DVLA RNPS registration must be defined');
-      });
-    });
-
-    test('3. Exports customer contact channels (phone & whatsapp)', (t) => {
-      runFactsTest(t, (facts) => {
-        const phone = facts.phone || facts.contact?.phoneDisplay || facts.contact?.phoneHref;
-        const whatsapp = facts.whatsapp || facts.contact?.whatsappDisplay || facts.contact?.whatsappHref;
-        assert.ok(phone, 'Phone contact must be defined');
-        assert.ok(whatsapp, 'WhatsApp contact must be defined');
-      });
-    });
-
-    test('4. Exports fulfillment details (delivery estimate & warranty)', (t) => {
-      runFactsTest(t, (facts) => {
-        const delivery = facts.standardDelivery || facts.fulfillment?.deliveryEstimate || facts.fulfillment?.shippingMethod;
-        const warranty = facts.guaranteeYears || facts.fulfillment?.warranty;
-        assert.ok(delivery, 'Delivery information must be specified');
-        assert.ok(warranty, 'Warranty information must be specified');
-      });
-    });
-
+    test('Omits unconfirmed supplier registration', t => runFactsTest(t, facts => assert.equal(facts.dvlaRnpsNumber, undefined)));
+    test('Omits unconfirmed contact channels', t => runFactsTest(t, facts => {
+      assert.equal(facts.phone, undefined); assert.equal(facts.whatsapp, undefined);
+    }));
+    test('Omits unconfirmed delivery and warranty promises', t => runFactsTest(t, facts => {
+      assert.equal(facts.standardDelivery, undefined); assert.equal(facts.guaranteeYears, undefined);
+    }));
     test('5. British Standard compliance tag (BS AU 145e)', (t) => {
       runFactsTest(t, (facts) => {
         const standard = facts.britishStandard || facts.standard;

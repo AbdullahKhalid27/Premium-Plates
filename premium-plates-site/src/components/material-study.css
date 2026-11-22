@@ -1,0 +1,23 @@
+.material-study {background:var(--chapter-deep);color:var(--chapter-text)}
+.material-study header {display:grid;grid-template-columns:1.15fr 1fr;gap:5%;align-items:end;margin-bottom:2rem}
+.material-study h2 {font:400 clamp(2.6rem,5vw,5.3rem)/1 Georgia,serif;letter-spacing:-.045em}
+.material-study header p {max-width:48ch;color:var(--metal);line-height:1.55}
+.material-bench {display:grid;grid-template-columns:1.15fr 1fr;gap:clamp(1rem,4vw,5rem);align-items:center}
+.material-bench figure {margin:0;overflow:hidden;border:1px solid var(--chapter-edge);background-color:var(--asphalt);background-image:radial-gradient(var(--chapter-edge) 1px,transparent 1px);background-size:18px 18px}
+.material-bench .specimen-drawing {height:clamp(14rem,25vw,24rem)}
+.specimen-drawing>div {animation:none;width:76%;transform:translateY(var(--gap)) rotateX(49deg) rotateZ(-9deg)}
+.specimen-drawing .layer-type {--gap:-3.3rem;color:#171718;-webkit-text-stroke:.65px #c6beba;font-size:clamp(2.1rem,4.8vw,4.9rem)}
+.specimen-drawing .layer-backing {--gap:3rem;background:linear-gradient(155deg,#77777a,#26262a)}
+.material-bench:has(input[value=face]:checked) .layer-face,.material-bench:has(input[value=backing]:checked) .layer-backing {outline:3px solid var(--signal);outline-offset:4px}
+.material-bench:has(input[value=type]:checked) .layer-type {text-shadow:1px 2px #aaa,3px 5px #0a0909,4px 6px var(--signal)}
+.material-bench figcaption {display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;padding:.8rem 1.1rem;background:var(--wine-deep);font-size:.82rem;color:var(--metal)}
+.material-bench fieldset {min-width:0;margin:0;border:0;padding:0}
+.material-bench label {position:relative;display:flex;gap:1rem;cursor:pointer;padding:1rem;border-top:1px solid var(--chapter-edge);border-inline-start:3px solid transparent}
+.material-bench input {position:absolute;opacity:0;width:1px;height:1px}
+.material-bench label:has(:checked) {background:var(--asphalt);border-inline-start-color:var(--signal)}
+.material-bench label:focus-within {outline:2px solid var(--signal);outline-offset:2px}
+.layer-number {font:600 .85rem monospace;color:var(--signal);padding-top:.4rem}
+.material-bench strong {display:block;font:400 1.55rem Georgia,serif;margin-bottom:.3rem}
+.material-bench strong+span {font-size:.96rem;color:var(--metal);line-height:1.55}
+.material-link {display:inline-block;color:var(--signal);margin-top:1.3rem;text-decoration:underline;text-underline-offset:4px;padding:.5rem 0}
+@media(max-width:760px){.material-study header,.material-bench{grid-template-columns:1fr;gap:1rem}}

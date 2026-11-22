@@ -1,0 +1,28 @@
+.plate-style-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(.8rem,2vw,1.6rem);align-items:start}
+.plate-style-card,.vehicle-card{min-width:0;color:#f3f3f1;background:#1c1d22;border:1px solid #45474f;padding:clamp(.85rem,2vw,1.5rem)}
+.plate-style-card:first-child,.plate-style-custom:last-child{grid-column:span 2}
+.plate-style-card .catalogue-specimen,.vehicle-specimen,.product-page .catalogue-specimen{background:radial-gradient(ellipse at var(--beam-x,50%) 100%,#48494d 0%,#25262b 40%,#141518 85%);border-bottom:1px solid #484a52}
+.plate-style-card .catalogue-specimen,.vehicle-specimen{min-height:clamp(9rem,15vw,15rem);padding:1.6rem 8%;display:grid;align-items:center}
+.plate-style-card .number-plate,.vehicle-card .number-plate{filter:drop-shadow(var(--edge-shadow,1px) 4px 3px #0009)}
+.plate-style-card details,.vehicle-card details{color:inherit}
+.plate-style-card summary,.vehicle-card summary{display:flex;gap:1rem;justify-content:space-between;align-items:center;cursor:pointer;list-style:none;padding:1rem 0;line-height:1.15;font-size:clamp(1.1rem,2vw,1.65rem);font-weight:550;min-height:44px}
+.plate-style-card summary::-webkit-details-marker,.vehicle-card summary::-webkit-details-marker{display:none}
+.plate-style-card [open]>summary svg,.vehicle-card [open]>summary svg{transform:rotate(180deg)}
+.plate-card-specs p,.plate-style-custom p{color:#d1d2d5;line-height:1.5;margin:0 0 .8rem}
+.plate-card-specs dl{margin:1rem 0;font-size:.85rem}.plate-card-specs dl>div{display:flex;justify-content:space-between;gap:.75rem;border-top:1px solid #4d4f58;padding:.45rem 0}.plate-card-specs dd{margin:0;text-align:right}
+.plate-card-action,.plate-card-link{display:inline-flex;align-items:center;gap:.55rem;min-height:44px;text-decoration:none}
+.plate-card-action{background:#ffb43a;color:#161616!important;padding:.65rem 1rem;font-weight:650;border:0;cursor:pointer}
+.plate-card-link{color:#dedee0!important;font-size:.85rem;text-decoration:underline;text-underline-offset:3px}
+.plate-style-custom h3{font-size:1.5rem;margin:1rem 0 .4rem;color:#f3f3f1}
+.vehicle-studies{background:#0e0f12;color:#f3f3f1}
+.vehicle-studies-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;gap:1rem}
+.vehicle-studies-heading h2{font-size:clamp(2.3rem,6vw,5rem);line-height:1.05}
+.vehicle-studies-heading>div{display:flex;gap:.4rem}.vehicle-studies-heading button{display:grid;place-items:center;border:1px solid #686b72;width:44px;height:44px;color:inherit;cursor:pointer}
+.vehicle-track{display:flex;align-items:start;overflow:auto;gap:1rem;scroll-snap-type:x proximity;overscroll-behavior-x:contain;padding-bottom:.8rem;scrollbar-color:#66686e #1c1d22}
+.vehicle-card{flex:0 0 min(82%,24rem);scroll-snap-align:start}.vehicle-card:first-child{flex-basis:min(92%,34rem)}
+.vehicle-specimen{min-height:clamp(10rem,19vw,18rem);user-select:none;cursor:grab}
+.vehicle-specimen:active{cursor:grabbing}
+@media(max-width:760px){.plate-style-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.plate-style-card:first-child,.plate-style-custom:last-child{grid-column:auto}}
+@media(max-width:480px){.plate-style-grid{grid-template-columns:1fr}.vehicle-studies-heading h2{font-size:2rem}}
+@media(prefers-reduced-motion:no-preference){.plate-card-specs{animation:plate-details-in .2s ease-out}@keyframes plate-details-in{from{opacity:.15}to{opacity:1}}}
+.plate-style-card .catalogue-specimen .number-plate .plate-lettering,.vehicle-card .vehicle-specimen .number-plate .plate-lettering{filter:drop-shadow(var(--edge-shadow,0px) 1px 1px #1c1d2240)}

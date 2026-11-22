@@ -1,25 +1,32 @@
 ---
-name: Premium Plates
-description: A cinematic plate studio shaped by the car, the registration, and the finish.
+
+## Current client decision, 18 November 2026
+
+Complete F3 corrections and the F1–F3 source audit, ship F3 for review, then research, code and ship F4 followed by F5. Run the accumulated F1–F5 checks and mobile/desktop visual evidence after F5. Keep required GitHub CI enabled. Main publication needs explicit merge approval. Phase 6 and Ponytail are deferred.
+
+Current storefront colours are road black #0E0F12, asphalt #1C1D22 and sodium amber #FFB43A for action, glow and active state. Alternate section surfaces. Reserve cream paper for official guidance. One streetlamp spine connects sections outside the hero backdrop. Limit continuous section animations to comparison, anatomy and film. Keep registration stamping, accessible controls and reduced-motion fallbacks. Use expand-in-place cards. The builder uses a drawn bumper and the optional film plays muted in view. Historical descriptions below record earlier design and checkpoint decisions; this section governs current work.
+
+name: Plate Studio
+description: An interactive number plate preview shaped by registration, lettering and light.
 colors:
-  primary: "#622f35"
-  petroleum: "#142126"
-  ink: "#111b1e"
+  primary: "#4a1f39"
+  deep-plum: "#35172a"
+  ink: "#252329"
   mineral-paper: "#f0ede6"
-  copper: "#caa785"
-  line: "#d0cdc5"
+  apricot: "#ff9876"
+  line: "#c9c2b9"
 typography:
   display:
-    fontFamily: "Instrument Serif, Georgia, serif"
+    fontFamily: "Georgia, Times New Roman, serif"
     fontWeight: 400
     lineHeight: 0.98
     letterSpacing: "-0.025em"
   body:
-    fontFamily: "Geist, Arial, sans-serif"
+    fontFamily: "Plus Jakarta Sans, Arial, sans-serif"
     fontSize: "16px"
     lineHeight: 1.5
   plate:
-    fontFamily: "Roboto Condensed, sans-serif"
+    fontFamily: "Charles Wright, sans-serif"
     fontWeight: 700
 rounded:
   plate: "6px"
@@ -41,27 +48,25 @@ components:
 
 ## Overview
 
-**Creative North Star: "The car gives the plate its context."**
-
-The opening uses supplied night-drive footage, followed by a material collection and an interactive fitting studio. Mineral paper provides reading space; petroleum surfaces hold the car and its preview. Oxblood makes choices visible without competing with the footage.
+The opening pairs a registration field and lettering choices with a live plate under a plum arch. It leads into the builder, finish comparison and collection. The on-car view gives the chosen plate its vehicle context.
 
 **Key Characteristics:**
-- Cinematic footage with a useful registration entry point.
+- A live registration preview with angle, lighting and face controls.
 - Editorial type paired with compact, explicit controls.
 - A live plate placed in the actual vehicle scene.
 - Motion attached to selecting, comparing, and inspecting.
 
 ## Colors
 
-Primary oxblood identifies the main action. Petroleum belongs to the film and preview environment. Mineral paper supports readable forms and information; copper connects display emphasis to the warm street lighting.
+Beige carries copy and forms. Kiln plum groups inspection surfaces and primary actions. Apricot identifies focus and active controls against dark plum. White and yellow belong to the plate faces.
 
 ## Typography
 
-Instrument Serif carries large titles and italic emphasis. Geist carries navigation, descriptions, and controls. Roboto Condensed is used for illustrative registration previews; it is not asserted to be a production number plate font.
+Georgia carries large titles and italic emphasis. Plus Jakarta Sans carries navigation, descriptions and controls. The existing Charles Wright font is used for illustrative registration previews.
 
 ## Layout
 
-Desktop sections use generous side margins and asymmetric compositions. At 800px the configurator becomes a vertical flow; at 520px the hero footage is reframed so the whole plate stays visible. The car preview always reserves its geometry before media loads.
+Desktop puts the headline and registration beside the plate. The opening stacks at 760px. The builder becomes a vertical flow at 800px and reserves the on-car preview geometry before the media loads.
 
 ## Elevation & Depth
 
@@ -75,12 +80,12 @@ Page sections and main actions have square corners. Plate previews have gently r
 
 The header collection dropdown jumps directly to a configured studio. Official shadcn/Radix Sheets provide mobile navigation and the demo bag; Accordion provides FAQs. A bag item is a snapshot of the chosen registration and options, so further edits do not silently change it.
 
-The video is a seven-second H.264 cut with soundtrack assembled from the supplied footage. It starts muted and offers separate sound and playback controls. Reduced motion pauses the initial film, shows a still, and removes nonessential CSS animation; visitors can still choose to play it. The three hero lines enter in a timed sequence. The studio preview animates a newly selected plate into the car recess and offers a replay control. Product hover tilt and moving light are bounded and apply to mouse input only.
+The supplied night-drive film sits below the studio with a poster and native play controls. The plate inspection uses native ranges and buttons for repeatable angle and lighting changes. The studio animates a selected plate into the car recess and offers a replay control. Reduced motion disables hover tilt and CSS transitions, with explicit inspection controls available.
 
 ## Do's and Don'ts
 
 - Keep the plate visible and the next action obvious.
-- Use the supplied footage and its palette as visual context.
+- Use the supplied footage as an optional styling demonstration.
 - Preserve keyboard access and reduced-motion behavior.
-- Do not add purple, fabricated reviews, or unverified commercial claims.
+- Use the agreed plum and beige palette and substantiate commercial claims before launch.
 - Do not present illustrative prices or the show-plate film as verified production specifications.

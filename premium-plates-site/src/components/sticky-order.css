@@ -1,0 +1,4 @@
+.sticky-order-action { isolation:isolate; position:relative; }
+.sticky-order-action::before { content:""; position:absolute; inset:-8px -12px; border-radius:inherit; pointer-events:none; box-shadow:0 -6px 22px #ffb43a66; opacity:0; transition:opacity 200ms ease; }
+.sticky-order-action:is(:hover,:focus-visible)::before {opacity:1}
+@media(prefers-reduced-motion:reduce){.sticky-order-action::before{transition:none}}
