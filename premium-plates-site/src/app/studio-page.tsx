@@ -187,8 +187,8 @@ export default function StudioPage() {
         {/* Vehicle Lookbook Carousel (R5.4) */}
         <LookbookGallery
             onSelectSpec={(chosenKind, chosenReg) => {
-              selectKind(chosenKind);
-              if (!reg.trim()) updateDraft("reg", chosenReg);
+              setDraft(previous => ({ ...applyProduct(previous, chosenKind), reg: chosenReg }));
+              setError("");
               goStudio();
             }}
           />
